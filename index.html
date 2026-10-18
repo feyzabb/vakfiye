@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vakfiye</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="stil.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="oyun.css">
+</head>
+<body>
+  <div class="kabuk">
+
+    <!-- EKRAN 1: Açılış -->
+    <div class="acilis" id="acilis">
+      <small class="ust-yazi">BURSA · VAKIF ESERLERİ</small>
+
+      <div class="orta">
+        <svg class="amblem" viewBox="0 0 200 200" aria-hidden="true">
+          <g fill="none" stroke="currentColor">
+            <circle cx="100" cy="100" r="96" stroke-width="2.4"/>
+            <circle cx="100" cy="100" r="90" stroke-width="0.8"/>
+            <circle cx="100" cy="100" r="85" stroke-width="6" stroke-dasharray="1 10.13"/>
+            <rect x="49" y="49" width="102" height="102" stroke-width="2"/>
+            <rect x="49" y="49" width="102" height="102" stroke-width="2" transform="rotate(45 100 100)"/>
+            <rect x="63" y="63" width="74" height="74" stroke-width="1.2" transform="rotate(22.5 100 100)"/>
+            <rect x="63" y="63" width="74" height="74" stroke-width="1.2" transform="rotate(67.5 100 100)"/>
+            <circle cx="100" cy="100" r="22" stroke-width="1.6"/>
+            <circle cx="100" cy="100" r="15" stroke-width="0.8"/>
+          </g>
+          <path d="M100 88l3.2 8.4 8.8.4-6.9 5.5 2.4 8.6-7.5-5-7.5 5 2.4-8.6-6.9-5.5 8.8-.4z" fill="currentColor"/>
+        </svg>
+        <h1>VAKFİYE</h1>
+        <p>Vakıf eserlerinin hikâyesi,<br>kaynağıyla.</p>
+      </div>
+
+      <div class="alt">
+        <button class="dugme" id="basla">Başla</button>
+        <div class="dil">
+          <button class="secili">Türkçe</button>
+          <button>English</button>
+        </div>
+        <span class="kaynak-notu">Veriler: Vakıf Katılım, Bursa Vakıf Eserleri envanteri</span>
+      </div>
+    </div>
+
+    <!-- EKRAN 2: Tanıtım -->
+    <div class="tanitim" id="tanitim" hidden>
+      <div class="noktalar" id="noktalar">
+        <i></i><i></i><i></i>
+      </div>
+      <div class="gorsel" id="tanitim-gorsel"></div>
+      <h2 id="tanitim-baslik"></h2>
+      <p id="tanitim-metin"></p>
+      <button class="dugme-ana" id="ileri">İleri</button>
+    </div>
+
+    <!-- EKRAN 3: Ana ekran (Keşfet) -->
+    <div class="ana" id="ana" hidden>
+      <header class="ust">
+        <span class="logo">Vakfiye</span>
+        <span class="sehir">Bursa</span>
+      </header>
+
+      <main class="icerik">
+        <input class="ara" id="ara" type="search" placeholder="Eser, ilçe ya da banisi ara">
+        <div class="cipler" id="cipler"></div>
+        <span class="sayac" id="sayac"></span>
+        <div class="liste" id="liste"></div>
+      </main>
+
+      <!-- Eser kartı (bir esere tıklayınca açılır) -->
+      <main class="icerik" id="eser-karti" hidden></main>
+
+      <!-- Diğer sekmeler -->
+      <main class="icerik" id="sekme-harita" hidden>
+        <div class="cipler">
+          <button class="cip secili" data-gorunum="merkez">Merkez</button>
+          <button class="cip" data-gorunum="tumu">Tüm Bursa</button>
+        </div>
+                <div class="harita-kutu">
+          <div id="harita"></div>
+          <div class="harita-ust">
+            <div class="katman-secici">
+              <button class="secili" data-katman="sokak">Harita</button>
+              <button data-katman="uydu">Uydu</button>
+            </div>
+            <button class="konumum" data-konumum title="Konumum">◎</button>
+          </div>
+        </div>
+        <div id="harita-secim"></div>
+        <div class="lejant">
+          <span><i style="background:#17488F"></i>Cami</span>
+          <span><i style="background:#0077B6"></i>Mescit</span>
+          <span><i style="background:#123D3A"></i>Külliye</span>
+          <span><i class="bos"></i>Yaklaşık konum</span>
+        </div>
+      </main>
+      <main class="icerik" id="sekme-tara" hidden>
+        <div class="kart"><span class="kart-baslik">TARA</span>Eserdeki QR kodu okutma bölümü sonraki adımlarda gelecek.</div>
+      </main>
+      <main class="icerik" id="sekme-pasaport" hidden>
+        <div class="kart"><span class="kart-baslik">PASAPORT</span>Damga ve rozetler sonraki adımlarda gelecek.</div>
+      </main>
+      <main class="icerik" id="sekme-oyun" hidden>
+        <div class="kart"><span class="kart-baslik">OYUN</span>"Vakfını kur" oyunu sonraki adımlarda gelecek.</div>
+      </main>
+      <nav class="menu">
+        <button class="aktif">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+          Keşfet
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg>
+          Harita
+        </button>
+        <button class="tara">
+          <span class="halka"><svg viewBox="0 0 24 24"><path d="M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4M4 12h16"/></svg></span>
+          Tara
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="11" r="3"/><path d="M9 17h6"/></svg>
+          Pasaport
+        </button>
+        <button>
+          <svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V11l7-5 7 5v9M10 20v-5h4v5"/></svg>
+          Oyun
+        </button>
+      </nav>
+    </div>
+
+  </div>
+  <script src="veri.js"></script>
+  <script src="oyun.js"></script>
+  <script src="uygulama.js"></script>
+</body>
+</html>

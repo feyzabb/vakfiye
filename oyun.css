@@ -1,0 +1,18 @@
+/* VAKFİYE · OYUN STİLLERİ — bütün sınıflar "oyun-" ile başlar */
+.oyun-kart {
+  background: #fff;
+  border: 1px solid #E6DFD0;
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.oyun-baslik { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: var(--vakif-yesili); }
+.oyun-kart p { margin: 0; }
+.oyun-dugme {
+  align-self: flex-start;
+  font-family: var(--govde-yazi); font-size: 14px; font-weight: 700;
+  border: none; border-radius: 12px; padding: 10px 16px;
+  background: var(--ana-lacivert); color: #fff; cursor: pointer;
+}

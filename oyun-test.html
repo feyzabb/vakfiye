@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oyun testi</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="stil.css">
+  <link rel="stylesheet" href="oyun.css">
+</head>
+<body>
+  <!-- Oyunu uygulamaya girmeden, tek başına denemek için. Uygulamadaki ekranın aynısı. -->
+  <div class="kabuk">
+    <div class="ana">
+      <header class="ust"><span class="logo">Vakfiye</span><span class="sehir">Oyun testi</span></header>
+      <main class="icerik" id="sekme-oyun"></main>
+    </div>
+  </div>
+  <script src="oyun.js"></script>
+  <script>
+    // Uygulamanın oyuna verdiği yardımcıların sahte (test) hâlleri
+    const araclar = {
+      bildir: (metin) => console.log("BİLDİRİM:", metin),
+      pullar: () => ["veled-i-yanic-camii", "selcuk-hatun-camii"],
+      kaydet: (anahtar, deger) => localStorage.setItem("vakfiye:oyun:" + anahtar, JSON.stringify(deger)),
+      oku: (anahtar, varsayilan) => {
+        const d = localStorage.getItem("vakfiye:oyun:" + anahtar);
+        return d === null ? varsayilan : JSON.parse(d);
+      }
+    };
+    VakfiyeOyun.baslat(document.getElementById("sekme-oyun"), araclar);
+  </script>
+</body>
+</html>
