@@ -459,3 +459,15 @@ body {
   display: block; padding: 10px 14px; border-top: 1px solid #F0EBE0;
   font-weight: 700; font-size: 14px; color: #1A73E8; text-decoration: none;
 }
+/* ===== KAMERA ===== */
+.kamera { position: relative; height: auto; min-height: 220px; overflow: hidden; }
+.kamera span { display: none; }               /* eski çerçeve süsü */
+#okuyucu { width: 100%; }
+#okuyucu video { width: 100% !important; border-radius: 18px; display: block; }
+.kamera-dugme {
+  position: absolute; inset: 0; margin: auto;
+  width: 190px; height: 52px;
+  border: none; border-radius: 14px;
+  background: var(--vurgu-sarisi); color: var(--metin);
+  font-family: var(--govde-yazi); font-size: 16px; font-weight: 700; cursor: pointer;
+}

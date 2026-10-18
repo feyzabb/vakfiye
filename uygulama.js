@@ -611,8 +611,12 @@ function bildir(metin) {
 /* ---------- Tara sekmesi ---------- */
 function tarayiCiz() {
   document.getElementById("sekme-tara").innerHTML = `
-    <div class="kamera"><span></span></div>
-    <span class="sade-not">Kamera bu sürümde yok. Demo için okutulacak kodu seç:</span>
+    <div class="kamera" id="kamera-alani">
+      <div id="okuyucu"></div>
+      <button class="kamera-dugme" id="kamera-ac">📷 Kamerayı aç</button>
+    </div>
+    <span class="sade-not" id="kamera-notu">Eserdeki ya da pasaportundaki QR kodu kameraya göster.</span>
+    <span class="sade-not">Kamera yoksa okutulacak kodu listeden seç:</span>
     <div class="liste">
       <button class="satir tara-satir" data-kagit>
         <span class="simge" style="background:var(--metin)">${CIZIMLER.diger}</span>
@@ -753,5 +757,72 @@ document.querySelectorAll(".menu button").forEach((dugme) => {
       // oyun.js henüz yoksa sekmedeki "sonraki adımlarda gelecek" kutusu görünmeye devam eder
     }
     oyunAcik = oyunSekmesi;
+  });
+});
+
+
+/* ================= KAMERAYLA QR OKUTMA ================= */
+// html5-qrcode kütüphanesi index.html'de yükleniyor.
+// Telefonlar kamerayı yalnızca https:// adreslerde (GitHub Pages gibi) ve izin verilince açar.
+// Kodlar kâğıt pasaporttaki biçimde:
+//   VAKFIYE:VK-2026-0001        → kâğıt pasaport (kimlik sayfası)
+//   VAKFIYE:ESER:<eser-id>       → rotadaki bir eserin durak kodu
+
+let okuyucu = null;
+
+function kameraAc() {
+  if (!window.Html5Qrcode) { bildir("Kamera kütüphanesi yüklenemedi. İnterneti kontrol et."); return; }
+
+  document.getElementById("kamera-ac").hidden = true;
+  okuyucu = new Html5Qrcode("okuyucu");
+  okuyucu.start(
+    { facingMode: "environment" },              // arka kamera
+    { fps: 10, qrbox: { width: 200, height: 200 } },
+    (metin) => kodOkundu(metin),
+    () => {}                                    // her karede "kod yok" hatası gelir, görmezden gel
+  ).catch(() => {
+    document.getElementById("kamera-ac").hidden = false;
+    document.getElementById("kamera-notu").textContent =
+      "Kamera açılamadı. Tarayıcıda kamera iznini ver ya da kodu listeden seç.";
+    okuyucu = null;
+  });
+}
+
+function kameraKapat() {
+  if (!okuyucu) return;
+  const eski = okuyucu;
+  okuyucu = null;
+  eski.stop().then(() => eski.clear()).catch(() => {});
+}
+
+function kodOkundu(metin) {
+  if (!okuyucu) return;          // aynı kod art arda okunmasın
+  kameraKapat();
+
+  if (metin === "VAKFIYE:" + PASAPORT_NO) {
+    kagidiBagla();
+    return;
+  }
+  if (metin.startsWith("VAKFIYE:ESER:")) {
+    const id = metin.slice("VAKFIYE:ESER:".length);
+    if (ROTA.some((d) => d.id === id)) { pulAl(id); return; }
+    if (ESERLER.some((e) => e.id === id)) {
+      // Rotada olmayan bir eser: pul yok ama kartını açalım
+      sekmeyeGec("kesfet"); eserKartiniAc(id); sorBolumunuEkle(id);
+      return;
+    }
+  }
+  bildir("Bu kod Vakfiye'ye ait değil.");
+  tarayiCiz();
+}
+
+document.getElementById("sekme-tara").addEventListener("click", (olay) => {
+  if (olay.target.closest("#kamera-ac")) kameraAc();
+});
+
+// Başka sekmeye geçince kamerayı kapat
+document.querySelectorAll(".menu button").forEach((dugme) => {
+  dugme.addEventListener("click", () => {
+    if (dugme.dataset.sekme !== "tara") kameraKapat();
   });
 });
