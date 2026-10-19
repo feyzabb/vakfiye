@@ -1623,3 +1623,127 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, { "Beni hatırla": "Remember me" });
 });
+
+
+/* ================= PROFİL VE AYARLAR MENÜSÜ (☰) ================= */
+// Üst çubukta tek bir ☰ düğmesi: profil, dil, erişilebilirlik, şehir, hakkında ve çıkış burada.
+
+const ustCubugu = document.querySelector(".ana .ust");
+["erisim-dugme", "dil-dugme"].forEach((id) => { const d = document.getElementById(id); if (d) d.remove(); });
+ustCubugu.insertAdjacentHTML("beforeend", `
+  <button class="menu-dugme" id="menu-dugme" aria-label="Profil ve ayarlar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>`);
+
+function menuyuCiz() {
+  const uye = oturum && oturum.id;
+  const dilSimdi = typeof dil !== "undefined" ? dil : "tr";
+  const anahtar = (ad, baslik, acik) => `
+    <button class="cekmece-satir" data-menu-anahtar="${ad}" aria-pressed="${acik}">
+      <span>${baslik}</span><span class="anahtar${acik ? " acik" : ""}" aria-hidden="true"></span>
+    </button>`;
+  return `
+    <div class="cekmece-ust">
+      <span class="kart-baslik">PROFİL</span>
+      <button class="cekmece-kapat" data-menu-kapat aria-label="Kapat">✕</button>
+    </div>
+    <div class="cekmece-profil">
+      <span class="profil-harf" aria-hidden="true">${uye ? oturum.ad.charAt(0).toLocaleUpperCase("tr") : "👤"}</span>
+      <span class="profil-yazi">
+        <b>${uye ? oturum.ad : "Misafir"}</b>
+        <small>${uye ? oturum.eposta : "Üye ol, pulların kaybolmasın"}</small>
+      </span>
+    </div>
+    ${uye ? "" : `<button class="dugme-ana cekmece-uye" data-menu-is="uye-ol">Üye ol / Giriş yap</button>`}
+
+    <span class="cekmece-baslik">Gezi</span>
+    <button class="cekmece-satir" data-menu-is="pasaport"><span>🛂 Pasaportum</span><span class="cekmece-deger">${pullar.length} pul</span></button>
+    <button class="cekmece-satir" data-menu-is="sehir"><span>📍 Şehir</span><span class="cekmece-deger">${secilenSehir}</span></button>
+
+    <span class="cekmece-baslik">Ayarlar</span>
+    <div class="cekmece-dil" role="group" aria-label="Dil">
+      <button class="${dilSimdi === "tr" ? "secili" : ""}" data-menu-is="dil-tr">Türkçe</button>
+      <button class="${dilSimdi === "en" ? "secili" : ""}" data-menu-is="dil-en">English</button>
+    </div>
+    ${anahtar("buyuk", "Büyük yazı", erisim.buyuk)}
+    ${anahtar("kontrast", "Yüksek kontrast", erisim.kontrast)}
+    <span class="sade-not">Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.</span>
+
+    <span class="cekmece-baslik">Hakkında</span>
+    <span class="sade-not">Veriler: Vakıf Katılım Vakıf Eserleri Envanteri — Bursa (2025), Konya (2024), Hatay (2022). Fotoğraflar: Vakıf Katılım.</span>
+
+    ${uye ? `<button class="cekmece-cikis" data-menu-is="cikis">Çıkış yap</button>` : ""}`;
+}
+
+function menuyuAc() {
+  menuyuKapat();
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="cekmece-perde" id="cekmece-perde">
+      <aside class="cekmece" id="cekmece" role="dialog" aria-label="Profil ve ayarlar">${menuyuCiz()}</aside>
+    </div>`);
+  document.getElementById("menu-dugme").setAttribute("aria-expanded", "true");
+  requestAnimationFrame(() => document.getElementById("cekmece-perde").classList.add("acik"));
+  document.querySelector("#cekmece [data-menu-kapat]").focus();
+}
+
+function menuyuKapat() {
+  const perde = document.getElementById("cekmece-perde");
+  if (perde) perde.remove();
+  const dugme = document.getElementById("menu-dugme");
+  if (dugme) dugme.setAttribute("aria-expanded", "false");
+}
+
+function menuyuYenile() {
+  const cekmece = document.getElementById("cekmece");
+  if (cekmece) cekmece.innerHTML = menuyuCiz();
+}
+
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#menu-dugme")) { menuyuAc(); return; }
+  const perde = document.getElementById("cekmece-perde");
+  if (perde === null) return;
+  if (olay.target === perde || olay.target.closest("[data-menu-kapat]")) { menuyuKapat(); return; }
+
+  const anahtar = olay.target.closest("[data-menu-anahtar]");
+  if (anahtar) {
+    const ad = anahtar.dataset.menuAnahtar;
+    erisim[ad] = erisim[ad] === false;
+    erisimUygula();
+    menuyuYenile();
+    return;
+  }
+  const is = olay.target.closest("[data-menu-is]");
+  if (is === null) return;
+  const ne = is.dataset.menuIs;
+  if (ne === "dil-tr" || ne === "dil-en") { dilSec(ne === "dil-tr" ? "tr" : "en"); menuyuYenile(); return; }
+  menuyuKapat();
+  if (ne === "pasaport") document.querySelector('.menu [data-sekme="pasaport"]').click();
+  if (ne === "sehir") sehirPaneliniAc();
+  if (ne === "uye-ol") girisEkraniniAc("uye");
+  if (ne === "cikis") {
+    if (oturum && oturum.erisim) bulutIstek("/auth/v1/logout", { yontem: "POST", token: oturum.erisim }).catch(() => {});
+    oturumuKapat();
+  }
+});
+document.addEventListener("keydown", (olay) => { if (olay.key === "Escape") menuyuKapat(); });
+
+// Giriş ya da misafir seçiminden sonra her zaman Keşfet sekmesiyle başla (eski kullanıcının pasaportu ekranda kalmasın)
+const anaEkranaGecMenusuz = anaEkranaGec;
+anaEkranaGec = function () {
+  anaEkranaGecMenusuz();
+  menuyuKapat();
+  if (document.getElementById("eser-karti").hidden === false) eserKartiniKapat();
+  sekmeyeGec("kesfet");
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const dilDugmesi = document.getElementById("dil-dugme");   // dil.js sonradan ekliyor
+  if (dilDugmesi) dilDugmesi.remove();
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "PROFİL": "PROFILE", "Misafir": "Guest", "Üye ol, pulların kaybolmasın": "Sign up to keep your stamps",
+    "Gezi": "Trip", "🛂 Pasaportum": "🛂 My passport", "📍 Şehir": "📍 City", "Profil ve ayarlar": "Profile and settings",
+    "Ayarlar": "Settings", "Hakkında": "About", "Kapat": "Close"
+  });
+  KALIPLAR.push([/^(\d+) pul$/, (m) => `${m[1]} stamps`]);
+});

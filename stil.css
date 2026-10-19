@@ -626,3 +626,68 @@ body.kontrast .ayar-dugme { border-color: #000; color: #000; }
 .hatirla { flex-direction: row !important; align-items: center; gap: 10px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; }
 .hatirla input { width: 20px; height: 20px; padding: 0; margin: 0; accent-color: var(--ana-lacivert); }
 .pasaport-sahibi .kucuk-dugme { margin-top: 4px; }
+
+/* ===== PROFİL VE AYARLAR MENÜSÜ ===== */
+.menu-dugme {
+  margin-left: 8px; width: 40px; height: 36px; padding: 6px;
+  display: grid; place-items: center;
+  border: 1px solid #DDD5C4; background: #fff; color: var(--ana-lacivert);
+  border-radius: 12px; cursor: pointer;
+}
+.menu-dugme svg { width: 22px; height: 22px; }
+.pasaport-sahibi [data-cikis] { display: none; }
+.cekmece-perde {
+  position: fixed; inset: 0; z-index: 2100;
+  background: rgba(27, 38, 59, 0); transition: background .25s;
+  display: flex; justify-content: flex-end;
+}
+.cekmece-perde.acik { background: rgba(27, 38, 59, .45); }
+.cekmece {
+  width: 86%; max-width: 340px; height: 100%; box-sizing: border-box; overflow-y: auto;
+  background: var(--sicak-tas); color: var(--metin);
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 10px;
+  transform: translateX(100%); transition: transform .25s ease;
+  box-shadow: -8px 0 24px rgba(0,0,0,.12);
+}
+.cekmece-perde.acik .cekmece { transform: none; }
+.cekmece-ust { display: flex; align-items: center; justify-content: space-between; }
+.cekmece-kapat { border: none; background: transparent; font-size: 20px; color: var(--metin); cursor: pointer; padding: 6px 8px; }
+.cekmece-profil { display: flex; align-items: center; gap: 12px; padding: 6px 0 4px; }
+.cekmece-profil .profil-harf {
+  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: var(--ana-lacivert); color: #fff; font-family: var(--baslik-yazi); font-weight: 700; font-size: 22px;
+}
+.profil-yazi { display: flex; flex-direction: column; min-width: 0; }
+.profil-yazi b { font-family: var(--baslik-yazi); font-size: 19px; color: var(--ana-lacivert); }
+.profil-yazi small { color: #6B6455; overflow: hidden; text-overflow: ellipsis; }
+.cekmece-uye { margin-top: 0; padding: 13px; font-size: 16px; }
+.cekmece-baslik {
+  margin-top: 10px; padding-top: 12px; border-top: 1px solid #E6DFD0;
+  font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--vakif-yesili);
+}
+.cekmece-satir {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; min-height: 50px; padding: 0 14px; box-sizing: border-box;
+  border: 1px solid #E6DFD0; border-radius: 14px; background: #fff; color: var(--metin);
+  font-family: var(--govde-yazi); font-size: 16px; font-weight: 700; text-align: left; cursor: pointer;
+}
+.cekmece-deger { color: #6B6455; font-weight: 600; font-size: 14px; }
+.cekmece-satir .anahtar { position: relative; width: 40px; height: 24px; border-radius: 99px; background: #CFC7B6; flex: none; transition: background .2s; }
+.cekmece-satir .anahtar::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .2s; }
+.cekmece-satir .anahtar.acik { background: var(--ana-lacivert); }
+.cekmece-satir .anahtar.acik::after { left: 19px; }
+.cekmece-dil { display: flex; gap: 8px; }
+.cekmece-dil button {
+  flex: 1; padding: 11px; border-radius: 12px; border: 1px solid #DDD5C4; background: #fff; color: var(--metin);
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.cekmece-dil button.secili { background: var(--ana-lacivert); color: #fff; border-color: var(--ana-lacivert); }
+.cekmece-cikis {
+  margin-top: 14px; padding: 13px; border-radius: 14px; border: 1px solid #E3B8B4; background: #fff; color: #B3261E;
+  font-family: var(--govde-yazi); font-size: 16px; font-weight: 700; cursor: pointer;
+}
+body.buyuk-yazi .cekmece { zoom: 1.15; }
+body.kontrast .cekmece, body.kontrast .cekmece-satir, body.kontrast .cekmece-dil button:not(.secili), body.kontrast .menu-dugme {
+  background: #fff; color: #000; border-color: #000;
+}
