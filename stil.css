@@ -471,3 +471,10 @@ body {
   background: var(--vurgu-sarisi); color: var(--metin);
   font-family: var(--govde-yazi); font-size: 16px; font-weight: 700; cursor: pointer;
 }
+/* ===== DİL DÜĞMESİ ===== */
+.dil-dugme {
+  margin-left: 8px;
+  border: 1px solid #DDD5C4; background: var(--ana-lacivert); color: #fff;
+  border-radius: 99px; padding: 6px 12px;
+  font-family: var(--govde-yazi); font-weight: 700; font-size: 13px; cursor: pointer;
+}
