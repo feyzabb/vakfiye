@@ -30,7 +30,7 @@ const sayfalar = [
       <span class="ok">↓</span>
       <div class="haplar"><span class="hap hizmet">Aşevi</span><span class="hap hizmet">Medrese</span><span class="hap hizmet">Çeşme</span></div>`,
     baslik: "Bir iyilik yüzyıllarca sürebilir",
-    metin: "Han ve dükkânların kirası aşevini, medreseyi, çeşmeyi yaşattı. Vakfiye, Bursa'daki vakıf eserlerinde bu iyiliğin izini sürer."
+    metin: "Han ve dükkânların kirası aşevini, medreseyi, çeşmeyi yaşattı. Vakfiye, Bursa, Konya ve Hatay'daki vakıf eserlerinde bu iyiliğin izini sürer."
   },
   {
     gorsel: `
@@ -1746,4 +1746,163 @@ document.addEventListener("DOMContentLoaded", () => {
     "Ayarlar": "Settings", "Hakkında": "About", "Kapat": "Close"
   });
   KALIPLAR.push([/^(\d+) pul$/, (m) => `${m[1]} stamps`]);
+});
+
+
+/* ================= SERGİLER ================= */
+// Vakıf Eserleri Envanter Projesi kapsamında açılan sergiler (basın haberlerinden derlendi).
+// Yeni sergi eklemek için bu listeye bir satır eklemek yeterli. bitis: null → bitiş tarihi açıklanmadı.
+const SERGILER = [
+  {
+    ad: "Bursa Vakıf Eserleri Fotoğraf Sergisi", sehir: "Bursa",
+    yer: "Tophane Meydanı; yıl boyunca Orhangazi, Çarşıbaşı, Emir Sultan ve UNESCO meydanları ile Cumhuriyet Caddesi",
+    harita: "Tophane Meydanı, Osmangazi, Bursa",
+    baslangic: "2026-04-07", bitis: "2026-12-31", tarihYazi: "2026 boyunca",
+    aciklama: "Bursa'nın fethinin 700. yılı için Bursa Valiliği ile birlikte. Envanter kitabından seçilmiş 276 fotoğraf açık havada.",
+    kaynak: "https://www.yenisafak.com/hayat/vakif-eserleri-sergilendi-4812779"
+  },
+  {
+    ad: "Bir Rüyanın İzinde", sehir: "Bursa",
+    yer: "Tayyare Kültür Merkezi", harita: "Tayyare Kültür Merkezi, Bursa",
+    baslangic: "2026-09-17", bitis: null, tarihYazi: "Eylül 2026'da açıldı",
+    aciklama: "Bursa Vakıf Eserleri kitabından seçilen 320 eserin fotoğraflarıyla fotoğraf ve deneyim sergisi.",
+    kaynak: "https://www.ekonomigazetesi.com/sehirler/vakif-katilim-bursanin-vakif-mirasini-gelecege-tasiyor-87828"
+  },
+  {
+    ad: "İstanbul'u Gören Rüya: Bursa", sehir: "İstanbul",
+    yer: "Üsküdar Mimar Sinan Sanat Galerisi", harita: "Mimar Sinan Sanat Galerisi, Üsküdar, İstanbul",
+    baslangic: "2026-09-04", bitis: "2026-09-30", tarihYazi: "4 – 30 Eylül 2026",
+    aciklama: "Bursa'daki 385 vakıf eserini belgeleyen yaklaşık 35 bin kareden seçilen 87 fotoğraf.",
+    kaynak: "https://www.dha.com.tr/video/vakif-eserleri-bursanin-tarihi-mirasini-fotograflarla-istanbula-tasidi-video-2939085"
+  },
+  {
+    ad: "AYNA – Anadolu Göğünün İpek Mahyası", sehir: "Konya",
+    yer: "Depo No:4", harita: "Depo No 4, Konya",
+    baslangic: "2025-09-19", bitis: "2026-06-30", tarihYazi: "19 Eylül 2025 – 30 Haziran 2026",
+    aciklama: "Konya vakıf eserleri fotoğraf ve deneyim sergisi; Konya Büyükşehir Belediyesi tarafından Vakıf Eserleri Envanter Projesi kapsamında hazırlandı.",
+    kaynak: "https://www.gazetebirlik.com/kultur-sanat/konyanin-bin-yillik-hafizasi-gun-yuzune-cikiyor-ayna-vakif-eserleri-sergisi-ziyarete-acildi/905178"
+  },
+  {
+    ad: "Konya Vakıf Eserleri Fotoğraf Sergisi", sehir: "İstanbul",
+    yer: "Üsküdar Mimar Sinan Galerisi", harita: "Mimar Sinan Sanat Galerisi, Üsküdar, İstanbul",
+    baslangic: "2025-01-24", bitis: "2025-03-10", tarihYazi: "24 Ocak – 10 Mart 2025",
+    aciklama: "İki ciltlik Konya Vakıf Eserleri Envanteri'nden seçilen 546 fotoğraf.",
+    kaynak: "https://www.turkgun.com/kultur-sanat/vakif-katilimin-konya-vakif-eserleri-fotograf-sergisi-mimar-sinan-galerisinde-sanatseverlerle-bulustu/263268"
+  }
+];
+
+function sergiDurumu(sergi) {
+  const bugun = new Date().toISOString().slice(0, 10);
+  if (bugun < sergi.baslangic) return "yakinda";
+  if (sergi.bitis && bugun > sergi.bitis) return "bitti";
+  return "acik";
+}
+const DURUM_YAZI = { acik: "Şimdi açık", yakinda: "Yakında", bitti: "Sona erdi" };
+
+function sergileriAc() {
+  const sira = { acik: 0, yakinda: 1, bitti: 2 };
+  const liste = [...SERGILER].sort((a, b) =>
+    sira[sergiDurumu(a)] - sira[sergiDurumu(b)] || b.baslangic.localeCompare(a.baslangic));
+  const kartlar = liste.map((s) => {
+    const durum = sergiDurumu(s);
+    const yol = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.harita);
+    return `
+      <article class="sergi-kart ${durum}">
+        <div class="sergi-ust"><span class="sergi-durum ${durum}">${DURUM_YAZI[durum]}</span><span class="sergi-sehir">${s.sehir}</span></div>
+        <b class="sergi-ad">${s.ad}</b>
+        <span class="sergi-satir">📍 ${s.yer}</span>
+        <span class="sergi-satir">🗓️ <span>${s.tarihYazi}</span></span>
+        <p class="sergi-aciklama">${s.aciklama}</p>
+        <div class="sergi-eylem">
+          ${durum === "bitti" ? "" : `<a class="kucuk-dugme" href="${yol}" target="_blank" rel="noopener">🧭 Yol tarifi</a>`}
+          <a class="kucuk-dugme ikincil" href="${s.kaynak}" target="_blank" rel="noopener">Haberi oku</a>
+        </div>
+      </article>`;
+  }).join("");
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="perde" id="sergi-perdesi">
+      <div class="alt-panel sergi-panel" role="dialog" aria-label="Sergiler">
+        <span class="kart-baslik">SERGİLER</span>
+        <span class="sade-not">Vakıf Eserleri Envanter Projesi'nin fotoğraf sergileri. Tarih ve saatleri gitmeden önce kurumdan teyit edin.</span>
+        ${kartlar}
+        <button class="kucuk-dugme ikincil" data-perde-kapat>Kapat</button>
+      </div>
+    </div>`);
+}
+
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("[data-sergiler]")) {
+    if (typeof menuyuKapat === "function") menuyuKapat();
+    sergileriAc();
+    return;
+  }
+  const perde = document.getElementById("sergi-perdesi");
+  if (perde && (olay.target === perde || olay.target.closest("#sergi-perdesi [data-perde-kapat]"))) perde.remove();
+});
+
+// ☰ menüsüne "Sergiler"
+const menuyuCizSergisiz = menuyuCiz;
+menuyuCiz = function () {
+  const acik = SERGILER.filter((s) => sergiDurumu(s) === "acik").length;
+  return menuyuCizSergisiz().replace('<span class="cekmece-baslik">Ayarlar</span>',
+    `<button class="cekmece-satir" data-sergiler><span>🖼️ Sergiler</span><span class="cekmece-deger">${acik ? acik + " açık" : ""}</span></button>
+    <span class="cekmece-baslik">Ayarlar</span>`);
+};
+
+// Keşfet listesinin üstünde: seçili şehirde şu an açık bir sergi varsa duyur
+function sergiDuyurusu() {
+  const eski = document.getElementById("sergi-duyuru");
+  if (eski) eski.remove();
+  const sehirde = SERGILER.filter((s) => sergiDurumu(s) === "acik" &&
+    (typeof secilenSehir === "undefined" || secilenSehir === "Tüm şehirler" || s.sehir === secilenSehir));
+  if (sehirde.length === 0) return;
+  document.getElementById("sayac").insertAdjacentHTML("beforebegin", `
+    <button class="sergi-duyuru" id="sergi-duyuru" data-sergiler>
+      <span class="sergi-duyuru-simge" aria-hidden="true">🖼️</span>
+      <span><small>ŞİMDİ AÇIK SERGİ</small><b>${sehirde[0].ad}</b></span>
+      <span aria-hidden="true">›</span>
+    </button>`);
+}
+const sehirSecSergisiz = sehirSec;
+sehirSec = function (ad) { sehirSecSergisiz(ad); sergiDuyurusu(); };
+const anaEkraniKurSergisiz = anaEkraniKur;
+anaEkraniKur = function () { anaEkraniKurSergisiz(); sergiDuyurusu(); };
+if (document.getElementById("liste").children.length) sergiDuyurusu();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "SERGİLER": "EXHIBITIONS", "Sergiler": "Exhibitions", "🖼️ Sergiler": "🖼️ Exhibitions",
+    "ŞİMDİ AÇIK SERGİ": "OPEN NOW", "Şimdi açık": "Open now", "Yakında": "Coming soon", "Sona erdi": "Ended",
+    "Haberi oku": "Read the news", "İstanbul": "Istanbul",
+    "Vakıf Eserleri Envanter Projesi'nin fotoğraf sergileri. Tarih ve saatleri gitmeden önce kurumdan teyit edin.":
+      "Photo exhibitions of the Endowed Monuments Inventory Project. Please confirm dates and hours before visiting.",
+    "2026 boyunca": "Throughout 2026", "Eylül 2026'da açıldı": "Opened in September 2026",
+    "4 – 30 Eylül 2026": "4 – 30 September 2026", "19 Eylül 2025 – 30 Haziran 2026": "19 September 2025 – 30 June 2026",
+    "24 Ocak – 10 Mart 2025": "24 January – 10 March 2025",
+    "Bursa Vakıf Eserleri Fotoğraf Sergisi": "Bursa Endowed Monuments Photo Exhibition",
+    "Bir Rüyanın İzinde": "In the Footsteps of a Dream",
+    "İstanbul'u Gören Rüya: Bursa": "The Dream That Saw Istanbul: Bursa",
+    "Konya Vakıf Eserleri Fotoğraf Sergisi": "Konya Endowed Monuments Photo Exhibition",
+    "Bursa'nın fethinin 700. yılı için Bursa Valiliği ile birlikte. Envanter kitabından seçilmiş 276 fotoğraf açık havada.":
+      "With the Governorship of Bursa for the 700th anniversary of Bursa's conquest. 276 photos from the inventory book, outdoors.",
+    "Bursa Vakıf Eserleri kitabından seçilen 320 eserin fotoğraflarıyla fotoğraf ve deneyim sergisi.":
+      "A photo and experience exhibition featuring 320 monuments from the Bursa inventory book.",
+    "Bursa'daki 385 vakıf eserini belgeleyen yaklaşık 35 bin kareden seçilen 87 fotoğraf.":
+      "87 photos selected from about 35,000 frames documenting 385 endowed monuments in Bursa.",
+    "Konya vakıf eserleri fotoğraf ve deneyim sergisi; Konya Büyükşehir Belediyesi tarafından Vakıf Eserleri Envanter Projesi kapsamında hazırlandı.":
+      "A photo and experience exhibition of Konya's endowed monuments, prepared by Konya Metropolitan Municipality within the inventory project.",
+    "İki ciltlik Konya Vakıf Eserleri Envanteri'nden seçilen 546 fotoğraf.": "546 photos selected from the two-volume Konya inventory."
+  });
+  KALIPLAR.push([/^(\d+) açık$/, (m) => `${m[1]} open`]);
+});
+
+// Açılış ve tanıtım yazıları için İngilizce (artık üç şehir)
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Veriler: Vakıf Katılım Vakıf Eserleri Envanteri": "Data: Vakıf Katılım Endowed Monuments Inventory",
+    "Han ve dükkânların kirası aşevini, medreseyi, çeşmeyi yaşattı. Vakfiye, Bursa, Konya ve Hatay'daki vakıf eserlerinde bu iyiliğin izini sürer.":
+      "Rent from inns and shops kept soup kitchens, madrasas and fountains alive. Vakfiye follows that good deed through the endowed monuments of Bursa, Konya and Hatay."
+  });
 });
