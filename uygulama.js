@@ -1123,3 +1123,260 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, { "Tüm şehirler": "All cities", "Tümünü gör": "Show all" });
 });
+
+
+/* ================= ÜYELİK VE AYARLAR ================= */
+// Hackathon sürümü: hesaplar bu cihazda saklanır (sunucu yok). Şifre açık hâliyle değil, özetiyle tutulur.
+// Gerçek yayında bu kısım bir sunucuya (ör. Vakıf Katılım hesabı) bağlanır.
+
+function hesapOku(anahtar, varsayilan) {
+  try { return JSON.parse(localStorage.getItem(anahtar)) || varsayilan; } catch (hata) { return varsayilan; }
+}
+function hesapYaz(anahtar, deger) {
+  try { localStorage.setItem(anahtar, JSON.stringify(deger)); } catch (hata) { }
+}
+let oturum = hesapOku("vakfiye:oturum", null);   // { ad, eposta } ya da { misafir: true }
+
+async function sifreOzeti(sifre) {
+  const veri = new TextEncoder().encode("vakfiye:" + sifre);
+  if (window.crypto && crypto.subtle) {
+    const ozet = await crypto.subtle.digest("SHA-256", veri);
+    return [...new Uint8Array(ozet)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  let h = 0;
+  veri.forEach((b) => { h = (h * 31 + b) >>> 0; });
+  return "basit-" + h.toString(16);
+}
+
+// Giriş ekranı (tanıtımdan sonra, ana ekrandan önce)
+document.querySelector(".kabuk").insertAdjacentHTML("beforeend", `
+  <div class="giris" id="giris" hidden>
+    <div class="giris-ust">
+      <span class="logo">Vakfiye</span>
+      <h2 id="giris-baslik">Gezini kaydet</h2>
+      <p class="giris-alt">Üye olursan pasaport pulların ve tercihlerin adınla saklanır.</p>
+    </div>
+    <div class="giris-sekmeler" role="tablist">
+      <button class="secili" data-giris-sekme="uye" role="tab">Üye ol</button>
+      <button data-giris-sekme="gir" role="tab">Giriş yap</button>
+    </div>
+    <form class="giris-form" id="giris-form" novalidate>
+      <label data-sadece="uye">Ad Soyad<input id="g-ad" autocomplete="name" placeholder="Adın ve soyadın"></label>
+      <label>E-posta<input id="g-eposta" type="email" autocomplete="email" placeholder="ornek@eposta.com"></label>
+      <label>Şifre<input id="g-sifre" type="password" autocomplete="current-password" placeholder="En az 6 karakter"></label>
+      <span class="giris-hata" id="giris-hata" role="alert"></span>
+      <button class="dugme-ana" type="submit" id="giris-gonder">Üye ol</button>
+    </form>
+    <div class="giris-veya"><span>veya</span></div>
+    <button class="giris-misafir" id="giris-misafir">Üye olmadan devam et</button>
+    <span class="sade-not giris-not">Bu sürümde hesabın yalnızca bu cihazda tutulur.</span>
+  </div>`);
+
+let girisSekmesi = "uye";
+function girisSekmesiSec(sekme) {
+  girisSekmesi = sekme;
+  document.querySelectorAll("[data-giris-sekme]").forEach((d) => d.classList.toggle("secili", d.dataset.girisSekme === sekme));
+  document.querySelector('[data-sadece="uye"]').hidden = sekme !== "uye";
+  document.getElementById("giris-gonder").textContent = sekme === "uye" ? "Üye ol" : "Giriş yap";
+  document.getElementById("g-sifre").autocomplete = sekme === "uye" ? "new-password" : "current-password";
+  document.getElementById("giris-hata").textContent = "";
+}
+
+function girisEkraniniAc(sekme) {
+  document.querySelectorAll(".kabuk > div").forEach((ekran) => { if (ekran.id !== "giris") ekran.hidden = true; });
+  document.getElementById("giris").hidden = false;
+  girisSekmesiSec(sekme || "uye");
+}
+
+function anaEkranaGec() {
+  document.getElementById("giris").hidden = true;
+  document.getElementById("ana").hidden = false;
+  if (!document.getElementById("liste").children.length) anaEkraniKur();
+  profilYaz();
+}
+
+// Tanıtımın son sayfasında "Başlayalım" → henüz seçim yapılmadıysa giriş ekranı
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#ileri") && sira === sayfalar.length - 1 && oturum === null) {
+    olay.stopImmediatePropagation();
+    document.getElementById("tanitim").hidden = true;
+    girisEkraniniAc("uye");
+  }
+}, true);
+
+document.addEventListener("click", (olay) => {
+  const sekme = olay.target.closest("[data-giris-sekme]");
+  if (sekme) { girisSekmesiSec(sekme.dataset.girisSekme); return; }
+  if (olay.target.closest("#giris-misafir")) {
+    oturum = { misafir: true };
+    hesapYaz("vakfiye:oturum", oturum);
+    anaEkranaGec();
+  }
+});
+
+document.getElementById("giris-form").addEventListener("submit", async (olay) => {
+  olay.preventDefault();
+  const ad = document.getElementById("g-ad").value.trim();
+  const eposta = document.getElementById("g-eposta").value.trim().toLowerCase();
+  const sifre = document.getElementById("g-sifre").value;
+  const hata = document.getElementById("giris-hata");
+  const kullanicilar = hesapOku("vakfiye:kullanicilar", []);
+
+  if (girisSekmesi === "uye" && ad.length < 2) { hata.textContent = "Adını yaz."; return; }
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(eposta) === false) { hata.textContent = "Geçerli bir e-posta yaz."; return; }
+  if (sifre.length < 6) { hata.textContent = "Şifre en az 6 karakter olmalı."; return; }
+
+  const ozet = await sifreOzeti(sifre);
+  const kayitli = kullanicilar.find((k) => k.eposta === eposta);
+  if (girisSekmesi === "uye") {
+    if (kayitli) { hata.textContent = "Bu e-postayla zaten üye olunmuş. Giriş yap'ı dene."; return; }
+    kullanicilar.push({ ad, eposta, sifreOzeti: ozet });
+    hesapYaz("vakfiye:kullanicilar", kullanicilar);
+    oturum = { ad, eposta };
+  } else {
+    if (kayitli === undefined || kayitli.sifreOzeti !== ozet) { hata.textContent = "E-posta ya da şifre hatalı."; return; }
+    oturum = { ad: kayitli.ad, eposta };
+  }
+  hesapYaz("vakfiye:oturum", oturum);
+  document.getElementById("g-sifre").value = "";
+  anaEkranaGec();
+  if (typeof bildir === "function") bildir(`Hoş geldin, ${oturum.ad.split(" ")[0]}`);
+});
+
+// Üst çubuğa ayarlar düğmesi
+document.querySelector(".ana .ust").insertAdjacentHTML("beforeend",
+  `<button class="ayar-dugme" id="ayar-dugme" aria-label="Ayarlar">⚙</button>`);
+
+function profilYaz() {
+  const dugme = document.getElementById("ayar-dugme");
+  if (dugme) dugme.title = oturum && oturum.ad ? oturum.ad : "Ayarlar";
+}
+
+function ayarlariAc() {
+  const anahtar = (ad, baslik, acik) => `
+    <button class="sehir-satir erisim-satir${acik ? " secili" : ""}" data-ayar-anahtar="${ad}" aria-pressed="${acik}">
+      <b>${baslik}</b><span class="anahtar" aria-hidden="true"></span>
+    </button>`;
+  const uye = oturum && oturum.ad;
+  const dilSimdi = typeof dil !== "undefined" ? dil : "tr";
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="perde" id="ayar-perdesi">
+      <div class="alt-panel ayarlar" role="dialog" aria-label="Ayarlar">
+        <span class="kart-baslik">AYARLAR</span>
+
+        <div class="ayar-grup">
+          <span class="ayar-etiket">Hesap</span>
+          ${uye ? `
+            <div class="profil">
+              <span class="profil-harf" aria-hidden="true">${oturum.ad.charAt(0).toLocaleUpperCase("tr")}</span>
+              <span><b>${oturum.ad}</b><small>${oturum.eposta}</small></span>
+            </div>
+            <button class="kucuk-dugme ikincil" data-ayar="cikis">Çıkış yap</button>` : `
+            <span class="sade-not">Misafir olarak geziyorsun. Pulların bu cihazda saklanıyor.</span>
+            <button class="kucuk-dugme" data-ayar="uye-ol">Üye ol / Giriş yap</button>`}
+        </div>
+
+        <div class="ayar-grup">
+          <span class="ayar-etiket">Dil</span>
+          <div class="ayar-ikili">
+            <button class="${dilSimdi === "tr" ? "secili" : ""}" data-ayar="dil-tr">Türkçe</button>
+            <button class="${dilSimdi === "en" ? "secili" : ""}" data-ayar="dil-en">English</button>
+          </div>
+        </div>
+
+        <div class="ayar-grup">
+          <span class="ayar-etiket">Erişilebilirlik</span>
+          ${anahtar("buyuk", "Büyük yazı", erisim.buyuk)}
+          ${anahtar("kontrast", "Yüksek kontrast", erisim.kontrast)}
+        </div>
+
+        <div class="ayar-grup">
+          <span class="ayar-etiket">Hakkında</span>
+          <span class="sade-not">Veriler: Vakıf Katılım Vakıf Eserleri Envanteri — Bursa (2025), Konya (2024), Hatay (2022). Fotoğraflar: Vakıf Katılım.</span>
+        </div>
+
+        <button class="kucuk-dugme ikincil" data-perde-kapat>Kapat</button>
+      </div>
+    </div>`);
+}
+
+function ayarlariKapat() {
+  const perde = document.getElementById("ayar-perdesi");
+  if (perde) perde.remove();
+}
+
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#ayar-dugme")) { ayarlariAc(); return; }
+  const perde = document.getElementById("ayar-perdesi");
+  if (perde === null) return;
+
+  const anahtar = olay.target.closest("[data-ayar-anahtar]");
+  if (anahtar) {
+    const ad = anahtar.dataset.ayarAnahtar;
+    erisim[ad] = erisim[ad] === false;
+    anahtar.classList.toggle("secili", erisim[ad]);
+    anahtar.setAttribute("aria-pressed", erisim[ad]);
+    erisimUygula();
+    return;
+  }
+  const secim = olay.target.closest("[data-ayar]");
+  if (secim) {
+    const is = secim.dataset.ayar;
+    if (is === "dil-tr" || is === "dil-en") {
+      if (typeof dilSec === "function") dilSec(is === "dil-tr" ? "tr" : "en");
+      perde.querySelectorAll(".ayar-ikili button").forEach((d) => d.classList.toggle("secili", d === secim));
+      return;
+    }
+    if (is === "cikis") {
+      oturum = null;
+      try { localStorage.removeItem("vakfiye:oturum"); } catch (hata) { }
+      ayarlariKapat();
+      girisEkraniniAc("gir");
+      return;
+    }
+    if (is === "uye-ol") { ayarlariKapat(); girisEkraniniAc("uye"); return; }
+  }
+  if (olay.target.closest("[data-perde-kapat]") || olay.target === perde) ayarlariKapat();
+});
+
+// Pasaport sekmesinin başında kimin pasaportu olduğu
+const pasaportuCizHesapsiz = pasaportuCiz;
+pasaportuCiz = function () {
+  pasaportuCizHesapsiz();
+  const alan = document.getElementById("sekme-pasaport");
+  if (alan === null) return;
+  alan.insertAdjacentHTML("afterbegin", oturum && oturum.ad
+    ? `<div class="kart pasaport-sahibi"><span class="kart-baslik">PASAPORT SAHİBİ</span><b>${oturum.ad}</b></div>`
+    : `<div class="kart pasaport-sahibi"><span class="kart-baslik">MİSAFİR PASAPORTU</span>
+         <span class="sade-not">Pullarını kaybetmemek için üye ol.</span>
+         <button class="kucuk-dugme" data-uye-ol>Üye ol</button></div>`);
+};
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("[data-uye-ol]")) girisEkraniniAc("uye");
+});
+
+profilYaz();
+
+// İngilizce karşılıklar
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Gezini kaydet": "Save your journey",
+    "Üye olursan pasaport pulların ve tercihlerin adınla saklanır.": "Sign up to keep your passport stamps and preferences under your name.",
+    "Üye ol": "Sign up", "Giriş yap": "Log in", "Ad Soyad": "Full name", "E-posta": "Email", "Şifre": "Password",
+    "Adın ve soyadın": "Your full name", "En az 6 karakter": "At least 6 characters", "veya": "or",
+    "Üye olmadan devam et": "Continue without signing up",
+    "Bu sürümde hesabın yalnızca bu cihazda tutulur.": "In this version your account is stored only on this device.",
+    "Adını yaz.": "Enter your name.", "Geçerli bir e-posta yaz.": "Enter a valid email.",
+    "Şifre en az 6 karakter olmalı.": "Password must be at least 6 characters.",
+    "Bu e-postayla zaten üye olunmuş. Giriş yap'ı dene.": "This email is already registered. Try Log in.",
+    "E-posta ya da şifre hatalı.": "Wrong email or password.",
+    "AYARLAR": "SETTINGS", "Ayarlar": "Settings", "Hesap": "Account", "Dil": "Language", "Hakkında": "About",
+    "Çıkış yap": "Log out", "Üye ol / Giriş yap": "Sign up / Log in",
+    "Misafir olarak geziyorsun. Pulların bu cihazda saklanıyor.": "You're exploring as a guest. Your stamps are saved on this device.",
+    "Veriler: Vakıf Katılım Vakıf Eserleri Envanteri — Bursa (2025), Konya (2024), Hatay (2022). Fotoğraflar: Vakıf Katılım.": "Data: Vakıf Katılım Endowed Monuments Inventory — Bursa (2025), Konya (2024), Hatay (2022). Photos: Vakıf Katılım.",
+    "PASAPORT SAHİBİ": "PASSPORT HOLDER", "MİSAFİR PASAPORTU": "GUEST PASSPORT",
+    "Pullarını kaybetmemek için üye ol.": "Sign up so you don't lose your stamps."
+  });
+  KALIPLAR.push([/^Hoş geldin, (.+)$/, (m) => `Welcome, ${m[1]}`]);
+});
