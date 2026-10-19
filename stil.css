@@ -719,3 +719,12 @@ body.kontrast .cekmece, body.kontrast .cekmece-satir, body.kontrast .cekmece-dil
 .sergi-duyuru span:last-child { font-size: 26px; }
 body.kontrast .sergi-kart { border-color: #000; }
 body.kontrast .sergi-duyuru { background: #000; }
+
+/* ===== ŞEHİR ROTALARI ===== */
+.rota-secici { display: flex; gap: 6px; background: #EAE3D3; border-radius: 12px; padding: 4px; }
+.rota-secici button {
+  flex: 1; border: none; background: transparent; padding: 9px; border-radius: 9px; cursor: pointer;
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; color: var(--metin);
+}
+.rota-secici button.secili { background: #fff; color: var(--ana-lacivert); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+body.kontrast .rota-secici { background: #fff; border: 1px solid #000; }

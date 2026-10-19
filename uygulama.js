@@ -550,6 +550,38 @@ const ROTA = [
 ];
 const PASAPORT_NO = "VK-2026-0001";
 
+// Her şehrin pasaport rotası. ROTA dizisi seçili şehrin rotasını gösterir.
+const ROTALAR = {
+  Bursa: ROTA.slice(),
+  Konya: [
+    { id: "mevlana-turbesi-muze-konya",                            ust: "MEVLÂNA",        alt: "KONYA · KARATAY" },
+    { id: "sultan-alaeddin-ulu-camii-konya",                       ust: "ALÂEDDİN CAMİİ", alt: "KONYA · SELÇUKLU" },
+    { id: "karatay-medresesi-konya",                               ust: "KARATAY",        alt: "KONYA · MEDRESE" },
+    { id: "ince-minareli-medrese-sahip-ata-darulhadis-konya",      ust: "İNCE MİNARELİ",  alt: "KONYA · MEDRESE" },
+    { id: "sircali-medrese-konya",                                 ust: "SIRÇALI",        alt: "KONYA · 1242" },
+    { id: "aziziye-camii-konya",                                   ust: "AZİZİYE",        alt: "KONYA · KARATAY" }
+  ],
+  Hatay: [
+    { id: "habib-i-neccar-camii-ve-kulliyesi-hatay",               ust: "HABİB-İ NECCAR", alt: "HATAY · ANTAKYA" },
+    { id: "ulu-camii-ve-kulliyesi-hatay",                          ust: "ULU CAMİ",       alt: "HATAY · ANTAKYA" },
+    { id: "sarimiye-camii-hatay",                                  ust: "SARIMİYE",       alt: "HATAY · ANTAKYA" },
+    { id: "kursunlu-han-hatay",                                    ust: "KURŞUNLU HAN",   alt: "HATAY · ANTAKYA" },
+    { id: "kanuni-sultan-suleyman-kervansarayi-hatay",             ust: "KERVANSARAY",    alt: "HATAY · BELEN" },
+    { id: "sokullu-mehmet-pasa-kulliyesi-hatay",                   ust: "SOKULLU",        alt: "HATAY · PAYAS" }
+  ]
+};
+let rotaSehri = "Bursa";
+function rotaBul(id) { return Object.keys(ROTALAR).find((s) => ROTALAR[s].some((d) => d.id === id)) || null; }
+function rotayiSec(sehir) {
+  if (ROTALAR[sehir] === undefined) return;
+  rotaSehri = sehir;
+  ROTA.length = 0;
+  ROTALAR[sehir].forEach((d) => ROTA.push(d));
+}
+function rotadakiPulSayisi() { return ROTA.filter((d) => pullar.includes(d.id)).length; }
+function rotaAdi() { return rotaSehri + " rotası"; }
+
+
 // Tarayıcıya kayıt: sayfa kapanıp açılınca pullar kaybolmasın.
 // (Gizli pencerede kayıt yapılamayabilir; o yüzden try/catch.)
 function kayitOku(anahtar, varsayilan) {
@@ -628,7 +660,7 @@ function tarayiCiz() {
         <button class="satir tara-satir" data-pul="${durak.id}">
           <span class="simge cami">${eserGorseli(ESERLER.find((e) => e.id === durak.id))}</span>
           <span><b>${eserAdi(durak.id)}</b>
-            <small>Bursa rotası${pullar.includes(durak.id) ? " · pul alındı ✓" : ""}</small></span>
+            <small>${rotaAdi()}${pullar.includes(durak.id) ? " · pul alındı ✓" : ""}</small></span>
         </button>`).join("")}
     </div>`;
 }
@@ -646,9 +678,11 @@ function pulAl(id) {
     kayitYaz("pullar", pullar);
   }
   yeniPul = id;
+  if (rotaBul(id) && rotaBul(id) !== rotaSehri) rotayiSec(rotaBul(id));
+  const rotada = rotadakiPulSayisi();
 
-  if (pullar.length === ROTA.length) bildir("🏅 Rozet kazandın: Bursa rotası tamam!");
-  else if (pullar.length === 3) bildir("🏅 Rozet kazandın: Yarı yol!");
+  if (rotada === ROTA.length) bildir("🏅 Rozet kazandın: " + rotaAdi() + " tamam!");
+  else if (rotada === 3) bildir("🏅 Rozet kazandın: Yarı yol!");
   else bildir("Pul alındı: " + eserAdi(id));
 
   sekmeyeGec("pasaport");
@@ -665,11 +699,11 @@ function kagidiBagla() {
 
 /* ---------- Pasaport sekmesi ---------- */
 function pasaportuCiz() {
-  const sayi = pullar.length;
+  const sayi = rotadakiPulSayisi();
   const rozetler = [
     { simge: "🧭", ad: "İlk adım", aciklama: "İlk pulunu al", gereken: 1 },
     { simge: "🌙", ad: "Yarı yol", aciklama: "Rotada 3 pul topla", gereken: 3 },
-    { simge: "🏛️", ad: "Bursa rotası tamam", aciklama: "6 pulun hepsini topla", gereken: 6 }
+    { simge: "🏛️", ad: rotaAdi() + " tamam", aciklama: "6 pulun hepsini topla", gereken: 6 }
   ];
 
   document.getElementById("sekme-pasaport").innerHTML = `
@@ -685,9 +719,12 @@ function pasaportuCiz() {
         <button class="kucuk-dugme" data-kagit-bagla>Kâğıt pasaportu bağla</button>
       </div>`}
 
+    <div class="rota-secici" role="tablist">
+      ${Object.keys(ROTALAR).map((s) => `<button class="${s === rotaSehri ? "secili" : ""}" data-rota="${s}">${s}</button>`).join("")}
+    </div>
     <div class="kart">
       <div class="pul-sayac">
-        <span class="kart-baslik">BURSA ROTASI</span>
+        <span class="kart-baslik">${rotaAdi().toLocaleUpperCase("tr")}</span>
         <b>${sayi} / ${ROTA.length}</b>
       </div>
       <div class="ilerleme"><i style="width:${sayi / ROTA.length * 100}%"></i></div>
@@ -806,7 +843,7 @@ function kodOkundu(metin) {
   }
   if (metin.startsWith("VAKFIYE:ESER:")) {
     const id = metin.slice("VAKFIYE:ESER:".length);
-    if (ROTA.some((d) => d.id === id)) { pulAl(id); return; }
+    if (rotaBul(id)) { pulAl(id); return; }
     if (ESERLER.some((e) => e.id === id)) {
       // Rotada olmayan bir eser: pul yok ama kartını açalım
       sekmeyeGec("kesfet"); eserKartiniAc(id); sorBolumunuEkle(id);
@@ -1445,7 +1482,7 @@ async function pullariEsitle() {
     });
   }
   let degisti = false;
-  bulutta.forEach((id) => { if (pullar.includes(id) === false && ROTA.some((d) => d.id === id)) { pullar.push(id); degisti = true; } });
+  bulutta.forEach((id) => { if (pullar.includes(id) === false && rotaBul(id)) { pullar.push(id); degisti = true; } });
   if (degisti) {
     kayitYaz("pullar", pullar);
     if (document.getElementById("sekme-pasaport") && document.getElementById("sekme-pasaport").hidden === false) pasaportuCiz();
@@ -1905,4 +1942,32 @@ document.addEventListener("DOMContentLoaded", () => {
     "Han ve dükkânların kirası aşevini, medreseyi, çeşmeyi yaşattı. Vakfiye, Bursa, Konya ve Hatay'daki vakıf eserlerinde bu iyiliğin izini sürer.":
       "Rent from inns and shops kept soup kitchens, madrasas and fountains alive. Vakfiye follows that good deed through the endowed monuments of Bursa, Konya and Hatay."
   });
+});
+
+
+/* ================= ŞEHİR ROTALARI ================= */
+// Şehir seçilince pasaport ve Tara sekmesi o şehrin rotasını gösterir; pasaportta rota sekmeleri de var.
+const sehirSecRotasiz = sehirSec;
+sehirSec = function (ad) {
+  sehirSecRotasiz(ad);
+  if (ROTALAR[ad]) rotayiSec(ad);
+  const pasaport = document.getElementById("sekme-pasaport");
+  if (pasaport && pasaport.hidden === false) pasaportuCiz();
+  const tara = document.getElementById("sekme-tara");
+  if (tara && tara.hidden === false) tarayiCiz();
+};
+document.getElementById("sekme-pasaport").addEventListener("click", (olay) => {
+  const sekme = olay.target.closest("[data-rota]");
+  if (sekme) { rotayiSec(sekme.dataset.rota); pasaportuCiz(); }
+});
+if (typeof secilenSehir !== "undefined" && ROTALAR[secilenSehir]) rotayiSec(secilenSehir);
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof KALIPLAR === "undefined") return;
+  KALIPLAR.push(
+    [/^(.+) rotası$/, (m) => `${m[1]} route`],
+    [/^(.+) ROTASI$/, (m) => `${m[1]} ROUTE`],
+    [/^(.+) rotası tamam$/, (m) => `${m[1]} route complete`],
+    [/^🏅 Rozet kazandın: (.+) rotası tamam!$/, (m) => `🏅 Badge earned: ${m[1]} route complete!`]
+  );
 });
