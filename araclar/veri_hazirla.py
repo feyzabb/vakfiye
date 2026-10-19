@@ -25,6 +25,12 @@ def donem_yazisi(donem):
     return metin.get("tr", ""), metin.get("en", "")
 
 
+# Tür adlarının İngilizcesi (uygulamadaki çipler için)
+TUR_EN = {"Cami": "Mosque", "Mescit": "Masjid", "Külliye": "Complex", "Medrese": "Madrasa", "Türbe": "Tomb",
+          "Zaviye / Tekke": "Dervish lodge", "Hamam": "Bath", "Çeşme": "Fountain", "Han": "Inn",
+          "Kilise": "Church", "Diğer": "Other"}
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit("Kullanım: python3 araclar/veri_hazirla.py /yol/eserler.json")
@@ -33,7 +39,7 @@ def main():
         veri = json.load(dosya)
 
     eserler = []
-    ceviri = {}
+    ceviri = dict(TUR_EN)
     for eser in veri["eserler"]:
         if eser.get("taslak"):          # doğrulanmamış kayıtlar yayında gösterilmez
             continue
