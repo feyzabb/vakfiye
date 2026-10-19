@@ -137,14 +137,14 @@ function listeyiCiz() {
 
   // 1) Filtrele
   const sonuc = ESERLER.filter((eser) => {
-    if (typeof secilenSehir !== "undefined" && (eser.il || "Bursa") !== secilenSehir) return false;
+    if (typeof secilenSehir !== "undefined" && secilenSehir !== TUM_SEHIRLER && (eser.il || "Bursa") !== secilenSehir) return false;
     if (secilenTur !== "Tümü" && eser.tur !== secilenTur) return false;
     const metin = sadele(eser.ad + " " + eser.ilce + " " + eser.banisi);
     return metin.includes(aranan);
   });
 
   // 2) Sayacı yaz
-  document.getElementById("sayac").textContent = `${sonuc.length} / ${ESERLER.filter((e) => (e.il || "Bursa") === secilenSehir).length} eser`;
+  document.getElementById("sayac").textContent = `${sonuc.length} / ${ESERLER.filter((e) => secilenSehir === TUM_SEHIRLER || (e.il || "Bursa") === secilenSehir).length} eser`;
   // 3) Satırları oluştur
   document.getElementById("liste").innerHTML = sonuc.length === 0
     ? `<p style="padding:12px 14px;margin:0">Aramana uyan eser yok.</p>`
@@ -153,7 +153,7 @@ function listeyiCiz() {
           <span class="simge ${["cami", "mescit", "kulliye"].includes(eser.turId) ? eser.turId : "diger"}">${eserGorseli(eser)}</span>
           <span>
             <b>${eser.ad}</b>
-            <small>${eser.tur} · ${eser.ilce}${eser.donem ? " · " + eser.donem : ""}</small>
+            <small>${eser.tur} · ${secilenSehir === TUM_SEHIRLER ? (eser.il || "Bursa") + " · " : ""}${eser.ilce}${eser.donem ? " · " + eser.donem : ""}</small>
           </span>
         </button>`).join("");
 
@@ -842,17 +842,18 @@ const SEHIRLER = [
   { ad: "Hatay", merkez: [36.2025, 36.1605] }
 ];
 let secilenSehir = "Bursa";
+const TUM_SEHIRLER = "Tüm şehirler";
 
 function eserSehri(eser) {
   return eser.il || "Bursa";
 }
 
 function sehrinEserleri() {
-  return ESERLER.filter((e) => eserSehri(e) === secilenSehir);
+  return ESERLER.filter((e) => secilenSehir === TUM_SEHIRLER || eserSehri(e) === secilenSehir);
 }
 
 function sehirPaneliniAc() {
-  const satirlar = SEHIRLER.map((sehir) => {
+  let satirlar = SEHIRLER.map((sehir) => {
     const sayi = ESERLER.filter((e) => eserSehri(e) === sehir.ad).length;
     const acik = sayi > 0;
     return `
@@ -861,6 +862,11 @@ function sehirPaneliniAc() {
         <small>${acik ? sayi + " eser" : "Yakında"}</small>
       </button>`;
   }).join("");
+  satirlar = `
+      <button class="sehir-satir${secilenSehir === TUM_SEHIRLER ? " secili" : ""}" data-sehir="${TUM_SEHIRLER}">
+        <b>${TUM_SEHIRLER}</b>
+        <small>${ESERLER.length} eser</small>
+      </button>` + satirlar;
 
   document.body.insertAdjacentHTML("beforeend", `
     <div class="perde" id="sehir-perdesi">
@@ -882,7 +888,7 @@ function sehirSec(ad) {
   secilenSehir = ad;
   document.querySelector(".sehir").textContent = ad;
   const tumuDugmesi = document.querySelector('[data-gorunum="tumu"]');
-  if (tumuDugmesi) tumuDugmesi.textContent = "Tüm " + ad;
+  if (tumuDugmesi) tumuDugmesi.textContent = ad === TUM_SEHIRLER ? "Tümünü gör" : "Tüm " + ad;
   listeyiCiz();
   if (harita) gorunumSec("merkez");
 }
@@ -913,7 +919,8 @@ gorunumSec = function (gorunum) {
   const sehir = SEHIRLER.find((s) => s.ad === secilenSehir);
   const eserler = sehrinEserleri();
   if (gorunum === "merkez" || eserler.length === 0) {
-    harita.setView(sehir.merkez, 15);
+    if (sehir) harita.setView(sehir.merkez, 15);
+    else harita.fitBounds(L.latLngBounds(eserler.map((e) => [e.enlem, e.boylam])), { padding: [24, 24] });
   } else {
     harita.fitBounds(L.latLngBounds(eserler.map((e) => [e.enlem, e.boylam])),
       { paddingTopLeft: [24, 44], paddingBottomRight: [24, 16] });
@@ -1108,4 +1115,11 @@ document.addEventListener("DOMContentLoaded", () => {
     "Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.": "The 🔊 Listen button on a monument card reads its details aloud in the selected language.",
     "🔊 Sesli dinle": "🔊 Listen", "⏹ Durdur": "⏹ Stop"
   });
+});
+
+
+/* ================= TÜM ŞEHİRLER: İNGİLİZCESİ ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, { "Tüm şehirler": "All cities", "Tümünü gör": "Show all" });
 });
