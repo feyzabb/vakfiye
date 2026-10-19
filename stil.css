@@ -478,3 +478,39 @@ body {
   border-radius: 99px; padding: 6px 12px;
   font-family: var(--govde-yazi); font-weight: 700; font-size: 13px; cursor: pointer;
 }
+/* ===== ŞEHİR SEÇİCİ ===== */
+.sehir { cursor: pointer; }
+.sehir::after { content: " ▾"; color: var(--teknoloji); }
+.perde {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(27, 38, 59, .45);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.alt-panel {
+  width: 100%; max-width: 440px; box-sizing: border-box;
+  background: var(--sicak-tas);
+  border-radius: 22px 22px 0 0;
+  padding: 18px 16px max(18px, env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 8px;
+}
+.sehir-satir {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; border: 1px solid #E6DFD0; border-radius: 14px;
+  padding: 14px 16px; cursor: pointer;
+  font-family: var(--govde-yazi); font-size: 16px; color: var(--metin);
+}
+.sehir-satir small { color: #56637A; font-size: 13px; }
+.sehir-satir.secili { border: 2px solid var(--ana-lacivert); }
+.sehir-satir:disabled { opacity: .5; cursor: default; }
+
+/* ===== YOL TARİFİ ===== */
+.eylemler { display: flex; gap: 8px; }
+.eylem {
+  flex: 1; text-align: center; text-decoration: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; line-height: 1.2;
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700;
+  padding: 12px; border-radius: 14px;
+  background: #fff; color: var(--ana-lacivert); border: 1px solid #DDD5C4;
+}
+.eylem.birincil { background: var(--ana-lacivert); color: #fff; border-color: var(--ana-lacivert); }
+.apple-link { font-size: 13px; color: #56637A; text-align: center; display: block; margin-top: 8px; }
