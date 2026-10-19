@@ -1554,3 +1554,72 @@ document.addEventListener("DOMContentLoaded", () => {
     "Üyelik oluşturuldu. E-postana gelen onay linkine tıklayıp giriş yap.": "Account created. Click the link in your email, then log in."
   });
 });
+
+
+/* ================= BENİ HATIRLA · AYARLAR KALDIRILDI ================= */
+// "Beni hatırla" işaretliyse oturum tarayıcıda kalır (uygulama her açıldığında giriş istenmez).
+// İşaretli değilse oturum yalnızca tarayıcı kapanana kadar sürer.
+let beniHatirla = hesapOku("vakfiye:hatirla", true);
+
+document.getElementById("giris-gonder").insertAdjacentHTML("beforebegin", `
+  <label class="hatirla"><input type="checkbox" id="g-hatirla" ${beniHatirla ? "checked" : ""}> Beni hatırla</label>`);
+document.getElementById("g-hatirla").addEventListener("change", (olay) => {
+  beniHatirla = olay.target.checked;
+  try { localStorage.setItem("vakfiye:hatirla", JSON.stringify(beniHatirla)); } catch (hata) { }
+});
+
+const hesapYazHatirlamasiz = hesapYaz;
+hesapYaz = function (anahtar, deger) {
+  if (anahtar === "vakfiye:oturum" && deger && deger.id && beniHatirla === false) {
+    try { sessionStorage.setItem(anahtar, JSON.stringify(deger)); localStorage.removeItem(anahtar); } catch (hata) { }
+    return;
+  }
+  hesapYazHatirlamasiz(anahtar, deger);
+};
+
+// Hatırlanmayan oturum: aynı tarayıcı oturumunda sayfa yenilenince devam etsin
+if (oturum === null) {
+  try {
+    const kisa = sessionStorage.getItem("vakfiye:oturum");
+    if (kisa) { oturum = JSON.parse(kisa); pullariEsitle().catch(() => {}); }
+  } catch (hata) { }
+}
+
+function oturumuKapat() {
+  oturum = null;
+  try { localStorage.removeItem("vakfiye:oturum"); sessionStorage.removeItem("vakfiye:oturum"); } catch (hata) { }
+  girisEkraniniAc("gir");
+}
+
+// Giriş yapmış (ya da misafir olmayı seçmiş) kullanıcı "Başla"ya basınca doğrudan ana ekrana geçsin
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#basla") && oturum !== null) {
+    olay.stopImmediatePropagation();
+    document.getElementById("acilis").hidden = true;
+    anaEkranaGec();
+  }
+}, true);
+
+// Ayarlar düğmesini kaldır (dil: EN düğmesi, erişilebilirlik: Aa düğmesi zaten var)
+const ayarDugmesi = document.getElementById("ayar-dugme");
+if (ayarDugmesi) ayarDugmesi.remove();
+
+// Çıkış artık pasaport sekmesindeki "Pasaport sahibi" kartında
+const pasaportuCizCikissiz = pasaportuCiz;
+pasaportuCiz = function () {
+  pasaportuCizCikissiz();
+  const kart = document.querySelector("#sekme-pasaport .pasaport-sahibi");
+  if (kart && oturum && oturum.id) {
+    kart.insertAdjacentHTML("beforeend", `
+      <span class="sade-not">${oturum.eposta}</span>
+      <button class="kucuk-dugme ikincil" data-ayar="cikis" data-cikis>Çıkış yap</button>`);
+  }
+};
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("[data-cikis]")) oturumuKapat();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, { "Beni hatırla": "Remember me" });
+});

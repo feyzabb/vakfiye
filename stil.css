@@ -621,3 +621,8 @@ body.kontrast a.eylem { text-decoration: none; }
 .pasaport-sahibi b { font-family: var(--baslik-yazi); font-size: 20px; color: var(--ana-lacivert); }
 body.kontrast .giris, body.kontrast .giris-form input { background: #fff; color: #000; border-color: #000; }
 body.kontrast .ayar-dugme { border-color: #000; color: #000; }
+
+/* ===== BENİ HATIRLA ===== */
+.hatirla { flex-direction: row !important; align-items: center; gap: 10px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; }
+.hatirla input { width: 20px; height: 20px; padding: 0; margin: 0; accent-color: var(--ana-lacivert); }
+.pasaport-sahibi .kucuk-dugme { margin-top: 4px; }
