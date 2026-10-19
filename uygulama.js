@@ -1380,3 +1380,177 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   KALIPLAR.push([/^Hoş geldin, (.+)$/, (m) => `Welcome, ${m[1]}`]);
 });
+
+
+/* ================= BULUT HESABI (SUPABASE) ================= */
+// Üyelik ve pasaport pulları Supabase veri tabanında saklanır; aynı hesapla her cihazdan girilebilir.
+// Bu anahtar herkese açık (publishable) anahtardır; verileri veri tabanındaki satır güvenliği kuralları korur.
+const BULUT = {
+  adres: "https://ijldursdsnfknfnecvrt.supabase.co",
+  anahtar: "sb_publishable_Yv1lh8vXP6141eu4m5fTwQ_swDxdYIq"
+};
+
+async function bulutIstek(yol, ayar = {}) {
+  const basliklar = { apikey: BULUT.anahtar, "Content-Type": "application/json" };
+  if (ayar.token) basliklar.Authorization = "Bearer " + ayar.token;
+  if (ayar.tercih) basliklar.Prefer = ayar.tercih;
+  const yanit = await fetch(BULUT.adres + yol, {
+    method: ayar.yontem || "GET",
+    headers: basliklar,
+    body: ayar.govde === undefined ? undefined : JSON.stringify(ayar.govde)
+  });
+  const metin = await yanit.text();
+  let veri = null;
+  try { veri = metin ? JSON.parse(metin) : null; } catch (hata) { veri = { msg: metin }; }
+  if (yanit.ok === false) {
+    const hata = new Error((veri && (veri.msg || veri.error_description || veri.message)) || ("HTTP " + yanit.status));
+    hata.kod = veri && (veri.error_code || veri.code || veri.error);
+    hata.durum = yanit.status;
+    throw hata;
+  }
+  return veri;
+}
+
+function oturumuKaydet(yanit, ad) {
+  oturum = {
+    id: yanit.user.id,
+    eposta: yanit.user.email,
+    ad: ad || (yanit.user.user_metadata && yanit.user.user_metadata.ad) || yanit.user.email.split("@")[0],
+    erisim: yanit.access_token,
+    yenile: yanit.refresh_token,
+    bitis: Date.now() + (yanit.expires_in || 3600) * 1000
+  };
+  hesapYaz("vakfiye:oturum", oturum);
+}
+
+// Erişim anahtarı süresi dolduysa yenile
+async function gecerliToken() {
+  if (oturum === null || oturum.yenile === undefined) return null;
+  if (Date.now() < oturum.bitis - 60000) return oturum.erisim;
+  const yanit = await bulutIstek("/auth/v1/token?grant_type=refresh_token", { yontem: "POST", govde: { refresh_token: oturum.yenile } });
+  oturumuKaydet(yanit, oturum.ad);
+  return oturum.erisim;
+}
+
+// Pulları eşitle: telefondakiler ile hesaptakileri birleştir
+async function pullariEsitle() {
+  const token = await gecerliToken();
+  if (token === null) return;
+  const bulutta = (await bulutIstek("/rest/v1/pullar?select=eser_id", { token })).map((p) => p.eser_id);
+  const eksikler = pullar.filter((id) => bulutta.includes(id) === false);
+  if (eksikler.length) {
+    await bulutIstek("/rest/v1/pullar", {
+      yontem: "POST", token, tercih: "resolution=ignore-duplicates,return=minimal",
+      govde: eksikler.map((id) => ({ kullanici: oturum.id, eser_id: id }))
+    });
+  }
+  let degisti = false;
+  bulutta.forEach((id) => { if (pullar.includes(id) === false && ROTA.some((d) => d.id === id)) { pullar.push(id); degisti = true; } });
+  if (degisti) {
+    kayitYaz("pullar", pullar);
+    if (document.getElementById("sekme-pasaport") && document.getElementById("sekme-pasaport").hidden === false) pasaportuCiz();
+  }
+}
+
+function hataMesaji(hata) {
+  if (hata instanceof TypeError) return "Sunucuya bağlanılamadı. İnternet bağlantını kontrol et ya da üye olmadan devam et.";
+  const k = String(hata.kod || "") + " " + hata.message;
+  if (/already|exists/i.test(k)) return "Bu e-postayla zaten üye olunmuş. Giriş yap'ı dene.";
+  if (/invalid_credentials|Invalid login/i.test(k)) return "E-posta ya da şifre hatalı.";
+  if (/weak_password/i.test(k)) return "Şifre çok zayıf. Daha uzun bir şifre dene.";
+  if (/email_address_invalid|invalid.*email/i.test(k)) return "Geçerli bir e-posta yaz.";
+  if (/rate|429/i.test(k) || hata.durum === 429) return "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.";
+  if (/not_confirmed/i.test(k)) return "E-postanı onaylaman gerekiyor.";
+  return "Bir sorun oluştu: " + hata.message;
+}
+
+// Üye ol / Giriş yap formu artık bulut hesabıyla çalışır
+document.addEventListener("submit", async (olay) => {
+  if (olay.target.id !== "giris-form") return;
+  olay.preventDefault();
+  olay.stopImmediatePropagation();
+  const ad = document.getElementById("g-ad").value.trim();
+  const eposta = document.getElementById("g-eposta").value.trim().toLowerCase();
+  const sifre = document.getElementById("g-sifre").value;
+  const hataAlani = document.getElementById("giris-hata");
+  const dugme = document.getElementById("giris-gonder");
+
+  if (girisSekmesi === "uye" && ad.length < 2) { hataAlani.textContent = "Adını yaz."; return; }
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(eposta) === false) { hataAlani.textContent = "Geçerli bir e-posta yaz."; return; }
+  if (sifre.length < 6) { hataAlani.textContent = "Şifre en az 6 karakter olmalı."; return; }
+
+  const eskiYazi = dugme.textContent;
+  dugme.disabled = true;
+  dugme.textContent = "Bekleyin…";
+  hataAlani.textContent = "";
+  try {
+    if (girisSekmesi === "uye") {
+      const yanit = await bulutIstek("/auth/v1/signup", { yontem: "POST", govde: { email: eposta, password: sifre, data: { ad } } });
+      if (yanit.access_token === undefined) {
+        hataAlani.textContent = "Üyelik oluşturuldu. E-postana gelen onay linkine tıklayıp giriş yap.";
+        girisSekmesiSec("gir");
+        return;
+      }
+      oturumuKaydet(yanit, ad);
+      await bulutIstek("/rest/v1/profiller", {
+        yontem: "POST", token: oturum.erisim, tercih: "resolution=merge-duplicates,return=minimal",
+        govde: { id: oturum.id, ad }
+      });
+    } else {
+      const yanit = await bulutIstek("/auth/v1/token?grant_type=password", { yontem: "POST", govde: { email: eposta, password: sifre } });
+      oturumuKaydet(yanit);
+      try {
+        const profil = await bulutIstek(`/rest/v1/profiller?id=eq.${oturum.id}&select=ad`, { token: oturum.erisim });
+        if (profil && profil[0]) { oturum.ad = profil[0].ad; hesapYaz("vakfiye:oturum", oturum); }
+      } catch (hata) { }
+    }
+    document.getElementById("g-sifre").value = "";
+    anaEkranaGec();
+    bildir(`Hoş geldin, ${oturum.ad.split(" ")[0]}`);
+    pullariEsitle().catch(() => {});
+  } catch (hata) {
+    hataAlani.textContent = hataMesaji(hata);
+  } finally {
+    dugme.disabled = false;
+    dugme.textContent = girisSekmesi === "uye" ? "Üye ol" : "Giriş yap";
+  }
+}, true);
+
+// Yeni pul alınınca hesaba da yaz
+const pulAlBulutsuz = pulAl;
+pulAl = function (id) {
+  pulAlBulutsuz(id);
+  if (oturum && oturum.id) pullariEsitle().catch(() => {});
+};
+
+// Çıkış yaparken sunucudaki oturumu da kapat
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest('[data-ayar="cikis"]') && oturum && oturum.erisim) {
+    bulutIstek("/auth/v1/logout", { yontem: "POST", token: oturum.erisim }).catch(() => {});
+  }
+}, true);
+
+// Eski (yalnızca cihazda tutulan) oturum varsa yeniden giriş istensin
+if (oturum && oturum.ad && oturum.id === undefined) {
+  oturum = null;
+  try { localStorage.removeItem("vakfiye:oturum"); } catch (hata) { }
+}
+// Uygulama açılınca pulları eşitle
+if (oturum && oturum.id) pullariEsitle().catch(() => {});
+
+// Giriş ekranındaki not
+const girisNotu = document.querySelector(".giris-not");
+if (girisNotu) girisNotu.textContent = "Hesabın Vakfiye sunucusunda güvenle saklanır; her cihazdan giriş yapabilirsin.";
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Bekleyin…": "Please wait…",
+    "Hesabın Vakfiye sunucusunda güvenle saklanır; her cihazdan giriş yapabilirsin.": "Your account is stored securely on the Vakfiye server; you can log in from any device.",
+    "Sunucuya bağlanılamadı. İnternet bağlantını kontrol et ya da üye olmadan devam et.": "Couldn't reach the server. Check your connection or continue without signing up.",
+    "Şifre çok zayıf. Daha uzun bir şifre dene.": "Password is too weak. Try a longer one.",
+    "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.": "Too many attempts. Please wait and try again.",
+    "E-postanı onaylaman gerekiyor.": "You need to confirm your email.",
+    "Üyelik oluşturuldu. E-postana gelen onay linkine tıklayıp giriş yap.": "Account created. Click the link in your email, then log in."
+  });
+});
