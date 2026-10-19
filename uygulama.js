@@ -271,7 +271,6 @@ document.getElementById("liste").addEventListener("click", (olay) => {
 // Soruda anlam taşımayan kelimeler
 const DURAK_KELIMELER = ["neydi", "nedir", "kimdi", "hangi", "nasil", "nereden", "midir",
   "mi", "mu", "var", "ne", "kac", "bu", "bir", "ve", "ile", "icin", "da", "de"];
- "mi", "mu", "var", "ne", "kac", "bu", "bir", "ve", "ile", "icin", "da", "de"];
 
 
 // Sorudaki bu kelimeler, o kategorideki bilgilere ek puan verir
