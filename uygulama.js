@@ -269,20 +269,20 @@ document.getElementById("liste").addEventListener("click", (olay) => {
 // en çok benzeyen bilgi kaynağıyla gösterilir. Hiçbiri benzemezse "bilgi yok" denir.
 
 // Soruda anlam taşımayan kelimeler
-const DURAK_KELIMELER = ["neydi", "nedir", "kimdi", "hangi", "nasil", "nerede", "nereden", "midir",
-  "mi", "mu", "var", "ne", "kac", "bu", "bir", "ve", "ile", "icin", "da", "de"];
+const DURAK_KELIMELER = ["neydi", "nedir", "kimdi", "hangi", "nasil", "nereden", "midir",
+
 
 // Sorudaki bu kelimeler, o kategorideki bilgilere ek puan verir
 const KATEGORI_IPUCU = {
   tarihce: ["kim", "yaptir", "kurdu", "insa", "yil", "tarih", "ne zaman"],
   vakif: ["vakif", "vakf", "bagis", "gelir", "para", "akce", "imam"],
   onarim: ["onar", "tamir", "restor", "yikil", "deprem"],
-  gunumuz: ["bugun", "gunumuz", "simdi"],
+  gunumuz: ["bugun", "gunumuz", "simdi", "nerede", "adres", "konum"],
   mimari: ["mimari", "plan", "olcu", "malzeme", "minare", "kubbe"]
 };
 
 // Aynı anlama gelen kökler: "restore edildi" ile "onarıldı" eşleşsin
-const ESANLAMLI = { resto: "onari", tamir: "onari", yenil: "onari", yapil: "yapti", insa: "yapti", yaptr: "yapti" };
+const ESANLAMLI = { resto: "onari", tamir: "onari", yenil: "onari", yapil: "yapti", insa: "yapti", yaptr: "yapti", nered: "almak", adres: "almak", konum: "almak", bulun: "almak" };
 
 // Kelimelerin ilk 5 harfi: "onarıldı" ile "onarım" aynı köke düşer
 function kokler(yazi) {
@@ -987,4 +987,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   KALIPLAR.push([/^(\d+) eser$/, (m) => `${m[1]} monuments`]);
   KALIPLAR.push([/^Tüm (.+)$/, (m) => `All of ${m[1]}`]);
+});
+/* ================= KONYA İÇİN YENİ TÜRLERİN İNGİLİZCESİ ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, { "Türbe": "Tomb", "Diğer": "Other" });
 });

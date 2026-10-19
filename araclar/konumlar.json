@@ -1,0 +1,1025 @@
+{
+ "molla-gurani-mescidi": null,
+ "nakkas-ali-mescidi": null,
+ "pasa-camii": {
+  "enlem": 40.268498,
+  "boylam": 29.099166,
+  "hassasiyet": "eser",
+  "osm": "Timurtaş Paşa Camii, Demirtaş Cumhuriyet Caddesi, Demirtaş Cumhuriyet, Demirtaş Barbaros Mahallesi, Osmangazi, Bursa, Ma"
+ },
+ "sati-fakih-camii": null,
+ "seyh-pasa-dibekli-camii": null,
+ "tahtali-hatipzade-mescidi": null,
+ "tavukcu-mescidi": null,
+ "veled-i-enbiya-enbiyaoglu-camii": null,
+ "veziri-camii": null,
+ "yeni-kaplica-mescidi": null,
+ "yer-kapi-camii": null,
+ "yigit-kohne-camii": null,
+ "adliye-koyu-camii": null,
+ "kucukkumla-eski-camii": null,
+ "gursu-orta-camii": null,
+ "mevlana-turbesi-muze-konya": null,
+ "bulgur-dede-mescidi-konya": {
+  "enlem": 37.869256,
+  "boylam": 32.500133,
+  "hassasiyet": "eser",
+  "osm": "Bulgur Dede (Tekke) Mescidi, Bulgurtekke Sokak, Tarihi Bedesten Çarşısı, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bö"
+ },
+ "sukran-mescidi-konya": {
+  "enlem": 37.870173,
+  "boylam": 32.498241,
+  "hassasiyet": "eser",
+  "osm": "Şükran Mescidi, Hisar Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "gazezler-camii-konya": {
+  "enlem": 37.866066,
+  "boylam": 32.495941,
+  "hassasiyet": "sokak",
+  "osm": "Furgan Dede Caddesi, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "karakurt-camii-konya": {
+  "enlem": 37.865625,
+  "boylam": 32.498641,
+  "hassasiyet": "eser",
+  "osm": "Karakurt Camii, Birhan Sokak, Çaybaşı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "komurculer-camii-konya": {
+  "enlem": 37.83649,
+  "boylam": 32.495587,
+  "hassasiyet": "mahalle",
+  "osm": "Uluğbey Mahallesi, Meram, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "furgan-dede-mescidi-konya": {
+  "enlem": 37.865747,
+  "boylam": 32.492593,
+  "hassasiyet": "mahalle",
+  "osm": "Akbaş Camii, Gülen Sokak, Pirebi Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "anber-reis-feridiye-camii-konya": {
+  "enlem": 37.869208,
+  "boylam": 32.482611,
+  "hassasiyet": "mahalle",
+  "osm": "Şeyh Sadrettin Konevi Camii, Turgutoğlu Sokak, Konevi Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "seyh-ebul-vefa-camii-konya": {
+  "enlem": 37.855117,
+  "boylam": 32.420912,
+  "hassasiyet": "eser",
+  "osm": "Şeyh Ebul Vefa Camii, Köyceğiz Caddesi, Köyceğiz Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "ayanbey-camii-konya": null,
+ "askan-camii-konya": {
+  "enlem": 37.861786,
+  "boylam": 32.441463,
+  "hassasiyet": "sokak",
+  "osm": "Aşkan Caddesi, Aşkan Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42090, Türkiye"
+ },
+ "ekmekkocu-mescidi-konya": {
+  "enlem": 37.834662,
+  "boylam": 32.501778,
+  "hassasiyet": "mahalle",
+  "osm": "Ekmekkoçu, Alpaslan Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42010, Türkiye"
+ },
+ "buyukkovanagzi-haci-haydar-efendi-camii-konya": {
+  "enlem": 37.846055,
+  "boylam": 32.462582,
+  "hassasiyet": "mahalle",
+  "osm": "Büyük Kovanağzı, Kovanağzı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "yukari-camii-ve-haziresi-saglik-beldesi-konya": null,
+ "karaagac-koyu-camii-konya": null,
+ "dayhane-camii-ve-mustemilati-konya": null,
+ "sadreddin-konevi-camii-konya": null,
+ "karatay-emir-kemalettin-mescidi-konya": {
+  "enlem": 37.872023,
+  "boylam": 32.465893,
+  "hassasiyet": "eser",
+  "osm": "Karatay Mescidi, Başsavcı Sokak, Melikşah Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42090, Türkiye"
+ },
+ "hoca-fakih-ahmet-fakih-camii-ve-turbesi-konya": {
+  "enlem": 37.868493,
+  "boylam": 32.468509,
+  "hassasiyet": "mahalle",
+  "osm": "Ohannes Burger Konya, Yeni Meram Caddesi, Melikşah Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42090, Türkiye"
+ },
+ "saatci-camii-konya": {
+  "enlem": 37.865693,
+  "boylam": 32.496812,
+  "hassasiyet": "eser",
+  "osm": "Saatcı Camii, Furgan Dede Caddesi, Çaybaşı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "abdulaziz-camii-konya": {
+  "enlem": 37.869274,
+  "boylam": 32.48864,
+  "hassasiyet": "eser",
+  "osm": "Abdülaziz Camii, Kadı İzettin Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "tahir-pasa-tursunoglu-dursun-fakih-camii-konya": {
+  "enlem": 37.870912,
+  "boylam": 32.493624,
+  "hassasiyet": "sokak",
+  "osm": "Mimar Muzaffer Caddesi, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "tahir-ile-zuhre-don-baba-pir-ahi-sultan-mescit-ve-turbesi-konya": null,
+ "hoca-hasan-camii-konya": {
+  "enlem": 37.869274,
+  "boylam": 32.48864,
+  "hassasiyet": "mahalle",
+  "osm": "Abdülaziz Camii, Kadı İzettin Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "abdulmumin-yediler-megaribe-mescidi-ve-mezari-konya": {
+  "enlem": 37.869274,
+  "boylam": 32.48864,
+  "hassasiyet": "mahalle",
+  "osm": "Abdülaziz Camii, Kadı İzettin Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "gokyurt-koyu-camii-konya": null,
+ "tellioglu-sungurbey-camii-konya": {
+  "enlem": 37.865155,
+  "boylam": 32.498677,
+  "hassasiyet": "mahalle",
+  "osm": "Sungur Bey (Telli) Mescidi, Telli Mescit Sokak, Çaybaşı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "sahip-ata-larende-camii-konya": null,
+ "meram-kapu-kapi-ihyaiyye-camii-konya": null,
+ "haci-hasan-camii-konya": {
+  "enlem": 37.869761,
+  "boylam": 32.496859,
+  "hassasiyet": "mahalle",
+  "osm": "Şükran, Suriçi Çarşısı, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "seyh-osman-rumi-camii-konya": null,
+ "ihtiyarettin-mescidi-konya": {
+  "enlem": 37.868288,
+  "boylam": 32.495548,
+  "hassasiyet": "mahalle",
+  "osm": "İhtiyarettin Camii, Kale Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "iplikci-altinapa-camii-konya": {
+  "enlem": 37.87124,
+  "boylam": 32.495465,
+  "hassasiyet": "mahalle",
+  "osm": "Kürkçü Mescidi, Mest Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "tarhana-mescidi-konya": {
+  "enlem": 37.863642,
+  "boylam": 32.498871,
+  "hassasiyet": "eser",
+  "osm": "Tarhana Mescidi, Şehit Beyazıt Çeken Caddesi, Çaybaşı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "veznedar-huseyin-efendi-asri-camii-konya": {
+  "enlem": 37.87124,
+  "boylam": 32.495465,
+  "hassasiyet": "mahalle",
+  "osm": "Kürkçü Mescidi, Mest Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "kadi-mursel-camii-konya": {
+  "enlem": 37.870912,
+  "boylam": 32.493624,
+  "hassasiyet": "sokak",
+  "osm": "Mimar Muzaffer Caddesi, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "salih-pasa-dedemoglu-camii-konya": null,
+ "aksinne-kumbetli-gunbentli-mescidi-konya": {
+  "enlem": 37.86023,
+  "boylam": 32.490477,
+  "hassasiyet": "mahalle",
+  "osm": "Aksinne Evleri, Pirebi Mahallesi, Meram, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "nasuh-bey-camii-canbazzade-nasuh-bey-darul-huffazi-konya": {
+  "enlem": 37.869274,
+  "boylam": 32.48864,
+  "hassasiyet": "mahalle",
+  "osm": "Abdülaziz Camii, Kadı İzettin Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "yolcuoglu-gazioglu-camii-konya": {
+  "enlem": 37.859971,
+  "boylam": 32.499099,
+  "hassasiyet": "mahalle",
+  "osm": "Fahrunnisa Camii, Çaybaşı Caddesi, Uluırmak Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "gurb-i-cedidi-kosova-mescidi-konya": null,
+ "kalecik-mescidi-konya": null,
+ "emir-halil-camii-konya": {
+  "enlem": 37.863676,
+  "boylam": 32.494322,
+  "hassasiyet": "eser",
+  "osm": "Emir Halil Camii, Abdullah Çavuş Sokak, Çaybaşı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "tahtatepen-ubeyt-haci-adil-camii-konya": null,
+ "asagi-mahalle-kiziloren-kandemir-mescidi-konya": null,
+ "fahrunnisa-caybasi-mescit-ve-turbesi-konya": {
+  "enlem": 37.859744,
+  "boylam": 32.497197,
+  "hassasiyet": "sokak",
+  "osm": "Çaybaşı Caddesi, Uluırmak Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "hasbey-darul-huffaz-mescidi-konya": {
+  "enlem": 37.852359,
+  "boylam": 32.420236,
+  "hassasiyet": "eser",
+  "osm": "Hasbey Mescidi, Dutlu Caddesi, Durunday Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "erdemsah-kale-i-cerp-mescidi-konya": {
+  "enlem": 37.870218,
+  "boylam": 32.49575,
+  "hassasiyet": "mahalle",
+  "osm": "Şemseddin Erdem Şah (Kale-i Cerp) Camii, Sakarya Sokak, Suriçi Çarşısı, Sahibata Mahallesi, Meram, Konya, İç Anadolu Böl"
+ },
+ "kurkcu-mescidi-konya": {
+  "enlem": 37.87124,
+  "boylam": 32.495465,
+  "hassasiyet": "eser",
+  "osm": "Kürkçü Mescidi, Mest Sokak, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "sultan-selim-selimiye-camii-konya": {
+  "enlem": 37.870397,
+  "boylam": 32.504136,
+  "hassasiyet": "eser",
+  "osm": "Sultan Selim Camii, Mevlâna Meydanı, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "nuriye-camii-konya": {
+  "enlem": 37.87526,
+  "boylam": 32.498896,
+  "hassasiyet": "mahalle",
+  "osm": "Tercüman Baba Sokak, Şemsitebrizi Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "dolap-battal-mescidi-konya": {
+  "enlem": 37.871195,
+  "boylam": 32.509522,
+  "hassasiyet": "mahalle",
+  "osm": "Dolap Mektep Mescidi, Aslanlı Kışla Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "haci-veyis-camii-ve-cesmesi-konya": {
+  "enlem": 37.870688,
+  "boylam": 32.509115,
+  "hassasiyet": "sokak",
+  "osm": "Aslanlı Kışla Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "selahaddin-kececiler-camii-konya": {
+  "enlem": 37.880398,
+  "boylam": 32.506946,
+  "hassasiyet": "sokak",
+  "osm": "Keçeciler Cami (1184), Keçeciler Caddesi, Nakipoğlu Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "karacihan-camii-konya": {
+  "enlem": 37.887118,
+  "boylam": 32.504239,
+  "hassasiyet": "mahalle",
+  "osm": "Karacihan (1187), Karakayış Caddesi, Araplar Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "garip-nasrullah-camii-konya": null,
+ "haci-omerler-camii-konya": {
+  "enlem": 37.864791,
+  "boylam": 32.507845,
+  "hassasiyet": "eser",
+  "osm": "Hacı Ömerler Camii, Üçler Caddesi, Sarıyakup Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "obruk-koyu-camii-konya": null,
+ "civiloglu-camii-konya": {
+  "enlem": 37.865949,
+  "boylam": 32.504417,
+  "hassasiyet": "mahalle",
+  "osm": "Fakih Dede Türbesi, Sarıyakup Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "burhan-dede-camii-konya": null,
+ "igdeli-sultan-camii-konya": {
+  "enlem": 37.883156,
+  "boylam": 32.505282,
+  "hassasiyet": "sokak",
+  "osm": "Araplar Caddesi, Keçeciler Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "karakayis-sari-camii-konya": {
+  "enlem": 37.899952,
+  "boylam": 32.518801,
+  "hassasiyet": "mahalle",
+  "osm": "Karakayış Caddesi, Fevziçakmak Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42050, Türkiye"
+ },
+ "tahtali-mescidi-konya": {
+  "enlem": 37.872459,
+  "boylam": 32.501327,
+  "hassasiyet": "sokak",
+  "osm": "Kadılar Sokak, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "durak-fakih-camii-konya": {
+  "enlem": 37.873059,
+  "boylam": 32.505189,
+  "hassasiyet": "eser",
+  "osm": "Durak Fakih Camii, Fakih Sokak, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "cukur-camii-konya": {
+  "enlem": 37.867436,
+  "boylam": 32.505762,
+  "hassasiyet": "eser",
+  "osm": "Çukur Mahallesi Çukur Camii, Piri Esat Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "toraman-mescidi-konya": null,
+ "sarnic-camii-konya": {
+  "enlem": 37.876546,
+  "boylam": 32.512011,
+  "hassasiyet": "eser",
+  "osm": "Sedirler Sarnıç Camii, Sedirler Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "araplar-ak-camii-konya": null,
+ "bagevliya-cami-ve-cesmesi-konya": null,
+ "muftu-abdullah-mescidi-konya": null,
+ "ovaloglu-celik-mehmet-pasa-camii-konya": {
+  "enlem": 37.876474,
+  "boylam": 32.505583,
+  "hassasiyet": "mahalle",
+  "osm": "Ovaloğlu Caddesi, Nakipoğlu Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "kinaci-camii-mescit-konya": null,
+ "meydan-i-ahmet-camii-konya": null,
+ "kadi-izzettin-karpuzoglu-camii-konya": null,
+ "sitte-i-banu-mescidi-konya": null,
+ "hatuniye-guduk-minare-akincilar-mahmut-mescidi-konya": null,
+ "sems-i-tebrizi-camii-ve-turbesi-konya": {
+  "enlem": 37.87364,
+  "boylam": 32.497729,
+  "hassasiyet": "sokak",
+  "osm": "Şems-i Tebrizi Camisi ve Mezarı, Şems Caddesi, Şemsitebrizi Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42200, Türkiy"
+ },
+ "sircali-demirci-haci-mescidi-konya": {
+  "enlem": 37.874472,
+  "boylam": 32.502275,
+  "hassasiyet": "mahalle",
+  "osm": "Sırçalı Mescit, Sarı Hafız Sokak, Nakipoğlu Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "cimilli-sari-mescidi-konya": null,
+ "zenburi-mescidi-konya": null,
+ "ickaraarslan-mescidi-konya": null,
+ "sari-yakup-camii-konya": null,
+ "haci-mustafa-aga-koprubasi-mustafa-aga-camii-konya": {
+  "enlem": 37.870914,
+  "boylam": 32.507638,
+  "hassasiyet": "mahalle",
+  "osm": "Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "asmali-hatip-sultan-mescidi-konya": {
+  "enlem": 37.873713,
+  "boylam": 32.4947,
+  "hassasiyet": "mahalle",
+  "osm": "Civar Sokak, Şemsitebrizi Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "pisili-pir-esat-mescit-ve-turbesi-konya": null,
+ "mengene-camii-konya": {
+  "enlem": 37.845804,
+  "boylam": 32.515219,
+  "hassasiyet": "eser",
+  "osm": "Mengene Kubak Camii, Damat Mustafa Paşa Caddesi, Selimsultan Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42020, Türki"
+ },
+ "alemdar-camii-konya": {
+  "enlem": 37.886484,
+  "boylam": 32.50747,
+  "hassasiyet": "eser",
+  "osm": "Alemdar Camii, Yiğitbaşı Sokak, Araplar Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "saksaganlar-camii-konya": null,
+ "dolap-mektep-mescidi-konya": {
+  "enlem": 37.871195,
+  "boylam": 32.509522,
+  "hassasiyet": "eser",
+  "osm": "Dolap Mektep Mescidi, Aslanlı Kışla Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "polatlar-haci-cemal-hatip-camii-konya": {
+  "enlem": 37.856377,
+  "boylam": 32.543132,
+  "hassasiyet": "mahalle",
+  "osm": "Sedir Life Şark Odası Sedir İmalatı, 72/F, Yeniceler Caddesi, Gaziosmanpaşa Mahallesi, Karatay, Konya, İç Anadolu Bölges"
+ },
+ "seyh-ulema-recep-aga-camii-konya": {
+  "enlem": 37.874854,
+  "boylam": 32.511126,
+  "hassasiyet": "sokak",
+  "osm": "Şeyh Ulema Recep Ağa Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "yanik-sedirler-kenan-dede-camii-konya": null,
+ "digin-camii-konya": null,
+ "hamzaoglu-camii-konya": {
+  "enlem": 37.862388,
+  "boylam": 32.50998,
+  "hassasiyet": "eser",
+  "osm": "Sarıyakup Hamzaoğlu Camii, Celaleddin Karatay Caddesi, Sarıyakup Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, T"
+ },
+ "hanedan-camii-konya": {
+  "enlem": 37.873462,
+  "boylam": 32.519682,
+  "hassasiyet": "mahalle",
+  "osm": "Şeyh Ulema Çavuşoğlu Cami, Şeyhülema Yahşi Caddesi, Hacıveyiszade Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, "
+ },
+ "cayir-camii-konya": {
+  "enlem": 37.861559,
+  "boylam": 32.532428,
+  "hassasiyet": "sokak",
+  "osm": "Cemil Çiçek Caddesi, Akabe Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42020, Türkiye"
+ },
+ "haci-ivaz-camii-konya": {
+  "enlem": 37.878131,
+  "boylam": 32.514448,
+  "hassasiyet": "eser",
+  "osm": "Haci İvaz Camii, Sedirler Caddesi, Sedirler Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "sutcu-camii-konya": {
+  "enlem": 37.883542,
+  "boylam": 32.517101,
+  "hassasiyet": "mahalle",
+  "osm": "Sütçü Sokak, Sedirler Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "cataloglu-camii-konya": null,
+ "topraklik-hasan-efendi-camii-konya": {
+  "enlem": 37.866353,
+  "boylam": 32.510366,
+  "hassasiyet": "sokak",
+  "osm": "Kerimler Caddesi, Sarıyakup Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "cavusoglu-camii-konya": {
+  "enlem": 37.87725,
+  "boylam": 32.52356,
+  "hassasiyet": "mahalle",
+  "osm": "Şeyh Ulema Ovalı Camii, Şeyhülema Recep Ağa Caddesi, Hacıveyiszade Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030,"
+ },
+ "namik-pasa-camii-konya": {
+  "enlem": 37.869751,
+  "boylam": 32.511934,
+  "hassasiyet": "mahalle",
+  "osm": "Panorama Konya Müzesi, Evliya Çelebi Sokak, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "halkabegus-mescidi-ve-turbesi-konya": {
+  "enlem": 37.883599,
+  "boylam": 32.49893,
+  "hassasiyet": "mahalle",
+  "osm": "Kalenderhane Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "tolluoglu-camii-konya": {
+  "enlem": 37.864475,
+  "boylam": 32.502745,
+  "hassasiyet": "sokak",
+  "osm": "Garaj Caddesi, Sarıyakup Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "seyh-ulema-yusuf-aga-camii-konya": {
+  "enlem": 37.874633,
+  "boylam": 32.513343,
+  "hassasiyet": "mahalle",
+  "osm": "Şeyh Ulema İşgalaman Mezarlığı, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "aziziye-camii-konya": {
+  "enlem": 37.869981,
+  "boylam": 32.500798,
+  "hassasiyet": "eser",
+  "osm": "Aziziye Camii, İktişap Sokak, Tarihi Bedesten Çarşısı, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Tür"
+ },
+ "besare-bey-mescidi-konya": null,
+ "ak-sazi-bey-camii-konya": {
+  "enlem": 37.876562,
+  "boylam": 32.489835,
+  "hassasiyet": "mahalle",
+  "osm": "Ferhuniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "sakahane-hidir-ilyas-davut-aga-mescidi-konya": {
+  "enlem": 37.87511,
+  "boylam": 32.491379,
+  "hassasiyet": "eser",
+  "osm": "Sakahane (Hızır İlyas) Mescidi, Kılıçarslan Şehir Meydanı, Ferhuniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölge"
+ },
+ "zevle-sultan-mescidi-konya": {
+  "enlem": 37.873365,
+  "boylam": 32.489097,
+  "hassasiyet": "eser",
+  "osm": "Zevle Sultan Mescidi, Nüresofu Sokak, İhsaniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "basarakavak-zahide-hatun-camii-konya": null,
+ "tatkoy-merkez-camii-konya": null,
+ "beyhekim-mescit-ve-turbesi-konya": {
+  "enlem": 37.871885,
+  "boylam": 32.488603,
+  "hassasiyet": "sokak",
+  "osm": "Şair Yurdakul Sokak, İhsaniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "sultan-alaeddin-ulu-camii-konya": null,
+ "ihsaniye-ulu-camii-minaresi-konya": {
+  "enlem": 37.872105,
+  "boylam": 32.485056,
+  "hassasiyet": "mahalle",
+  "osm": "İhsaniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "kurucay-eski-camii-konya": null,
+ "avdan-beldesi-buyuk-eski-camii-konya": {
+  "enlem": 37.289282,
+  "boylam": 32.305929,
+  "hassasiyet": "mahalle",
+  "osm": "Avdan Mahallesi Yukarı Camii, Akören - Bozkır yolu, Avdan, Akören, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "buyuk-camii-konya": {
+  "enlem": 37.453205,
+  "boylam": 32.371468,
+  "hassasiyet": "eser",
+  "osm": "Büyük Camii, Altan Tufan Caddesi, Ağalar, Akören, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "altinkalem-cevlek-mescidi-konya": null,
+ "cinaralti-camii-konya": {
+  "enlem": 38.355489,
+  "boylam": 31.40865,
+  "hassasiyet": "eser",
+  "osm": "Çınaraltı Camii, Değirmen Sokak, Anıt Mahallesi, Tekke, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "dogrugoz-beldesi-merkez-camii-konya": null,
+ "ferruhsah-seyit-mahmut-hayrani-mescidi-konya": {
+  "enlem": 38.356962,
+  "boylam": 31.408135,
+  "hassasiyet": "mahalle",
+  "osm": "Anıt Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "guduk-minare-camii-konya": {
+  "enlem": 38.357225,
+  "boylam": 31.409535,
+  "hassasiyet": "eser",
+  "osm": "Güdük Minare Camii, Tabakhane Sokak, Selçuk Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "haci-hamza-hafiz-hatip-ali-mescidi-konya": null,
+ "hidirlik-hizirlik-hidir-dede-mescidi-konya": {
+  "enlem": 38.348762,
+  "boylam": 31.414795,
+  "hassasiyet": "eser",
+  "osm": "Hıdırlık Mescidi, 29206. Sokak, Çay Mahallesi, Tekke, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "imaret-hasan-pasa-camii-konya": {
+  "enlem": 38.354497,
+  "boylam": 31.413926,
+  "hassasiyet": "mahalle",
+  "osm": "Kileci Camii, 31002. Sokak, Çay Mahallesi, Tekke, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "iplikci-ambardar-kerim-aga-camii-konya": {
+  "enlem": 38.357818,
+  "boylam": 31.413318,
+  "hassasiyet": "eser",
+  "osm": "İplikçi Camii, İnönü Caddesi, Ahicelal Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "kalayci-mescidi-konya": {
+  "enlem": 38.355687,
+  "boylam": 31.412348,
+  "hassasiyet": "eser",
+  "osm": "Kalaycı Mescidi, Ulu Cami Caddesi, Ahicelal Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "kizilca-mescit-konya": null,
+ "kileci-mescidi-konya": {
+  "enlem": 38.354497,
+  "boylam": 31.413926,
+  "hassasiyet": "mahalle",
+  "osm": "Kileci Camii, 31002. Sokak, Çay Mahallesi, Tekke, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "kucuk-ayasofya-mescidi-konya": null,
+ "ortakoy-beldesi-merkez-camii-konya": null,
+ "tahtakale-mescidi-konya": null,
+ "ulu-sultan-alaattin-camii-konya": {
+  "enlem": 38.356283,
+  "boylam": 31.411408,
+  "hassasiyet": "eser",
+  "osm": "Ulu Camii, Ulu Cami Caddesi, Ahicelal Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "ali-pasa-camii-konya": null,
+ "bayindir-koyu-camii-konya": null,
+ "cuma-orta-camii-konya": null,
+ "demirli-mescit-konya": null,
+ "emen-eski-camii-konya": null,
+ "gedik-ahmet-pasa-camii-konya": {
+  "enlem": 37.581092,
+  "boylam": 31.585012,
+  "hassasiyet": "eser",
+  "osm": "Gedik Ahmet Paşa Camii, Üzümlü yolu, Üstünler, Beyşehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "hamidiye-camii-konya": {
+  "enlem": 37.676224,
+  "boylam": 31.732931,
+  "hassasiyet": "eser",
+  "osm": "Hamidiye Mahallesi Camii, Şehit Bilal İpek Caddesi, Evsat Mah., Ali Akkanat Mah., Beyşehir, Konya, İç Anadolu Bölgesi, 4"
+ },
+ "hizir-ali-pasa-bayafsar-camii-konya": null,
+ "lutfullah-carsi-camii-minaresi-konya": null,
+ "hisarlik-beldesi-asarlik-camii-konya": {
+  "enlem": 37.15316,
+  "boylam": 32.345078,
+  "hassasiyet": "mahalle",
+  "osm": "Hisarlık Mahallesi Büyük Camii, Hisarlık Caddesi, Hisarlık, Bozkır, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "siristat-buyuk-camii-konya": null,
+ "sogut-buyuk-cami-konya": {
+  "enlem": 37.097292,
+  "boylam": 32.328803,
+  "hassasiyet": "mahalle",
+  "osm": "Söğüt Mahallesi Camii, Bozkır-Hadim Yolu, İğdeören, Bozkır, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "ucpinar-beldesi-kursunlu-camii-konya": null,
+ "ulu-carsi-merkez-camii-konya": null,
+ "karamanoglu-ibrahim-bey-camii-konya": null,
+ "ciftlikozu-beldesi-camii-konya": null,
+ "baskoy-ulu-camii-konya": {
+  "enlem": 38.141753,
+  "boylam": 31.756505,
+  "hassasiyet": "eser",
+  "osm": "Başköy Mahallesi Ulu Camii, 42-90, Başköy, Doğanhisar, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "karaaga-beldesi-eski-ulu-camii-konya": {
+  "enlem": 38.182601,
+  "boylam": 31.616084,
+  "hassasiyet": "mahalle",
+  "osm": "Karaağa Mahallesi Caferbaba Camii, 42-82, Çınaroba, Doğanhisar, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "orta-camii-konya": {
+  "enlem": 38.148124,
+  "boylam": 31.674441,
+  "hassasiyet": "eser",
+  "osm": "Orta camii Şerifi, Cumhuriyet Caddesi, Yenice, Doğanhisar, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "pazar-carsi-camii-konya": null,
+ "ayaslar-ulu-yukari-camii-konya": null,
+ "ulu-camii-konya": {
+  "enlem": 38.184431,
+  "boylam": 31.606284,
+  "hassasiyet": "eser",
+  "osm": "Ulu Camii, Derviş sokak, Karaağa, Doğanhisar, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "yegin-camii-konya": {
+  "enlem": 38.146008,
+  "boylam": 31.675427,
+  "hassasiyet": "eser",
+  "osm": "Yeğin Camii, Cumhuriyet Caddesi, Yenice, Doğanhisar, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "agalar-boyaci-ali-mescidi-konya": null,
+ "buyukdede-taskilise-camii-konya": {
+  "enlem": 37.414766,
+  "boylam": 34.131978,
+  "hassasiyet": "eser",
+  "osm": "Büyükdede Mahallesi Camii, 96607. Sokak, Büyükdede Mahallesi, Ereğli, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "kutoren-eski-camii-konya": null,
+ "ulu-kible-camii-konya": {
+  "enlem": 37.825667,
+  "boylam": 34.246162,
+  "hassasiyet": "eser",
+  "osm": "Zengen Mahallesi Ulu Camii, Kutören - Zengen yolu, Zengen, Ereğli, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "zengen-beldesi-eski-camii-konya": null,
+ "cavus-eski-merkez-cami-konya": {
+  "enlem": 37.962956,
+  "boylam": 31.563775,
+  "hassasiyet": "eser",
+  "osm": "Çavuş Mahallesi Merkez Camii, 42-80, Çavuş, Hüyük, Konya, İç Anadolu Bölgesi, 42690, Türkiye"
+ },
+ "cukurkent-koyu-camii-konya": null,
+ "beykonak-dedigi-sultan-mescit-ve-tekkesi-konya": null,
+ "behlul-bey-camii-konya": null,
+ "fazil-camii-konya": {
+  "enlem": 38.058443,
+  "boylam": 31.89031,
+  "hassasiyet": "eser",
+  "osm": "Yukarıçiğil Mahallesi Fazıl Camii, Gökçekuyu - Yukarı Çiğil yolu, Yukarı Çiğil, Ilgın, Konya, İç Anadolu Bölgesi, Türkiy"
+ },
+ "ibrahim-pasa-camii-argithani-konya": {
+  "enlem": 38.290581,
+  "boylam": 31.713745,
+  "hassasiyet": "eser",
+  "osm": "Nevşehirli Damat İbrahim Paşa Camii, 120902 Sokak, Argıthanı, Ilgın, Konya, İç Anadolu Bölgesi, 42610, Türkiye"
+ },
+ "pir-huseyin-ulu-cukur-camii-konya": null,
+ "sihcarullah-zincirli-camii-konya": {
+  "enlem": 38.279136,
+  "boylam": 31.92176,
+  "hassasiyet": "eser",
+  "osm": "Şıhcarullah Camii, Vefa Tanır Caddesi, Ilgın, Konya, İç Anadolu Bölgesi, 42600, Türkiye"
+ },
+ "yukari-cigil-beldesi-merkez-camii-kebir-camii-konya": null,
+ "cavundur-camii-konya": null,
+ "haci-mehmetli-camii-konya": null,
+ "ibrahim-bey-carsi-camii-konya": {
+  "enlem": 38.238616,
+  "boylam": 32.228593,
+  "hassasiyet": "sokak",
+  "osm": "Konya Caddesi, Güngören, Kadınhanı, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "kabacali-camii-konya": {
+  "enlem": 38.236956,
+  "boylam": 32.222488,
+  "hassasiyet": "eser",
+  "osm": "Kabacalı Camii, Konya Caddesi, Güngören, Kadınhanı, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "karamanli-haci-mustafa-camii-konya": null,
+ "pinarbasi-camii-konya": {
+  "enlem": 38.233476,
+  "boylam": 32.218798,
+  "hassasiyet": "eser",
+  "osm": "Pınarbaşı Mahallesi Yeni Camii, Konya Afyonkarahisar Yolu, Turgutlu Mahallesi, Kadınhanı, Konya, İç Anadolu Bölgesi, Tür"
+ },
+ "cetmi-camii-konya": {
+  "enlem": 37.711848,
+  "boylam": 33.547765,
+  "hassasiyet": "eser",
+  "osm": "Çetmi Camii, Kocatepe Caddesi, Alaaddin, Karapınar, Konya, İç Anadolu Bölgesi, 42400, Türkiye"
+ },
+ "resadiye-camii-konya": null,
+ "yagmapinar-mescidi-konya": {
+  "enlem": 37.827102,
+  "boylam": 33.725618,
+  "hassasiyet": "mahalle",
+  "osm": "Yağmapınar Mahallesi Camii, 42-28, Yağmapınar, Karapınar, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "kucuk-alioglu-camii-konya": {
+  "enlem": 38.268308,
+  "boylam": 32.406854,
+  "hassasiyet": "mahalle",
+  "osm": "Hatıp Camii, 42-02, Saraç Mahallesi, Sarayönü, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "pir-huseyin-bey-yukari-camii-konya": {
+  "enlem": 38.268304,
+  "boylam": 32.408642,
+  "hassasiyet": "eser",
+  "osm": "Pir Hüseyin Bey Camii, 42-02, Saraç Mahallesi, Sarayönü, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "muallimhane-sofuhane-camii-ve-turbesi-konya": {
+  "enlem": 37.418896,
+  "boylam": 31.844001,
+  "hassasiyet": "mahalle",
+  "osm": "Sofuhane Mahallesi, Seydişehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "seyyid-harun-veli-camii-konya": {
+  "enlem": 37.41676,
+  "boylam": 31.846541,
+  "hassasiyet": "eser",
+  "osm": "Seyyid Harun Velî Camii, 1611. Sokak, Seyitharun Mahallesi, Seydişehir, Konya, İç Anadolu Bölgesi, 42002, Türkiye"
+ },
+ "uzun-seyh-sih-camii-konya": null,
+ "piribeyli-beldesi-merkez-camii-konya": null,
+ "esrefoglu-suleyman-bey-kulliyesi-konya": null,
+ "sultan-ii-selim-kulliyesi-konya": null,
+ "lala-mustafa-pasa-kulliyesi-konya": null,
+ "sircali-medrese-konya": {
+  "enlem": 37.87005,
+  "boylam": 32.494127,
+  "hassasiyet": "eser",
+  "osm": "Sırçalı Medrese, Sırçalı Medrese Caddesi, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "kemaliye-kucuk-karatay-medresesi-konya": {
+  "enlem": 37.934924,
+  "boylam": 32.537062,
+  "hassasiyet": "sokak",
+  "osm": "Ankara Caddesi, Fevziçakmak Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42210, Türkiye"
+ },
+ "karatay-medresesi-konya": {
+  "enlem": 37.934924,
+  "boylam": 32.537062,
+  "hassasiyet": "sokak",
+  "osm": "Ankara Caddesi, Fevziçakmak Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42210, Türkiye"
+ },
+ "ali-efendi-darulhuffazi-muallimhane-konya": null,
+ "ali-gav-zaviyesi-mahmudiye-medresesi-konya": null,
+ "ince-minareli-medrese-sahip-ata-darulhadis-konya": {
+  "enlem": 37.985409,
+  "boylam": 32.492439,
+  "hassasiyet": "mahalle",
+  "osm": "Beyhekim Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "tas-halkali-sahip-ata-medrese-konya": {
+  "enlem": 38.359798,
+  "boylam": 31.409443,
+  "hassasiyet": "eser",
+  "osm": "Taş Medrese Taş Eserler Müzesi, Dr.Aziz Perkün Caddesi, Altunkalem Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550,"
+ },
+ "ismail-aga-medresesi-tas-medrese-konya": null,
+ "cemal-ali-dede-turut-turbesi-konya": {
+  "enlem": 37.868654,
+  "boylam": 32.435008,
+  "hassasiyet": "mahalle",
+  "osm": "Yaka Mahallesi, Meram, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "atesbaz-veli-kumbeti-ve-zaviyesi-konya": {
+  "enlem": 37.859944,
+  "boylam": 32.443092,
+  "hassasiyet": "sokak",
+  "osm": "Ateşbaz Sokak, Ayanbey Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42090, Türkiye"
+ },
+ "tavus-baba-turbesi-konya": {
+  "enlem": 37.85233,
+  "boylam": 32.419947,
+  "hassasiyet": "eser",
+  "osm": "Tavus Baba Türbesi, Dutlu Caddesi, Durunday Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "turgutoglu-turbesi-konya": null,
+ "sahip-ata-hanikahi-ve-turbesi-konya": {
+  "enlem": 37.864423,
+  "boylam": 32.494013,
+  "hassasiyet": "sokak",
+  "osm": "Taşcami Uzunharmanlar Caddesi, Çaybaşı Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "seyh-hasan-i-rumi-turbesi-konya": {
+  "enlem": 37.835761,
+  "boylam": 32.441511,
+  "hassasiyet": "sokak",
+  "osm": "Gülbahçe Cami, Şems Sokak, Lalebahçe Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "seyh-osman-rumi-turbesi-konya": {
+  "enlem": 37.835761,
+  "boylam": 32.441511,
+  "hassasiyet": "sokak",
+  "osm": "Gülbahçe Cami, Şems Sokak, Lalebahçe Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "emir-nurettin-sephevan-kumbeti-konya": null,
+ "sadr-sedir-sultan-turbesi-konya": null,
+ "seyh-aliman-alaman-isgalaman-yahsi-turbesi-konya": {
+  "enlem": 37.869751,
+  "boylam": 32.511934,
+  "hassasiyet": "mahalle",
+  "osm": "Panorama Konya Müzesi, Evliya Çelebi Sokak, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "arap-dede-turbesi-konya": null,
+ "seyfettin-kara-sungur-kumbeti-konya": null,
+ "ishak-pasa-turbesi-konya": {
+  "enlem": 37.873959,
+  "boylam": 32.497691,
+  "hassasiyet": "eser",
+  "osm": "İshak Paşa Türbesi, 19 Mayıs Sokak, Şemsitebrizi Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "ic-karaaslan-necmettin-karaarslan-kumbeti-konya": null,
+ "burhaneddin-fakih-dede-turbesi-konya": {
+  "enlem": 37.868,
+  "boylam": 32.506429,
+  "hassasiyet": "mahalle",
+  "osm": "Akçeşme İlkokulu, 60, Topraklık Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "emir-ebu-ishak-kazeruni-tekkesi-turbesi-konya": {
+  "enlem": 37.872722,
+  "boylam": 32.488444,
+  "hassasiyet": "sokak",
+  "osm": "Ertuğrul Sokak, İhsaniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "sut-tekkesi-ferhuniye-mescidi-ve-keykavus-kizi-turbesi-konya": {
+  "enlem": 37.875678,
+  "boylam": 32.491319,
+  "hassasiyet": "sokak",
+  "osm": "Sultan Mesut Sokak, Ferhuniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "kalenderhane-kalender-baba-turbesi-konya": null,
+ "ulas-baba-kumbeti-konya": {
+  "enlem": 37.881333,
+  "boylam": 32.490073,
+  "hassasiyet": "sokak",
+  "osm": "Parsana (5), Ulaşbaba Caddesi, Ferhuniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42200, Türkiye"
+ },
+ "kesikbas-kumbeti-konya": null,
+ "ii-kilicarslan-kumbeti-kumbet-hane-konya": null,
+ "i-izzettin-keykavus-yarim-anonim-kumbeti-konya": null,
+ "tacul-vezir-kumbeti-konya": null,
+ "emirgazi-emrullah-gazi-turbesi-konya": null,
+ "mustafa-turabi-kazan-dede-turbesi-konya": {
+  "enlem": 38.360647,
+  "boylam": 31.407194,
+  "hassasiyet": "sokak",
+  "osm": "Dr.Aziz Perkün Caddesi, Anıt Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "seyit-mahmut-hayrani-turbesi-konya": {
+  "enlem": 38.356962,
+  "boylam": 31.408135,
+  "hassasiyet": "mahalle",
+  "osm": "Anıt Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "seyh-eyup-yagli-dede-turbesi-konya": {
+  "enlem": 38.352305,
+  "boylam": 31.410953,
+  "hassasiyet": "mahalle",
+  "osm": "Kızılca Camii, 29206. Sokak, Çay Mahallesi, Tekke, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "tacettin-dede-turbesi-konya": {
+  "enlem": 38.352305,
+  "boylam": 31.410953,
+  "hassasiyet": "mahalle",
+  "osm": "Kızılca Camii, 29206. Sokak, Çay Mahallesi, Tekke, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "yarim-anonim-turbe-konya": null,
+ "yazlica-koyu-kuzucu-sultan-kumbeti-konya": null,
+ "halife-sultan-turbesi-konya": null,
+ "seyit-harun-veli-turbesi-konya": {
+  "enlem": 37.415913,
+  "boylam": 31.845171,
+  "hassasiyet": "mahalle",
+  "osm": "Seyitharun Mahallesi, Seydişehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "sultan-hatun-turbesi-konya": {
+  "enlem": 37.415913,
+  "boylam": 31.845171,
+  "hassasiyet": "mahalle",
+  "osm": "Seyitharun Mahallesi, Seydişehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "sahip-ata-sultan-hamami-konya": {
+  "enlem": 37.869761,
+  "boylam": 32.496859,
+  "hassasiyet": "mahalle",
+  "osm": "Şükran, Suriçi Çarşısı, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "hatipoglu-hasbeyoglu-hamami-konya": {
+  "enlem": 37.845763,
+  "boylam": 32.424709,
+  "hassasiyet": "mahalle",
+  "osm": "Yorgancı, Durunday Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42140, Türkiye"
+ },
+ "mahkeme-yeni-hamami-konya": {
+  "enlem": 37.872782,
+  "boylam": 32.498175,
+  "hassasiyet": "eser",
+  "osm": "Mahkeme Hamamı, Şerafeddin Caddesi, Şemsitebrizi Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "sifa-hamami-konya": {
+  "enlem": 38.358333,
+  "boylam": 31.414796,
+  "hassasiyet": "eser",
+  "osm": "Şifa hamamı, İnönü Caddesi, Ahicelal Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, 42550, Türkiye"
+ },
+ "rustem-pasa-sifa-hamami-konya": {
+  "enlem": 37.513242,
+  "boylam": 34.049392,
+  "hassasiyet": "mahalle",
+  "osm": "Selçuklu Mahallesi, Ereğli, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "seyyit-harun-veli-hamami-konya": null,
+ "hoca-fakih-cesmesi-konya": {
+  "enlem": 37.868493,
+  "boylam": 32.468509,
+  "hassasiyet": "mahalle",
+  "osm": "Ohannes Burger Konya, Yeni Meram Caddesi, Melikşah Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42090, Türkiye"
+ },
+ "safaci-cesmesi-konya": {
+  "enlem": 37.873428,
+  "boylam": 32.492786,
+  "hassasiyet": "sokak",
+  "osm": "Alaeddin Keykubad Camii, Alaaddin Bulvarı, İhsaniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42200, Türkiy"
+ },
+ "haci-veyis-cesmesi-konya": {
+  "enlem": 37.870688,
+  "boylam": 32.509115,
+  "hassasiyet": "sokak",
+  "osm": "Aslanlı Kışla Caddesi, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "bagevliya-camii-cesmesi-konya": {
+  "enlem": 37.877817,
+  "boylam": 32.504793,
+  "hassasiyet": "sokak",
+  "osm": "Bağevliya Mescidi, Bağ Evliya Sokak, Nakipoğlu Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+ },
+ "karakayis-sari-cami-cesmesi-konya": {
+  "enlem": 37.899952,
+  "boylam": 32.518801,
+  "hassasiyet": "sokak",
+  "osm": "Karakayış Caddesi, Fevziçakmak Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42050, Türkiye"
+ },
+ "kucuk-ayasofya-mescidi-cesmesi-konya": {
+  "enlem": 38.354849,
+  "boylam": 31.40992,
+  "hassasiyet": "mahalle",
+  "osm": "Eskikale Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ },
+ "hocacihan-sarnici-konya": {
+  "enlem": 37.879173,
+  "boylam": 32.435465,
+  "hassasiyet": "sokak",
+  "osm": "Aziz Mahmut Hudai Caddesi, Yaka Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42090, Türkiye"
+ },
+ "deli-osman-hani-konya": null,
+ "akyokus-hoca-cihan-hani-konya": null,
+ "kiziloren-kurucesme-hani-konya": null,
+ "emir-kandemir-hani-konya": null,
+ "inlice-han-konya": null,
+ "sukran-mescidi-zemin-kat-dukkan-ve-magaza-konya": {
+  "enlem": 37.869761,
+  "boylam": 32.496859,
+  "hassasiyet": "mahalle",
+  "osm": "Şükran, Suriçi Çarşısı, Sahibata Mahallesi, Meram, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "vakif-is-hani-vakiflar-bolge-mudurlugu-hizmet-binasi-konya": null,
+ "elikesik-han-konya": null,
+ "dokuzun-derbent-sadiye-igdisleri-hani-konya": null,
+ "zazadin-sadeddin-kopek-hani-konya": null,
+ "horozlu-ruzbe-han-konya": {
+  "enlem": 37.929945,
+  "boylam": 32.527535,
+  "hassasiyet": "eser",
+  "osm": "Horozlu Han, Ankara Caddesi, Horozluhan Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42120, Türkiye"
+ },
+ "dedeler-hani-konya": null,
+ "zalmanda-hani-konya": null,
+ "zivarik-han-konya": null,
+ "cagalzade-bedesteni-konya": null,
+ "rustem-pasa-kervansarayi-konya": null,
+ "raziye-hatun-sultan-kervansarayi-konya": null,
+ "kazan-hoyugu-koyu-tas-han-konya": null,
+ "yusuf-aga-abit-celebi-kutuphanesi-konya": {
+  "enlem": 37.870277,
+  "boylam": 32.50388,
+  "hassasiyet": "eser",
+  "osm": "Yusuf Ağa Yazma Eser Kütüphanesi, Mevlâna Meydanı, Aziziye Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
+ },
+ "konut-konya": {
+  "enlem": 38.354849,
+  "boylam": 31.40992,
+  "hassasiyet": "mahalle",
+  "osm": "Eskikale Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, Türkiye"
+ }
+}
