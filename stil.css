@@ -514,3 +514,52 @@ body {
 }
 .eylem.birincil { background: var(--ana-lacivert); color: #fff; border-color: var(--ana-lacivert); }
 .apple-link { font-size: 13px; color: #56637A; text-align: center; display: block; margin-top: 8px; }
+
+/* ===== ERİŞİLEBİLİRLİK ===== */
+.erisim-dugme {
+  margin-left: 8px; min-width: 40px;
+  border: 1px solid #DDD5C4; background: #fff; color: var(--ana-lacivert);
+  border-radius: 99px; padding: 6px 10px;
+  font-family: var(--baslik-yazi); font-weight: 700; font-size: 15px; cursor: pointer;
+}
+.erisim-satir { position: relative; padding-right: 72px; flex-direction: column; align-items: flex-start !important; text-align: left; gap: 2px; }
+.erisim-satir .anahtar {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 24px; border-radius: 99px; background: #CFC7B6; transition: background .2s;
+}
+.erisim-satir .anahtar::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+  border-radius: 50%; background: #fff; transition: left .2s;
+}
+.erisim-satir.secili .anahtar { background: var(--ana-lacivert); }
+.erisim-satir.secili .anahtar::after { left: 19px; }
+.dinle-dugme {
+  display: inline-block; width: auto; margin: 0 0 12px; padding: 10px 18px;
+  border: 2px solid var(--ana-lacivert); border-radius: 99px;
+  background: #fff; color: var(--ana-lacivert);
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; cursor: pointer;
+}
+/* Klavye ile gezenler nerede olduğunu görsün */
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 3px solid var(--vurgu-sarisi); outline-offset: 2px;
+}
+
+/* Büyük yazı */
+body.buyuk-yazi #liste, body.buyuk-yazi #eser-karti, body.buyuk-yazi .cipler,
+body.buyuk-yazi .sayac, body.buyuk-yazi .alt-panel { zoom: 1.25; }
+
+/* Yüksek kontrast */
+body.kontrast .ana, body.kontrast .icerik { background: #fff; color: #000; }
+body.kontrast .liste, body.kontrast .kart, body.kontrast .satir, body.kontrast .cip,
+body.kontrast .sehir, body.kontrast .ara, body.kontrast .rozet, body.kontrast .alt-panel {
+  background: #fff !important; color: #000 !important; border-color: #000 !important;
+}
+body.kontrast small, body.kontrast .sayac, body.kontrast .sade-not, body.kontrast .foto-atif,
+body.kontrast .sayfa-no, body.kontrast .kategori, body.kontrast .kart-baslik { color: #000 !important; }
+body.kontrast .cip.secili, body.kontrast .eylem.birincil, body.kontrast .dil-dugme {
+  background: #000 !important; color: #fff !important; border-color: #000 !important;
+}
+body.kontrast .olgu { border-left-color: #000 !important; }
+body.kontrast .eser-baslik, body.kontrast .logo { color: #000 !important; }
+body.kontrast a { color: #000 !important; text-decoration: underline; }
+body.kontrast a.eylem { text-decoration: none; }

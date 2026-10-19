@@ -994,3 +994,118 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, { "Türbe": "Tomb", "Diğer": "Other" });
 });
+
+/* ================= ERİŞİLEBİLİRLİK ================= */
+// Görme engelliler için: sesli dinleme, büyük yazı, yüksek kontrast.
+// İşitme engelliler için: uygulamadaki her bilgi zaten yazılı; sesli içerik yalnızca isteğe bağlı.
+
+const erisim = { buyuk: false, kontrast: false };
+try { Object.assign(erisim, JSON.parse(localStorage.getItem("vakfiye:erisim") || "{}")); } catch (hata) { }
+
+function erisimUygula() {
+  document.body.classList.toggle("buyuk-yazi", erisim.buyuk);
+  document.body.classList.toggle("kontrast", erisim.kontrast);
+  try { localStorage.setItem("vakfiye:erisim", JSON.stringify(erisim)); } catch (hata) { }
+}
+erisimUygula();
+
+// Üst çubuğa "Aa" düğmesi
+document.querySelector(".ana .ust").insertAdjacentHTML("beforeend",
+  `<button class="erisim-dugme" id="erisim-dugme" aria-label="Erişilebilirlik">Aa</button>`);
+
+function erisimPaneliniAc() {
+  const satir = (anahtar, baslik, aciklama) => `
+    <button class="sehir-satir erisim-satir${erisim[anahtar] ? " secili" : ""}" data-erisim="${anahtar}" aria-pressed="${erisim[anahtar]}">
+      <b>${baslik}</b>
+      <small>${aciklama}</small>
+      <span class="anahtar" aria-hidden="true"></span>
+    </button>`;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="perde" id="erisim-perdesi">
+      <div class="alt-panel" role="dialog" aria-label="Erişilebilirlik">
+        <span class="kart-baslik">ERİŞİLEBİLİRLİK</span>
+        ${satir("buyuk", "Büyük yazı", "Listeyi ve eser bilgilerini büyütür")}
+        ${satir("kontrast", "Yüksek kontrast", "Siyah-beyaz, daha net yazılar")}
+        <span class="sade-not">Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.</span>
+        <button class="kucuk-dugme ikincil" data-perde-kapat>Kapat</button>
+      </div>
+    </div>`);
+}
+
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#erisim-dugme")) { erisimPaneliniAc(); return; }
+  const perde = document.getElementById("erisim-perdesi");
+  if (!perde) return;
+  const secim = olay.target.closest("[data-erisim]");
+  if (secim) {
+    const anahtar = secim.dataset.erisim;
+    erisim[anahtar] = !erisim[anahtar];
+    secim.classList.toggle("secili", erisim[anahtar]);
+    secim.setAttribute("aria-pressed", erisim[anahtar]);
+    erisimUygula();
+    return;
+  }
+  if (olay.target.closest("[data-perde-kapat]") || olay.target === perde) perde.remove();
+});
+
+// Sesli dinleme: eser kartındaki ad ve bilgiler, seçili dilde
+function sesliOku(metin) {
+  if (!("speechSynthesis" in window)) return false;
+  speechSynthesis.cancel();
+  const konusma = new SpeechSynthesisUtterance(metin);
+  konusma.lang = (typeof dil !== "undefined" && dil === "en") ? "en-US" : "tr-TR";
+  konusma.rate = 0.95;
+  konusma.onend = () => dinleDugmesiniYaz(false);
+  speechSynthesis.speak(konusma);
+  return true;
+}
+
+function dinleDugmesiniYaz(caliyor) {
+  const dugme = document.getElementById("dinle-dugme");
+  if (dugme) dugme.textContent = caliyor ? "⏹ Durdur" : "🔊 Sesli dinle";
+}
+
+function karttakiMetin() {
+  const kart = document.getElementById("eser-karti");
+  const parcalar = [kart.querySelector(".eser-baslik").innerText];
+  kart.querySelectorAll(".kategori, .olgu").forEach((el) => {
+    const kopya = el.cloneNode(true);
+    kopya.querySelectorAll(".kaynak-satiri").forEach((k) => k.remove());
+    parcalar.push(kopya.innerText.trim());
+  });
+  return parcalar.map((p) => p.replace(/[.\s]+$/, "")).join(". ") + ".";
+}
+
+const eserKartiniAcErisimsiz = eserKartiniAc;
+eserKartiniAc = function (eserId) {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  eserKartiniAcErisimsiz(eserId);
+  const eser = ESERLER.find((e) => e.id === eserId);
+  // Fotoğraflara ekran okuyucular için açıklama
+  document.querySelectorAll("#eser-karti .galeri img").forEach((img, i) => { img.alt = `${eser.ad}, fotoğraf ${i + 1}`; });
+  if ("speechSynthesis" in window) {
+    document.querySelector("#eser-karti .eser-baslik").insertAdjacentHTML("afterend",
+      `<button class="dinle-dugme" id="dinle-dugme">🔊 Sesli dinle</button>`);
+  }
+};
+
+document.addEventListener("click", (olay) => {
+  if (!olay.target.closest("#dinle-dugme")) return;
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); dinleDugmesiniYaz(false); return; }
+  if (sesliOku(karttakiMetin())) dinleDugmesiniYaz(true);
+});
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#geri") && "speechSynthesis" in window) speechSynthesis.cancel();
+}, true);
+
+// İngilizce karşılıklar
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Erişilebilirlik": "Accessibility", "ERİŞİLEBİLİRLİK": "ACCESSIBILITY",
+    "Büyük yazı": "Large text", "Listeyi ve eser bilgilerini büyütür": "Enlarges the list and monument details",
+    "Yüksek kontrast": "High contrast", "Siyah-beyaz, daha net yazılar": "Black and white, sharper text",
+    "Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.": "The 🔊 Listen button on a monument card reads its details aloud in the selected language.",
+    "🔊 Sesli dinle": "🔊 Listen", "⏹ Durdur": "⏹ Stop"
+  });
+});
