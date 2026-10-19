@@ -137,14 +137,14 @@ function listeyiCiz() {
 
   // 1) Filtrele
   const sonuc = ESERLER.filter((eser) => {
+    if (typeof secilenSehir !== "undefined" && (eser.il || "Bursa") !== secilenSehir) return false;
     if (secilenTur !== "Tümü" && eser.tur !== secilenTur) return false;
     const metin = sadele(eser.ad + " " + eser.ilce + " " + eser.banisi);
     return metin.includes(aranan);
   });
 
   // 2) Sayacı yaz
-  document.getElementById("sayac").textContent = `${sonuc.length} / ${ESERLER.length} eser`;
-
+  document.getElementById("sayac").textContent = `${sonuc.length} / ${ESERLER.filter((e) => (e.il || "Bursa") === secilenSehir).length} eser`;
   // 3) Satırları oluştur
   document.getElementById("liste").innerHTML = sonuc.length === 0
     ? `<p style="padding:12px 14px;margin:0">Aramana uyan eser yok.</p>`
@@ -825,4 +825,166 @@ document.querySelectorAll(".menu button").forEach((dugme) => {
   dugme.addEventListener("click", () => {
     if (dugme.dataset.sekme !== "tara") kameraKapat();
   });
+});
+
+
+/* ================= ŞEHİRLER ================= */
+// Vakıf Katılım Vakıf Eserleri Envanter Projesi'nin şehirleri: Hatay (2022), Konya, Bursa.
+// Yeni bir şehir eklemek için:
+//   1) Veri setine o şehrin eserlerini ekle ve araclar/veri_hazirla.py'yi çalıştır.
+//   2) Aşağıdaki listeye şehrin adını ve harita merkezini yaz.
+// Verisi olan şehir listede kendiliğinden açılır; verisi olmayan "Yakında" görünür.
+
+const SEHIRLER = [
+  { ad: "Bursa", merkez: [40.1835, 29.0610] },
+  { ad: "Konya", merkez: [37.8714, 32.4930] },
+  { ad: "Hatay", merkez: [36.2025, 36.1605] }
+];
+let secilenSehir = "Bursa";
+
+function eserSehri(eser) {
+  return eser.il || "Bursa";
+}
+
+function sehrinEserleri() {
+  return ESERLER.filter((e) => eserSehri(e) === secilenSehir);
+}
+
+function sehirPaneliniAc() {
+  const satirlar = SEHIRLER.map((sehir) => {
+    const sayi = ESERLER.filter((e) => eserSehri(e) === sehir.ad).length;
+    const acik = sayi > 0;
+    return `
+      <button class="sehir-satir${sehir.ad === secilenSehir ? " secili" : ""}" ${acik ? `data-sehir="${sehir.ad}"` : "disabled"}>
+        <b>${sehir.ad}</b>
+        <small>${acik ? sayi + " eser" : "Yakında"}</small>
+      </button>`;
+  }).join("");
+
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="perde" id="sehir-perdesi">
+      <div class="alt-panel">
+        <span class="kart-baslik">ŞEHİR SEÇ</span>
+        ${satirlar}
+        <span class="sade-not">Vakıf Katılım Vakıf Eserleri Envanter Projesi şehirleri</span>
+        <button class="kucuk-dugme ikincil" data-perde-kapat>Kapat</button>
+      </div>
+    </div>`);
+}
+
+function sehirPaneliniKapat() {
+  const perde = document.getElementById("sehir-perdesi");
+  if (perde) perde.remove();
+}
+
+function sehirSec(ad) {
+  secilenSehir = ad;
+  document.querySelector(".sehir").textContent = ad;
+  const tumuDugmesi = document.querySelector('[data-gorunum="tumu"]');
+  if (tumuDugmesi) tumuDugmesi.textContent = "Tüm " + ad;
+  listeyiCiz();
+  if (harita) gorunumSec("merkez");
+}
+
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest(".sehir")) { sehirPaneliniAc(); return; }
+
+  const perde = document.getElementById("sehir-perdesi");
+  if (!perde) return;
+  const secim = olay.target.closest("[data-sehir]");
+  if (secim) { sehirSec(secim.dataset.sehir); sehirPaneliniKapat(); return; }
+  // Kapat düğmesi ya da panelin dışındaki karanlık alan
+  if (olay.target.closest("[data-perde-kapat]") || olay.target === perde) sehirPaneliniKapat();
+});
+
+// Harita: yalnızca seçili şehrin eserlerini göster, şehrin merkezine git
+function haritaIsaretleriniYenile() {
+  haritaKatmani.clearLayers();
+  sehrinEserleri().forEach((eser) => {
+    L.marker([eser.enlem, eser.boylam], { icon: isaretYap(eser), title: eser.ad })
+      .addTo(haritaKatmani)
+      .on("click", () => haritadaSec(eser));
+  });
+}
+
+gorunumSec = function (gorunum) {
+  haritaIsaretleriniYenile();
+  const sehir = SEHIRLER.find((s) => s.ad === secilenSehir);
+  const eserler = sehrinEserleri();
+  if (gorunum === "merkez" || eserler.length === 0) {
+    harita.setView(sehir.merkez, 15);
+  } else {
+    harita.fitBounds(L.latLngBounds(eserler.map((e) => [e.enlem, e.boylam])),
+      { paddingTopLeft: [24, 44], paddingBottomRight: [24, 16] });
+  }
+  document.querySelectorAll("[data-gorunum]").forEach((d) => {
+    d.classList.toggle("secili", d.dataset.gorunum === gorunum);
+  });
+};
+
+
+/* ================= YOL TARİFİ VE "HARİTADA GÖR" ================= */
+
+function yolTarifiAdresleri(eser) {
+  const hedef = `${eser.enlem},${eser.boylam}`;
+  return {
+    google: `https://www.google.com/maps/dir/?api=1&destination=${hedef}&travelmode=walking`,
+    apple: `https://maps.apple.com/?daddr=${hedef}&dirflg=w`
+  };
+}
+
+function eylemDugmeleri(eser) {
+  const adres = yolTarifiAdresleri(eser);
+  return `
+    <div class="eylemler">
+      <a class="eylem birincil" href="${adres.google}" target="_blank" rel="noopener">🧭 Yol tarifi</a>
+      <button class="eylem" data-haritada-gor="${eser.id}">🗺️ Haritada gör</button>
+    </div>
+    <a class="apple-link" href="${adres.apple}" target="_blank" rel="noopener">iPhone'da Apple Haritalar ile aç</a>`;
+}
+
+// Eser kartı açılınca başlığın altına eylem düğmelerini ekle
+const eskiEserKartiniAc = eserKartiniAc;
+eserKartiniAc = function (eserId) {
+  eskiEserKartiniAc(eserId);
+  const eser = ESERLER.find((e) => e.id === eserId);
+  document.querySelector("#eser-karti .rozetler").insertAdjacentHTML("afterend", eylemDugmeleri(eser));
+};
+
+// Haritada bir esere basınca: alttaki satırı büyük yol tarifi düğmeleriyle göster ve görünür yap
+const eskiHaritadaSec = haritadaSec;
+haritadaSec = function (eser) {
+  eskiHaritadaSec(eser);
+  const alan = document.getElementById("harita-secim");
+  const eskiLink = alan.querySelector(".yol-tarifi");
+  if (eskiLink) eskiLink.remove();
+  alan.querySelector(".liste").insertAdjacentHTML("beforeend",
+    `<div style="padding: 0 14px 12px">${eylemDugmeleri(eser).replace(/<button class="eylem"[^]*?<\/button>/, "")}</div>`);
+  alan.scrollIntoView({ behavior: "smooth", block: "end" });
+};
+
+// "Haritada gör": harita sekmesine geç, esere yakınlaş
+document.addEventListener("click", (olay) => {
+  const dugme = olay.target.closest("[data-haritada-gor]");
+  if (!dugme) return;
+  const eser = ESERLER.find((e) => e.id === dugme.dataset.haritadaGor);
+  sekmeyeGec("harita");
+  setTimeout(() => {
+    if (!harita) return;
+    harita.setView([eser.enlem, eser.boylam], 18);
+    haritadaSec(eser);
+  }, 300);
+});
+
+// İngilizce karşılıklar (dil.js yüklendikten sonra eklenir)
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "ŞEHİR SEÇ": "CHOOSE CITY", "Yakında": "Coming soon", "Kapat": "Close",
+    "Vakıf Katılım Vakıf Eserleri Envanter Projesi şehirleri": "Cities of Vakıf Katılım's Endowed Monuments Inventory Project",
+    "🧭 Yol tarifi": "🧭 Directions", "🗺️ Haritada gör": "🗺️ Show on map",
+    "iPhone'da Apple Haritalar ile aç": "Open in Apple Maps on iPhone"
+  });
+  KALIPLAR.push([/^(\d+) eser$/, (m) => `${m[1]} monuments`]);
+  KALIPLAR.push([/^Tüm (.+)$/, (m) => `All of ${m[1]}`]);
 });
