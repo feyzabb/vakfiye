@@ -728,3 +728,11 @@ body.kontrast .sergi-duyuru { background: #000; }
 }
 .rota-secici button.secili { background: #fff; color: var(--ana-lacivert); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 body.kontrast .rota-secici { background: #fff; border: 1px solid #000; }
+
+/* ===== TANITIMI ATLA ===== */
+.tanitim { position: relative; }
+.tanitim-atla {
+  position: absolute; top: 24px; right: 20px;
+  border: none; background: transparent; color: var(--teknoloji);
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; padding: 6px 8px; cursor: pointer;
+}

@@ -1234,7 +1234,7 @@ function anaEkranaGec() {
 
 // Tanıtımın son sayfasında "Başlayalım" → henüz seçim yapılmadıysa giriş ekranı
 document.addEventListener("click", (olay) => {
-  if (olay.target.closest("#ileri") && sira === sayfalar.length - 1 && oturum === null) {
+  if (olay.target.closest("#ileri") && sira === sayfalar.length - 1 && (oturum === null || oturum.misafir)) {
     olay.stopImmediatePropagation();
     document.getElementById("tanitim").hidden = true;
     girisEkraniniAc("uye");
@@ -1628,14 +1628,7 @@ function oturumuKapat() {
   girisEkraniniAc("gir");
 }
 
-// Giriş yapmış (ya da misafir olmayı seçmiş) kullanıcı "Başla"ya basınca doğrudan ana ekrana geçsin
-document.addEventListener("click", (olay) => {
-  if (olay.target.closest("#basla") && oturum !== null) {
-    olay.stopImmediatePropagation();
-    document.getElementById("acilis").hidden = true;
-    anaEkranaGec();
-  }
-}, true);
+// "Başla" her zaman tanıtımı açar; tanıtımı geçmek isteyen sağ üstteki "Atla"ya basar.
 
 // Ayarlar düğmesini kaldır (dil: EN düğmesi, erişilebilirlik: Aa düğmesi zaten var)
 const ayarDugmesi = document.getElementById("ayar-dugme");
@@ -1970,4 +1963,15 @@ document.addEventListener("DOMContentLoaded", () => {
     [/^(.+) rotası tamam$/, (m) => `${m[1]} route complete`],
     [/^🏅 Rozet kazandın: (.+) rotası tamam!$/, (m) => `🏅 Badge earned: ${m[1]} route complete!`]
   );
+});
+
+
+/* ================= GİRİŞ AKIŞI ================= */
+// Başla → tanıtım (Atla ile geçilebilir) → üye değilse Üye ol / Giriş yap ekranı (Üye olmadan devam et ile geçilebilir)
+document.getElementById("tanitim-atla").addEventListener("click", () => {
+  sira = sayfalar.length - 1;
+  document.getElementById("ileri").click();
+});
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK !== "undefined") Object.assign(SOZLUK, { "Atla": "Skip" });
 });
