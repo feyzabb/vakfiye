@@ -143,6 +143,10 @@ function listeyiCiz() {
     return metin.includes(aranan);
   });
 
+  // Alfabetik sıra (Türkçe harflere göre: Ç, Ğ, İ, Ö, Ş, Ü doğru yerde)
+  const siraAdi = (e) => e.ad.replace(/^\s*\([^)]*\)\s*/, "");   // "(Başarakavak) Zahide…" Z harfinde
+  sonuc.sort((a, b) => siraAdi(a).localeCompare(siraAdi(b), "tr"));
+
   // 2) Sayacı yaz
   document.getElementById("sayac").textContent = `${sonuc.length} / ${ESERLER.filter((e) => secilenSehir === TUM_SEHIRLER || (e.il || "Bursa") === secilenSehir).length} eser`;
   // 3) Satırları oluştur
@@ -878,7 +882,7 @@ const SEHIRLER = [
   { ad: "Konya", merkez: [37.8714, 32.4930] },
   { ad: "Hatay", merkez: [36.2025, 36.1605] }
 ];
-let secilenSehir = "Bursa";
+let secilenSehir = "Tüm şehirler";   // açılışta bütün şehirler
 const TUM_SEHIRLER = "Tüm şehirler";
 
 function eserSehri(eser) {
