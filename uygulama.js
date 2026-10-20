@@ -2010,3 +2010,71 @@ document.addEventListener("DOMContentLoaded", () => {
       "The Hatay inventory was prepared before the 2023 earthquakes. The monuments' current condition may differ."
   });
 });
+
+
+/* ================= ANA EKRANA EKLE ================= */
+// Uygulama telefona ikonla eklenip tam ekran açılabilir (manifest.json). Önbellek (service worker) kullanılmaz.
+let yuklemeIstegi = null;
+window.addEventListener("beforeinstallprompt", (olay) => { olay.preventDefault(); yuklemeIstegi = olay; });
+const uygulamaModunda = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+function yuklemeYardiminiAc() {
+  const iphone = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="perde" id="yukle-perdesi">
+      <div class="alt-panel" role="dialog" aria-label="Ana ekrana ekle">
+        <span class="kart-baslik">ANA EKRANA EKLE</span>
+        <div class="yukle-ust"><img src="ikon/ikon-192.png" alt="" width="56" height="56"><span><b>Vakfiye</b><small>Uygulama gibi, tam ekran açılır</small></span></div>
+        ${iphone ? `
+          <ol class="yukle-adim">
+            <li>Safari'nin altındaki <b>Paylaş</b> düğmesine bas <span aria-hidden="true">(□↑)</span>.</li>
+            <li>Listeden <b>Ana Ekrana Ekle</b>'yi seç.</li>
+            <li>Sağ üstteki Ekle'ye bas.</li>
+          </ol>` : `
+          <ol class="yukle-adim">
+            <li>Chrome'un sağ üstündeki <b>⋮</b> menüsünü aç.</li>
+            <li><b>Uygulamayı yükle</b> ya da <b>Ana ekrana ekle</b>'yi seç.</li>
+            <li>Açılan pencerede Yükle'ye bas.</li>
+          </ol>`}
+        <button class="kucuk-dugme ikincil" data-perde-kapat>Kapat</button>
+      </div>
+    </div>`);
+}
+
+document.addEventListener("click", async (olay) => {
+  if (olay.target.closest("[data-yukle]")) {
+    if (typeof menuyuKapat === "function") menuyuKapat();
+    if (yuklemeIstegi) {
+      yuklemeIstegi.prompt();
+      yuklemeIstegi = null;
+    } else {
+      yuklemeYardiminiAc();
+    }
+    return;
+  }
+  const perde = document.getElementById("yukle-perdesi");
+  if (perde && (olay.target === perde || olay.target.closest("#yukle-perdesi [data-perde-kapat]"))) perde.remove();
+});
+
+// ☰ menüsüne "Ana ekrana ekle" (uygulama zaten ana ekrandan açıldıysa gösterme)
+const menuyuCizYuklemesiz = menuyuCiz;
+menuyuCiz = function () {
+  const html = menuyuCizYuklemesiz();
+  if (uygulamaModunda) return html;
+  return html.replace('<span class="cekmece-baslik">Ayarlar</span>',
+    `<button class="cekmece-satir" data-yukle><span>📲 Ana ekrana ekle</span><span class="cekmece-deger">›</span></button>
+    <span class="cekmece-baslik">Ayarlar</span>`);
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "📲 Ana ekrana ekle": "📲 Add to home screen", "ANA EKRANA EKLE": "ADD TO HOME SCREEN",
+    "Ana ekrana ekle": "Add to home screen", "Uygulama gibi, tam ekran açılır": "Opens full screen, like an app",
+    "Safari'nin altındaki": "Tap the", "düğmesine bas": "button at the bottom of Safari",
+    "Listeden": "Choose", "'yi seç.": ".", "Sağ üstteki Ekle'ye bas.": "Tap Add in the top right.", "Açılan pencerede Yükle'ye bas.": "Tap Install in the dialog that opens.",
+    "Chrome'un sağ üstündeki": "Open Chrome's", "menüsünü aç.": "menu in the top right.",
+    "Uygulamayı yükle": "Install app", "ya da": "or", "Ana Ekrana Ekle": "Add to Home Screen",
+    "Paylaş": "Share"
+  });
+});
