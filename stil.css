@@ -762,3 +762,19 @@ body.kontrast .deprem-notu { background: #fff; border: 2px solid #000; color: #0
 }
 .giris-hata.basarili { color: #1E6B3A; }
 #yeni-sifre-form { gap: 12px; }
+
+/* ===== BU ESERE SOR: WEB ASİSTANI ===== */
+.balon.asistan { display: flex; flex-direction: column; gap: 8px; }
+.cevap-cumle { margin: 0; line-height: 1.5; }
+.cevap-etiket { display: inline-flex; gap: 6px; margin-left: 6px; vertical-align: middle; }
+.etiket.ai-yorumu { background: #FFF1C7; color: #7A5A00; }
+.etiket.belirsiz { background: #ECE7DC; color: #6B6455; }
+.balon.bekliyor { align-self: flex-start; background: #fff; border: 1px dashed #CFC7B6; color: #6B6455; font-style: italic; }
+.balon.hata { align-self: flex-start; background: #FBEBEB; border: 1px solid #E3B8B4; color: #8A1C14; }
+.tekrar-dene {
+  display: block; margin-top: 8px; border: 1px solid #B3261E; background: #fff; color: #B3261E;
+  border-radius: 10px; padding: 6px 12px; font-family: var(--govde-yazi); font-weight: 700; cursor: pointer;
+}
+#sor-form button:disabled { opacity: .5; }
+body.kontrast .etiket.ai-yorumu, body.kontrast .etiket.belirsiz { background: #fff; color: #000; border: 1px solid #000; }
+.cevap-etiket .etiket { margin-top: 0; }

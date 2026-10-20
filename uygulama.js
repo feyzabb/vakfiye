@@ -2184,3 +2184,119 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("load", () => {
   if (typeof dil !== "undefined" && dil === "en" && typeof dilSec === "function") dilSec("en");
 });
+
+
+/* ================= BU ESERE SOR: WEB ASİSTANI ================= */
+// Sorular vakfiye.vercel.app'teki asistana gider; yapay zekâ anahtarı sunucuda durur, uygulamada anahtar YOK.
+// Eski cihaz içi eşleştirme (cevapBul) silinmedi; şu an kullanılmıyor.
+const ASISTAN_ADRESI = "https://vakfiye.vercel.app/api/sor";
+const ASISTAN_ORNEKLERI = ["Kim yaptırdı?", "Neden bu ad verilmiş?", "Ne zaman yapıldı?", "Ne zaman onarıldı?"];
+let asistanGecmisi = [];          // son 4 soru-cevap ("peki ne zaman?" gibi devam soruları için)
+let asistanEseri = null;
+let asistanMesgul = false;
+
+function guvenli(metin) {
+  return String(metin == null ? "" : metin).replace(/[&<>"']/g, (h) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[h]));
+}
+
+const sorBolumunuEkleYerel = sorBolumunuEkle;
+sorBolumunuEkle = function (eserId) {
+  sorBolumunuEkleYerel(eserId);
+  if (asistanEseri !== eserId) { asistanGecmisi = []; asistanEseri = eserId; }
+  const oneriler = document.getElementById("oneriler");
+  if (oneriler) {
+    oneriler.innerHTML = ASISTAN_ORNEKLERI.map((s) => `<button type="button" class="cip" data-soru="${s}">${s}</button>`).join("");
+  }
+  const not = document.querySelector("#eser-karti .sor-notu");
+  if (not) not.textContent = "Cevaplar bu eserin envanter kayıtlarına dayanır; her cümlenin neye dayandığı yanında yazar.";
+  const kutu = document.getElementById("soru");
+  if (kutu) kutu.maxLength = 300;
+};
+
+function cevapBalonu(veri) {
+  const cumleler = Array.isArray(veri && veri.cumleler) ? veri.cumleler.filter((c) => c && c.metin) : [];
+  if (!veri || veri.bulundu === false || cumleler.length === 0) {
+    return { html: `<div class="balon yok">Kaynaklarımızda bu bilgi yok.</div>`, metin: "Kaynaklarımızda bu bilgi yok." };
+  }
+  const parcalar = cumleler.map((c) => {
+    let etiket = "";
+    if (c.durum === "kaynakli") {
+      etiket = `<span class="etiket">✓ Kaynaklı</span>${c.sayfa ? `<span class="sayfa-no">s. ${guvenli(c.sayfa)}</span>` : ""}`;
+    } else if (c.durum === "ai_yorumu") {
+      etiket = `<span class="etiket ai-yorumu">~ AI yorumu</span>`;
+    } else if (c.durum === "belirsiz") {
+      etiket = `<span class="etiket belirsiz">? Belirsiz</span>`;
+    }
+    return `<p class="cevap-cumle"><span class="cevap-metin">${guvenli(c.metin)}</span>${etiket ? `<span class="cevap-etiket">${etiket}</span>` : ""}</p>`;
+  });
+  return { html: `<div class="balon cevap asistan">${parcalar.join("")}</div>`, metin: cumleler.map((c) => c.metin).join(" ") };
+}
+
+async function asistanaSor(soru, balon) {
+  const kontrol = new AbortController();
+  const zaman = setTimeout(() => kontrol.abort(), 25000);
+  try {
+    const yanit = await fetch(ASISTAN_ADRESI, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eser_id: acikEser.id,
+        soru: soru,
+        dil: (typeof dil !== "undefined" && dil === "en") ? "en" : "tr",
+        gecmis: asistanGecmisi.slice(-4)
+      }),
+      signal: kontrol.signal
+    });
+    if (yanit.ok === false) throw new Error("HTTP " + yanit.status);
+    const sonuc = cevapBalonu(await yanit.json());
+    balon.outerHTML = sonuc.html;
+    asistanGecmisi.push({ soru: soru, cevap: sonuc.metin });
+    asistanGecmisi = asistanGecmisi.slice(-4);
+  } catch (hata) {
+    balon.outerHTML = `<div class="balon hata">Cevap alınamadı, tekrar dene.
+      <button type="button" class="tekrar-dene" data-tekrar="${guvenli(soru)}">Tekrar dene</button></div>`;
+  } finally {
+    clearTimeout(zaman);
+  }
+}
+
+sor = async function (soru) {
+  soru = String(soru).trim().slice(0, 300);
+  if (soru === "" || asistanMesgul || acikEser === null) return;
+  asistanMesgul = true;
+  const sohbet = document.getElementById("sohbet");
+  const dugme = document.querySelector("#sor-form button");
+  if (dugme) dugme.disabled = true;
+  sohbet.insertAdjacentHTML("beforeend", `<div class="balon soru">${guvenli(soru)}</div>`);
+  sohbet.insertAdjacentHTML("beforeend", `<div class="balon bekliyor" role="status">Kayıtlara bakılıyor…</div>`);
+  const balon = sohbet.lastElementChild;
+  balon.scrollIntoView({ behavior: "smooth", block: "center" });
+  await asistanaSor(soru, balon);
+  asistanMesgul = false;
+  if (dugme) dugme.disabled = false;
+  if (sohbet.lastElementChild) sohbet.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+};
+
+document.addEventListener("click", (olay) => {
+  const tekrar = olay.target.closest("[data-tekrar]");
+  if (tekrar === null || asistanMesgul) return;
+  const soru = tekrar.dataset.tekrar;
+  const balon = tekrar.closest(".balon");
+  const onceki = balon.previousElementSibling;          // aynı soru balonu tekrar eklenmesin
+  balon.remove();
+  if (onceki && onceki.classList.contains("soru")) onceki.remove();
+  sor(soru);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Neden bu ad verilmiş?": "Why was it given this name?", "Ne zaman onarıldı?": "When was it restored?",
+    "Ne zaman yapıldı?": "When was it built?", "Kim yaptırdı?": "Who built it?",
+    "Kayıtlara bakılıyor…": "Checking the records…", "Cevap alınamadı, tekrar dene.": "Couldn't get an answer, please try again.",
+    "Tekrar dene": "Try again", "✓ Kaynaklı": "✓ Sourced", "~ AI yorumu": "~ AI interpretation", "? Belirsiz": "? Uncertain",
+    "Cevaplar bu eserin envanter kayıtlarına dayanır; her cümlenin neye dayandığı yanında yazar.":
+      "Answers are based on this monument's inventory records; each sentence shows what it is based on."
+  });
+  KALIPLAR.push([/^s\. (.+)$/, (m) => `p. ${m[1]}`]);
+});
