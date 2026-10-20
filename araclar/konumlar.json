@@ -291,7 +291,13 @@
   "kaynak": "overpass",
   "puan": 1.08
  },
- "garip-nasrullah-camii-konya": null,
+ "garip-nasrullah-camii-konya": {
+  "enlem": 37.885491,
+  "boylam": 32.527312,
+  "hassasiyet": "eser",
+  "osm": "Sedirler Garipnasrullah Cami",
+  "kaynak": "elle-onay"
+ },
  "haci-omerler-camii-konya": {
   "enlem": 37.864791,
   "boylam": 32.507845,
@@ -309,10 +315,11 @@
  },
  "burhan-dede-camii-konya": null,
  "igdeli-sultan-camii-konya": {
-  "enlem": 37.883156,
-  "boylam": 32.505282,
-  "hassasiyet": "sokak",
-  "osm": "Araplar Caddesi, Keçeciler Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+  "enlem": 37.844107,
+  "boylam": 32.487381,
+  "hassasiyet": "eser",
+  "osm": "İğdeli Cami",
+  "kaynak": "elle-onay"
  },
  "karakayis-sari-camii-konya": {
   "enlem": 37.899952,
@@ -567,10 +574,11 @@
   "puan": 1.08
  },
  "topraklik-hasan-efendi-camii-konya": {
-  "enlem": 37.866353,
-  "boylam": 32.510366,
-  "hassasiyet": "sokak",
-  "osm": "Kerimler Caddesi, Sarıyakup Mahallesi, Karatay, Konya, İç Anadolu Bölgesi, 42030, Türkiye"
+  "enlem": 37.866207,
+  "boylam": 32.510243,
+  "hassasiyet": "eser",
+  "osm": "Topraklık Hacı Hasan Cami",
+  "kaynak": "elle-onay"
  },
  "cavusoglu-camii-konya": {
   "enlem": 37.873451,
@@ -938,10 +946,11 @@
   "osm": "Pir Hüseyin Bey Camii, 42-02, Saraç Mahallesi, Sarayönü, Konya, İç Anadolu Bölgesi, Türkiye"
  },
  "muallimhane-sofuhane-camii-ve-turbesi-konya": {
-  "enlem": 37.418896,
-  "boylam": 31.844001,
-  "hassasiyet": "mahalle",
-  "osm": "Sofuhane Mahallesi, Seydişehir, Konya, İç Anadolu Bölgesi, Türkiye"
+  "enlem": 37.419668,
+  "boylam": 31.845116,
+  "hassasiyet": "eser",
+  "osm": "Muallimhane Cami",
+  "kaynak": "elle-onay"
  },
  "seyyid-harun-veli-camii-konya": {
   "enlem": 37.41676,
@@ -1253,7 +1262,13 @@
   "osm": "Eskikale Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, Türkiye"
  },
  "habib-i-neccar-camii-ve-kulliyesi-hatay": null,
- "ulu-camii-ve-kulliyesi-hatay": null,
+ "ulu-camii-ve-kulliyesi-hatay": {
+  "enlem": 36.201913,
+  "boylam": 36.161998,
+  "hassasiyet": "eser",
+  "osm": "Antakya Ulu Camii, Bekir Sıtkı Kunt Caddesi, Ulucami Mahallesi, Hatay, Antakya, Hatay, Akdeniz Bölgesi, 31040, Türkiye",
+  "kaynak": "elle-arama"
+ },
  "sokullu-mehmet-pasa-kulliyesi-hatay": {
   "enlem": 36.754293,
   "boylam": 36.203989,
