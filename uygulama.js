@@ -2078,3 +2078,102 @@ document.addEventListener("DOMContentLoaded", () => {
     "Paylaş": "Share"
   });
 });
+
+
+/* ================= ŞİFREMİ UNUTTUM ================= */
+// 1) Giriş yap ekranında "Şifremi unuttum" → Supabase e-postaya sıfırlama bağlantısı gönderir.
+// 2) Bağlantı uygulamayı #...type=recovery ile açar → "Yeni şifre belirle" penceresi.
+const SITE_ADRESI = "https://feyzabb.github.io/vakfiye/";
+
+document.getElementById("g-sifre").closest("label").insertAdjacentHTML("afterend",
+  `<button type="button" class="sifre-unuttum" id="sifre-unuttum" hidden>Şifremi unuttum</button>`);
+
+const girisSekmesiSecSifresiz = girisSekmesiSec;
+girisSekmesiSec = function (sekme) {
+  girisSekmesiSecSifresiz(sekme);
+  document.getElementById("sifre-unuttum").hidden = sekme !== "gir";
+};
+
+document.getElementById("sifre-unuttum").addEventListener("click", async () => {
+  const eposta = document.getElementById("g-eposta").value.trim().toLowerCase();
+  const alan = document.getElementById("giris-hata");
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(eposta) === false) { alan.textContent = "Önce e-posta adresini yaz, sonra Şifremi unuttum'a bas."; return; }
+  const donus = location.protocol.startsWith("http") ? location.origin + location.pathname : SITE_ADRESI;
+  try {
+    await bulutIstek("/auth/v1/recover?redirect_to=" + encodeURIComponent(donus), { yontem: "POST", govde: { email: eposta } });
+    alan.classList.add("basarili");
+    alan.textContent = "Şifre sıfırlama bağlantısı e-postana gönderildi. Gelen kutunu (ve gereksiz klasörünü) kontrol et.";
+  } catch (hata) {
+    alan.classList.remove("basarili");
+    alan.textContent = hataMesaji(hata);
+  }
+});
+document.getElementById("giris-form").addEventListener("input", () => document.getElementById("giris-hata").classList.remove("basarili"));
+
+// E-postadaki bağlantıyla açıldıysa
+function yeniSifrePenceresi(parca) {
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="perde" id="sifre-perdesi">
+      <form class="alt-panel giris-form" id="yeni-sifre-form" novalidate>
+        <span class="kart-baslik">YENİ ŞİFRE BELİRLE</span>
+        <label>Yeni şifre<input id="ys-1" type="password" autocomplete="new-password" placeholder="En az 6 karakter"></label>
+        <label>Yeni şifre (tekrar)<input id="ys-2" type="password" autocomplete="new-password"></label>
+        <span class="giris-hata" id="ys-hata" role="alert"></span>
+        <button class="dugme-ana" type="submit">Şifreyi kaydet</button>
+      </form>
+    </div>`);
+  document.getElementById("yeni-sifre-form").addEventListener("submit", async (olay) => {
+    olay.preventDefault();
+    const s1 = document.getElementById("ys-1").value, s2 = document.getElementById("ys-2").value;
+    const hataAlani = document.getElementById("ys-hata");
+    if (s1.length < 6) { hataAlani.textContent = "Şifre en az 6 karakter olmalı."; return; }
+    if (s1 !== s2) { hataAlani.textContent = "İki şifre aynı değil."; return; }
+    try {
+      const kullanici = await bulutIstek("/auth/v1/user", { yontem: "PUT", token: parca.get("access_token"), govde: { password: s1 } });
+      oturumuKaydet({
+        access_token: parca.get("access_token"), refresh_token: parca.get("refresh_token"),
+        expires_in: Number(parca.get("expires_in")) || 3600, user: kullanici
+      });
+      try {
+        const profil = await bulutIstek(`/rest/v1/profiller?id=eq.${oturum.id}&select=ad`, { token: oturum.erisim });
+        if (profil && profil[0]) { oturum.ad = profil[0].ad; hesapYaz("vakfiye:oturum", oturum); }
+      } catch (hata) { }
+      document.getElementById("sifre-perdesi").remove();
+      document.getElementById("acilis").hidden = true;
+      document.getElementById("tanitim").hidden = true;
+      anaEkranaGec();
+      bildir("Şifren güncellendi. Hoş geldin, " + oturum.ad.split(" ")[0]);
+      pullariEsitle().catch(() => {});
+    } catch (hata) {
+      hataAlani.textContent = hataMesaji(hata);
+    }
+  });
+}
+
+(function sifreBaglantisiniKontrolEt() {
+  if (location.hash.length < 2) return;
+  const parca = new URLSearchParams(location.hash.slice(1));
+  if (parca.get("type") === "recovery" && parca.get("access_token")) {
+    history.replaceState(null, "", location.pathname + location.search);
+    yeniSifrePenceresi(parca);
+  } else if (parca.get("error_code")) {
+    history.replaceState(null, "", location.pathname + location.search);
+    setTimeout(() => bildir(parca.get("error_code") === "otp_expired"
+      ? "Şifre bağlantısının süresi dolmuş. Yeniden iste."
+      : "Şifre bağlantısı geçersiz. Yeniden iste."), 300);
+  }
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Şifremi unuttum": "Forgot password",
+    "Önce e-posta adresini yaz, sonra Şifremi unuttum'a bas.": "Enter your email first, then tap Forgot password.",
+    "Şifre sıfırlama bağlantısı e-postana gönderildi. Gelen kutunu (ve gereksiz klasörünü) kontrol et.": "A password reset link has been sent to your email. Check your inbox (and spam folder).",
+    "YENİ ŞİFRE BELİRLE": "SET A NEW PASSWORD", "Yeni şifre": "New password", "Yeni şifre (tekrar)": "New password (again)",
+    "Şifreyi kaydet": "Save password", "İki şifre aynı değil.": "The passwords don't match.",
+    "Şifre bağlantısının süresi dolmuş. Yeniden iste.": "The reset link has expired. Request a new one.",
+    "Şifre bağlantısı geçersiz. Yeniden iste.": "The reset link is invalid. Request a new one."
+  });
+  KALIPLAR.push([/^Şifren güncellendi\. Hoş geldin, (.+)$/, (m) => `Password updated. Welcome, ${m[1]}`]);
+});

@@ -754,3 +754,11 @@ body.kontrast .deprem-notu { background: #fff; border: 2px solid #000; color: #0
 .yukle-ust b { font-family: var(--baslik-yazi); font-size: 18px; color: var(--ana-lacivert); }
 .yukle-ust small { color: #6B6455; }
 .yukle-adim { margin: 4px 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.45; }
+
+/* ===== ŞİFREMİ UNUTTUM ===== */
+.sifre-unuttum {
+  align-self: flex-end; margin-top: -4px; border: none; background: transparent; padding: 2px 0;
+  color: var(--teknoloji); font-family: var(--govde-yazi); font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.giris-hata.basarili { color: #1E6B3A; }
+#yeni-sifre-form { gap: 12px; }
