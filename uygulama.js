@@ -2177,3 +2177,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   KALIPLAR.push([/^Şifren güncellendi\. Hoş geldin, (.+)$/, (m) => `Password updated. Welcome, ${m[1]}`]);
 });
+
+
+/* ================= DİL: AÇILIŞTA TAM ÇEVİRİ ================= */
+// Sonradan eklenen İngilizce karşılıklar (Atla, sergiler, menü...) açılıştaki yazılara da uygulansın.
+window.addEventListener("load", () => {
+  if (typeof dil !== "undefined" && dil === "en" && typeof dilSec === "function") dilSec("en");
+});

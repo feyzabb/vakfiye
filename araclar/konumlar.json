@@ -651,7 +651,12 @@
   "hassasiyet": "sokak",
   "osm": "Şair Yurdakul Sokak, İhsaniye Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, 42040, Türkiye"
  },
- "sultan-alaeddin-ulu-camii-konya": null,
+ "sultan-alaeddin-ulu-camii-konya": {
+  "enlem": 37.873512,
+  "boylam": 32.49287,
+  "hassasiyet": "eser",
+  "kaynak": "elle-giris"
+ },
  "ihsaniye-ulu-camii-minaresi-konya": {
   "enlem": 37.872105,
   "boylam": 32.485056,
@@ -1007,10 +1012,10 @@
  "ali-efendi-darulhuffazi-muallimhane-konya": null,
  "ali-gav-zaviyesi-mahmudiye-medresesi-konya": null,
  "ince-minareli-medrese-sahip-ata-darulhadis-konya": {
-  "enlem": 37.985409,
-  "boylam": 32.492439,
-  "hassasiyet": "mahalle",
-  "osm": "Beyhekim Mahallesi, Konya, Selçuklu, Konya, İç Anadolu Bölgesi, Türkiye"
+  "enlem": 37.873011,
+  "boylam": 32.490284,
+  "hassasiyet": "eser",
+  "kaynak": "elle-giris"
  },
  "tas-halkali-sahip-ata-medrese-konya": {
   "enlem": 38.359798,
@@ -1261,7 +1266,12 @@
   "hassasiyet": "mahalle",
   "osm": "Eskikale Mahallesi, Akşehir, Konya, İç Anadolu Bölgesi, Türkiye"
  },
- "habib-i-neccar-camii-ve-kulliyesi-hatay": null,
+ "habib-i-neccar-camii-ve-kulliyesi-hatay": {
+  "enlem": 36.201701,
+  "boylam": 36.166682,
+  "hassasiyet": "eser",
+  "kaynak": "elle-giris"
+ },
  "ulu-camii-ve-kulliyesi-hatay": {
   "enlem": 36.201913,
   "boylam": 36.161998,
@@ -1278,7 +1288,12 @@
   "puan": 1.0
  },
  "meydan-camii-ve-kulliyesi-hatay": null,
- "kanuni-sultan-suleyman-kervansarayi-hatay": null,
+ "kanuni-sultan-suleyman-kervansarayi-hatay": {
+  "enlem": 36.492336,
+  "boylam": 36.194421,
+  "hassasiyet": "eser",
+  "kaynak": "elle-giris"
+ },
  "seyh-ali-cami-ve-kulliyesi-hatay": null,
  "mustafa-sevki-pasa-camii-ve-kulliyesi-hatay": null,
  "ali-cavus-mescidi-hatay": null,
@@ -1311,7 +1326,12 @@
  "osmaniye-camii-hatay": null,
  "orhanli-camii-hatay": null,
  "rifataga-civelek-mescidi-hatay": null,
- "sarimiye-camii-hatay": null,
+ "sarimiye-camii-hatay": {
+  "enlem": 36.199986,
+  "boylam": 36.164858,
+  "hassasiyet": "eser",
+  "kaynak": "elle-giris"
+ },
  "sofular-camii-hatay": null,
  "seyh-muhammet-camii-hatay": null,
  "senkoy-seyh-ahmet-kuseyri-camii-hatay": null,
