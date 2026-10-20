@@ -1975,3 +1975,38 @@ document.getElementById("tanitim-atla").addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK !== "undefined") Object.assign(SOZLUK, { "Atla": "Skip" });
 });
+
+
+/* ================= HATAY DEPREM NOTU ================= */
+// Hatay envanteri 2022'de yayımlandı; 6 Şubat 2023 depremlerinden önceki durumu anlatır.
+const DEPREM_NOTU = "Bu bilgiler 2022'de yayımlanan Hatay envanterine aittir. 6 Şubat 2023 depremlerinde Hatay'daki birçok vakıf eseri hasar gördü ya da yıkıldı; eserin bugünkü durumu farklı olabilir. Ziyaret etmeden önce kontrol edin.";
+
+const eserKartiniAcDepremsiz = eserKartiniAc;
+eserKartiniAc = function (eserId) {
+  eserKartiniAcDepremsiz(eserId);
+  const eser = ESERLER.find((e) => e.id === eserId);
+  if (eser && eser.il === "Hatay") {
+    document.querySelector("#eser-karti .rozetler").insertAdjacentHTML("afterend",
+      `<div class="deprem-notu" role="note"><span aria-hidden="true">⚠️</span><span>${DEPREM_NOTU}</span></div>`);
+  }
+};
+
+function depremBandi() {
+  const eski = document.getElementById("deprem-bandi");
+  if (eski) eski.remove();
+  if (typeof secilenSehir === "undefined" || secilenSehir !== "Hatay") return;
+  document.getElementById("sayac").insertAdjacentHTML("beforebegin", `
+    <div class="deprem-notu" id="deprem-bandi" role="note"><span aria-hidden="true">⚠️</span>
+      <span>Hatay envanteri 2023 depremlerinden önce hazırlandı. Eserlerin bugünkü durumu farklı olabilir.</span></div>`);
+}
+const sehirSecDepremsiz = sehirSec;
+sehirSec = function (ad) { sehirSecDepremsiz(ad); depremBandi(); };
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    [DEPREM_NOTU]: "This information comes from the Hatay inventory published in 2022. Many endowed monuments in Hatay were damaged or destroyed in the earthquakes of 6 February 2023; the monument's current condition may differ. Please check before visiting.",
+    "Hatay envanteri 2023 depremlerinden önce hazırlandı. Eserlerin bugünkü durumu farklı olabilir.":
+      "The Hatay inventory was prepared before the 2023 earthquakes. The monuments' current condition may differ."
+  });
+});

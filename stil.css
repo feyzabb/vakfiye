@@ -736,3 +736,13 @@ body.kontrast .rota-secici { background: #fff; border: 1px solid #000; }
   border: none; background: transparent; color: var(--teknoloji);
   font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; padding: 6px 8px; cursor: pointer;
 }
+
+/* ===== HATAY DEPREM NOTU ===== */
+.deprem-notu {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: #FFF4D6; border: 1px solid #F0D58A; color: #5C4500;
+  border-radius: 14px; padding: 12px 14px; font-size: 14px; line-height: 1.45;
+}
+.deprem-notu > span:first-child { font-size: 18px; line-height: 1.2; }
+#eser-karti .deprem-notu { margin: 4px 0 12px; }
+body.kontrast .deprem-notu { background: #fff; border: 2px solid #000; color: #000; }
