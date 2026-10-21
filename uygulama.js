@@ -269,54 +269,7 @@ document.getElementById("liste").addEventListener("click", (olay) => {
 
 
 /* ================= BU ESERE SOR ================= */
-// Cevap uydurulmaz: sorunun kelimeleri eserin envanter bilgileriyle karşılaştırılır,
-// en çok benzeyen bilgi kaynağıyla gösterilir. Hiçbiri benzemezse "bilgi yok" denir.
-
-// Soruda anlam taşımayan kelimeler
-const DURAK_KELIMELER = ["neydi", "nedir", "kimdi", "hangi", "nasil", "nereden", "midir",
-  "mi", "mu", "var", "ne", "kac", "bu", "bir", "ve", "ile", "icin", "da", "de"];
-
-
-// Sorudaki bu kelimeler, o kategorideki bilgilere ek puan verir
-const KATEGORI_IPUCU = {
-  tarihce: ["kim", "yaptir", "kurdu", "insa", "yil", "tarih", "ne zaman"],
-  vakif: ["vakif", "vakf", "bagis", "gelir", "para", "akce", "imam"],
-  onarim: ["onar", "tamir", "restor", "yikil", "deprem"],
-  gunumuz: ["bugun", "gunumuz", "simdi", "nerede", "adres", "konum"],
-  mimari: ["mimari", "plan", "olcu", "malzeme", "minare", "kubbe"]
-};
-
-// Aynı anlama gelen kökler: "restore edildi" ile "onarıldı" eşleşsin
-const ESANLAMLI = { resto: "onari", tamir: "onari", yenil: "onari", yapil: "yapti", insa: "yapti", yaptr: "yapti", nered: "almak", adres: "almak", konum: "almak", bulun: "almak" };
-
-// Kelimelerin ilk 5 harfi: "onarıldı" ile "onarım" aynı köke düşer
-function kokler(yazi) {
-  return sadele(yazi)
-    .replace(/[^a-z0-9 ]/g, " ")
-    .split(" ")
-    .filter((k) => k.length >= 4 && !DURAK_KELIMELER.includes(k))
-    .map((k) => k.slice(0, 5))
-    .map((k) => ESANLAMLI[k] || k);
-}
-
-function cevapBul(eser, soru) {
-  const soruKokleri = kokler(soru);
-  const soruSade = sadele(soru);
-  let enIyi = null;
-  let enYuksekPuan = 0;
-
-  eser.olgular.forEach((olgu) => {
-    const olguKokleri = kokler(olgu.metin);
-    let puan = 0;
-    soruKokleri.forEach((k) => { if (olguKokleri.includes(k)) puan += 2; });
-    (KATEGORI_IPUCU[olgu.kategori] || []).forEach((ipucu) => {
-      if (soruSade.includes(ipucu)) puan += 1;
-    });
-    if (puan > enYuksekPuan) { enYuksekPuan = puan; enIyi = olgu; }
-  });
-
-  return enYuksekPuan >= 2 ? enIyi : null;
-}
+// Cevaplar web asistanından gelir (aşağıdaki "WEB ASİSTANI" bölümü).
 
 let acikEser = null;
 
@@ -351,19 +304,7 @@ function sorBolumunuEkle(eserId) {
   });
 }
 
-function sor(soru) {
-  const cevap = cevapBul(acikEser, soru);
-  const sohbet = document.getElementById("sohbet");
-
-  sohbet.insertAdjacentHTML("beforeend", `<div class="balon soru">${soru}</div>`);
-  sohbet.insertAdjacentHTML("beforeend", cevap
-    ? `<div class="balon cevap">${cevap.metin}<br>
-         <span class="etiket">Kaynaklı</span><span class="sayfa-no">envanter s. ${cevap.sayfa}</span>
-       </div>`
-    : `<div class="balon yok">Kaynaklarımızda bu bilgi yok.</div>`);
-
-  sohbet.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
-}
+function sor() { }   // web asistanı bunu aşağıda yeniden tanımlıyor
 
 // Eser kartı açıldıktan hemen sonra "Bu esere sor" bölümünü ekle
 document.getElementById("liste").addEventListener("click", (olay) => {
@@ -2192,7 +2133,6 @@ window.addEventListener("load", () => {
 
 /* ================= BU ESERE SOR: WEB ASİSTANI ================= */
 // Sorular vakfiye.vercel.app'teki asistana gider; yapay zekâ anahtarı sunucuda durur, uygulamada anahtar YOK.
-// Eski cihaz içi eşleştirme (cevapBul) silinmedi; şu an kullanılmıyor.
 const ASISTAN_ADRESI = "https://vakfiye.vercel.app/api/sor";
 const ASISTAN_ORNEKLERI = ["Kim yaptırdı?", "Neden bu ad verilmiş?", "Ne zaman yapıldı?", "Ne zaman onarıldı?"];
 let asistanGecmisi = [];          // son 4 soru-cevap ("peki ne zaman?" gibi devam soruları için)
