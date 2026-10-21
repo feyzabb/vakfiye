@@ -778,3 +778,37 @@ body.kontrast .deprem-notu { background: #fff; border: 2px solid #000; color: #0
 #sor-form button:disabled { opacity: .5; }
 body.kontrast .etiket.ai-yorumu, body.kontrast .etiket.belirsiz { background: #fff; color: #000; border: 1px solid #000; }
 .cevap-etiket .etiket { margin-top: 0; }
+
+/* ===== BİLGİ ÖNER: TALEP ===== */
+.talep-aciklama { margin: 6px 0 12px; line-height: 1.45; color: #4A4538; }
+.talep-dugme, .talep-gonder {
+  width: 100%; border: 0; border-radius: 12px; padding: 13px 16px; cursor: pointer;
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; background: #1F4D3A; color: #fff;
+}
+.talep-gonder:disabled { opacity: .5; }
+.talep-katman {
+  position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, .5);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.talep-kutu {
+  width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: #FBF8F1;
+  border-radius: 20px 20px 0 0; padding: 18px 16px 24px; display: flex; flex-direction: column; gap: 8px;
+}
+.talep-ust { display: flex; justify-content: space-between; align-items: center; font-size: 17px; }
+.talep-kapat { border: 0; background: transparent; font-size: 20px; cursor: pointer; padding: 6px 10px; }
+.talep-eser { font-size: 13px; color: #6B6455; }
+.talep-kutu label { font-weight: 700; font-size: 14px; margin-top: 6px; }
+.talep-kutu textarea {
+  font-family: var(--govde-yazi); font-size: 16px; padding: 12px; border: 1px solid #DDD5C4;
+  border-radius: 12px; background: #fff; resize: vertical;
+}
+.talep-sayac { align-self: flex-end; font-size: 12px; color: #6B6455; }
+.talep-onizleme { display: flex; gap: 8px; flex-wrap: wrap; }
+.talep-onizleme img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; }
+.talep-bal { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.talep-durum { min-height: 18px; font-size: 14px; color: #1F4D3A; }
+.talep-durum.hata { color: #B3261E; }
+.talep-not { color: #6B6455; text-align: center; }
+.talep-tesekkur { text-align: center; display: flex; flex-direction: column; gap: 10px; padding: 12px 0; }
+body.kontrast .talep-kutu { background: #fff; color: #000; border: 2px solid #000; }
+body.kontrast .talep-dugme, body.kontrast .talep-gonder { background: #000; color: #fff; }

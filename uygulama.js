@@ -2304,3 +2304,164 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   KALIPLAR.push([/^s\. (.+)$/, (m) => `p. ${m[1]}`]);
 });
+
+
+/* ================= BİLGİ ÖNER: TALEP GÖNDER ================= */
+// Kullanıcı eser için ek bilgi / fotoğraf önerir. Öneri Supabase'deki "eser_talepleri" tablosuna düşer,
+// fotoğraflar "talep-foto" deposuna yüklenir; web sitesindeki yönetim bölümü bu tablodan okur.
+const TALEP_FOTO_EN_COK = 3;
+const TALEP_BEKLEME_MS = 30000;
+let talepSonGonderim = 0;
+
+const sorBolumunuEkleTalepOncesi = sorBolumunuEkle;
+sorBolumunuEkle = function (eserId) {
+  sorBolumunuEkleTalepOncesi(eserId);
+  const kart = document.getElementById("eser-karti");
+  if (kart === null || document.getElementById("talep-ac")) return;
+  kart.insertAdjacentHTML("beforeend", `
+    <div class="kart talep-karti">
+      <span class="kart-baslik">BİLGİ ÖNER</span>
+      <p class="talep-aciklama">Bu eser hakkında bildiğin ek bir bilgi ya da fotoğrafın mı var? Bize gönder, ekibimiz inceleyip ekleyebilir.</p>
+      <button type="button" class="talep-dugme" id="talep-ac">💡 Bilgi / fotoğraf öner</button>
+    </div>`);
+};
+
+function talepFormuAc() {
+  if (acikEser === null || document.getElementById("talep-katman")) return;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="talep-katman" id="talep-katman" role="dialog" aria-modal="true" aria-labelledby="talep-baslik">
+      <form class="talep-kutu" id="talep-form" autocomplete="off">
+        <div class="talep-ust">
+          <b id="talep-baslik">Bilgi / fotoğraf öner</b>
+          <button type="button" class="talep-kapat" id="talep-kapat" aria-label="Kapat">✕</button>
+        </div>
+        <span class="talep-eser">${guvenli(acikEser.ad)}</span>
+        <label for="talep-bilgi">Önerin</label>
+        <textarea id="talep-bilgi" maxlength="2000" rows="5" placeholder="Örn: Camiin avlusundaki çeşme 1950'lerde eklendi…"></textarea>
+        <span class="talep-sayac" id="talep-sayac">0 / 2000</span>
+        <label for="talep-foto">Fotoğraf (en fazla ${TALEP_FOTO_EN_COK})</label>
+        <input type="file" id="talep-foto" accept="image/*" multiple>
+        <div class="talep-onizleme" id="talep-onizleme"></div>
+        <input type="text" id="talep-bal" tabindex="-1" autocomplete="off" aria-hidden="true" class="talep-bal">
+        <div class="talep-durum" id="talep-durum" role="status"></div>
+        <button type="submit" class="talep-gonder" id="talep-gonder">Gönder</button>
+        <small class="talep-not">Önerin yönetim ekibine iletilir; incelenmeden yayınlanmaz.</small>
+      </form>
+    </div>`);
+  document.getElementById("talep-bilgi").focus();
+}
+
+function talepFormuKapat() {
+  const k = document.getElementById("talep-katman");
+  if (k) k.remove();
+}
+
+function talepDurum(metin, hata) {
+  const d = document.getElementById("talep-durum");
+  if (!d) return;
+  d.textContent = metin;
+  d.className = "talep-durum" + (hata ? " hata" : "");
+}
+
+// Fotoğrafı küçült (en uzun kenar 1280 px, JPEG): hem hızlı yüklenir hem depoyu şişirmez
+function fotoKucult(dosya) {
+  return new Promise((coz, reddet) => {
+    const url = URL.createObjectURL(dosya);
+    const img = new Image();
+    img.onload = () => {
+      const oran = Math.min(1, 1280 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * oran);
+      c.height = Math.round(img.height * oran);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob((b) => (b ? coz(b) : reddet(new Error("foto"))), "image/jpeg", 0.8);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reddet(new Error("foto")); };
+    img.src = url;
+  });
+}
+
+async function talepGonder(olay) {
+  olay.preventDefault();
+  if (document.getElementById("talep-bal").value !== "") return;          // bot tuzağı
+  const bilgi = document.getElementById("talep-bilgi").value.trim();
+  const dosyalar = Array.from(document.getElementById("talep-foto").files).slice(0, TALEP_FOTO_EN_COK);
+  if (bilgi.length < 5 && dosyalar.length === 0) { talepDurum("Bir bilgi yaz ya da fotoğraf ekle.", true); return; }
+  if (Date.now() - talepSonGonderim < TALEP_BEKLEME_MS) { talepDurum("Biraz bekleyip tekrar dene.", true); return; }
+
+  const dugme = document.getElementById("talep-gonder");
+  dugme.disabled = true;
+  talepDurum(dosyalar.length ? "Fotoğraflar yükleniyor…" : "Gönderiliyor…", false);
+  try {
+    const token = (typeof gecerliToken === "function" && oturum && oturum.yenile) ? await gecerliToken() : null;
+    const kimlik = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("t" + Date.now() + Math.random().toString(16).slice(2));
+    const yollar = [];
+    for (let i = 0; i < dosyalar.length; i++) {
+      const blob = await fotoKucult(dosyalar[i]);
+      const yol = `${kimlik}/${i + 1}.jpg`;
+      const yanit = await fetch(`${BULUT.adres}/storage/v1/object/talep-foto/${yol}`, {
+        method: "POST",
+        headers: { apikey: BULUT.anahtar, Authorization: "Bearer " + (token || BULUT.anahtar), "Content-Type": "image/jpeg" },
+        body: blob
+      });
+      if (yanit.ok === false) throw new Error("Fotoğraf yüklenemedi (" + yanit.status + ")");
+      yollar.push(yol);
+    }
+    talepDurum("Gönderiliyor…", false);
+    await bulutIstek("/rest/v1/eser_talepleri", {
+      yontem: "POST", token: token || undefined, tercih: "return=minimal",
+      govde: {
+        id: kimlik, eser_id: acikEser.id, eser_adi: acikEser.ad, bilgi: bilgi,
+        kullanici: token && oturum.id ? oturum.id : null,
+        gonderen_ad: oturum && oturum.ad ? oturum.ad : null,
+        foto_yollari: yollar, kaynak: "uygulama"
+      }
+    });
+    talepSonGonderim = Date.now();
+    document.getElementById("talep-form").innerHTML = `
+      <div class="talep-tesekkur"><b>Teşekkürler! 🙏</b>
+      <p>Önerin yönetim ekibine ulaştı. İncelendikten sonra eserin sayfasına eklenebilir.</p>
+      <button type="button" class="talep-gonder" id="talep-bitti">Tamam</button></div>`;
+  } catch (hata) {
+    talepDurum("Gönderilemedi, internetini kontrol edip tekrar dene.", true);
+    dugme.disabled = false;
+  }
+}
+
+document.addEventListener("click", (olay) => {
+  if (olay.target.closest("#talep-ac")) return talepFormuAc();
+  if (olay.target.closest("#talep-kapat") || olay.target.closest("#talep-bitti")) return talepFormuKapat();
+  if (olay.target.id === "talep-katman") return talepFormuKapat();
+});
+document.addEventListener("submit", (olay) => { if (olay.target.id === "talep-form") talepGonder(olay); });
+document.addEventListener("input", (olay) => {
+  if (olay.target.id === "talep-bilgi") document.getElementById("talep-sayac").textContent = olay.target.value.length + " / 2000";
+});
+document.addEventListener("change", (olay) => {
+  if (olay.target.id !== "talep-foto") return;
+  const dosyalar = Array.from(olay.target.files).slice(0, TALEP_FOTO_EN_COK);
+  const alan = document.getElementById("talep-onizleme");
+  alan.innerHTML = "";
+  dosyalar.forEach((d) => {
+    const im = document.createElement("img");
+    im.alt = "Seçilen fotoğraf";
+    im.src = URL.createObjectURL(d);
+    alan.appendChild(im);
+  });
+  if (olay.target.files.length > TALEP_FOTO_EN_COK) talepDurum(`En fazla ${TALEP_FOTO_EN_COK} fotoğraf gönderilir.`, false);
+});
+document.addEventListener("keydown", (olay) => { if (olay.key === "Escape") talepFormuKapat(); });
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "BİLGİ ÖNER": "SUGGEST INFO",
+    "Bu eser hakkında bildiğin ek bir bilgi ya da fotoğrafın mı var? Bize gönder, ekibimiz inceleyip ekleyebilir.":
+      "Do you have extra information or a photo about this monument? Send it to us and our team may add it after review.",
+    "💡 Bilgi / fotoğraf öner": "💡 Suggest info / photo",
+    "Bilgi / fotoğraf öner": "Suggest info / photo", "Önerin": "Your suggestion", "Gönder": "Send",
+    "Önerin yönetim ekibine iletilir; incelenmeden yayınlanmaz.": "Your suggestion goes to the admin team and is not published before review.",
+    "Teşekkürler! 🙏": "Thank you! 🙏", "Tamam": "OK"
+  });
+});
