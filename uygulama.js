@@ -591,7 +591,7 @@ function tarayiCiz() {
   document.getElementById("sekme-tara").innerHTML = `
     <div class="kamera" id="kamera-alani">
       <div id="okuyucu"></div>
-      <button class="kamera-dugme" id="kamera-ac">📷 Kamerayı aç</button>
+      <button class="kamera-dugme" id="kamera-ac">Kamerayı aç</button>
     </div>
     <span class="sade-not" id="kamera-notu">Eserdeki ya da pasaportundaki QR kodu kameraya göster.</span>
     <span class="sade-not">Kamera yoksa okutulacak kodu listeden seç:</span>
@@ -646,9 +646,9 @@ function kagidiBagla() {
 function pasaportuCiz() {
   const sayi = rotadakiPulSayisi();
   const rozetler = [
-    { simge: "🧭", ad: "İlk adım", aciklama: "İlk pulunu al", gereken: 1 },
-    { simge: "🌙", ad: "Yarı yol", aciklama: "Rotada 3 pul topla", gereken: 3 },
-    { simge: "🏛️", ad: rotaAdi() + " tamam", aciklama: "6 pulun hepsini topla", gereken: 6 }
+    { simge: "", ad: "İlk adım", aciklama: "İlk pulunu al", gereken: 1 },
+    { simge: "3", ad: "Yarı yol", aciklama: "Rotada 3 pul topla", gereken: 3 },
+    { simge: "6", ad: rotaAdi() + " tamam", aciklama: "6 pulun hepsini topla", gereken: 6 }
   ];
 
   document.getElementById("sekme-pasaport").innerHTML = `
@@ -927,8 +927,8 @@ function eylemDugmeleri(eser) {
   const adres = yolTarifiAdresleri(eser);
   return `
     <div class="eylemler">
-      <a class="eylem birincil" href="${adres.google}" target="_blank" rel="noopener">🧭 Yol tarifi</a>
-      <button class="eylem" data-haritada-gor="${eser.id}">🗺️ Haritada gör</button>
+      <a class="eylem birincil" href="${adres.google}" target="_blank" rel="noopener">Yol tarifi</a>
+      <button class="eylem" data-haritada-gor="${eser.id}">Haritada gör</button>
     </div>
     <a class="apple-link" href="${adres.apple}" target="_blank" rel="noopener">iPhone'da Apple Haritalar ile aç</a>`;
 }
@@ -972,7 +972,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.assign(SOZLUK, {
     "ŞEHİR SEÇ": "CHOOSE CITY", "Yakında": "Coming soon", "Kapat": "Close",
     "Vakıf Katılım Vakıf Eserleri Envanter Projesi şehirleri": "Cities of Vakıf Katılım's Endowed Monuments Inventory Project",
-    "🧭 Yol tarifi": "🧭 Directions", "🗺️ Haritada gör": "🗺️ Show on map",
+    "Yol tarifi": "Directions", "Haritada gör": "Show on map",
     "iPhone'da Apple Haritalar ile aç": "Open in Apple Maps on iPhone"
   });
   KALIPLAR.push([/^(\d+) eser$/, (m) => `${m[1]} monuments`]);
@@ -1015,7 +1015,7 @@ function erisimPaneliniAc() {
         <span class="kart-baslik">ERİŞİLEBİLİRLİK</span>
         ${satir("buyuk", "Büyük yazı", "Listeyi ve eser bilgilerini büyütür")}
         ${satir("kontrast", "Yüksek kontrast", "Siyah-beyaz, daha net yazılar")}
-        <span class="sade-not">Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.</span>
+        <span class="sade-not">Eser kartındaki Sesli dinle düğmesi bilgileri seçili dilde okur.</span>
         <button class="kucuk-dugme ikincil" data-perde-kapat>Kapat</button>
       </div>
     </div>`);
@@ -1051,7 +1051,7 @@ function sesliOku(metin) {
 
 function dinleDugmesiniYaz(caliyor) {
   const dugme = document.getElementById("dinle-dugme");
-  if (dugme) dugme.textContent = caliyor ? "⏹ Durdur" : "🔊 Sesli dinle";
+  if (dugme) dugme.textContent = caliyor ? "Durdur" : "Sesli dinle";
 }
 
 function karttakiMetin() {
@@ -1074,7 +1074,7 @@ eserKartiniAc = function (eserId) {
   document.querySelectorAll("#eser-karti .galeri img").forEach((img, i) => { img.alt = `${eser.ad}, fotoğraf ${i + 1}`; });
   if ("speechSynthesis" in window) {
     document.querySelector("#eser-karti .eser-baslik").insertAdjacentHTML("afterend",
-      `<button class="dinle-dugme" id="dinle-dugme">🔊 Sesli dinle</button>`);
+      `<button class="dinle-dugme" id="dinle-dugme">Sesli dinle</button>`);
   }
 };
 
@@ -1094,8 +1094,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "Erişilebilirlik": "Accessibility", "ERİŞİLEBİLİRLİK": "ACCESSIBILITY",
     "Büyük yazı": "Large text", "Listeyi ve eser bilgilerini büyütür": "Enlarges the list and monument details",
     "Yüksek kontrast": "High contrast", "Siyah-beyaz, daha net yazılar": "Black and white, sharper text",
-    "Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.": "The 🔊 Listen button on a monument card reads its details aloud in the selected language.",
-    "🔊 Sesli dinle": "🔊 Listen", "⏹ Durdur": "⏹ Stop"
+    "Eser kartındaki Sesli dinle düğmesi bilgileri seçili dilde okur.": "The Listen button on a monument card reads its details aloud in the selected language.",
+    "Sesli dinle": "Listen", "Durdur": "Stop"
   });
 });
 
@@ -1644,7 +1644,7 @@ function menuyuCiz() {
       <button class="cekmece-kapat" data-menu-kapat aria-label="Kapat">✕</button>
     </div>
     <div class="cekmece-profil">
-      <span class="profil-harf" aria-hidden="true">${uye ? oturum.ad.charAt(0).toLocaleUpperCase("tr") : "👤"}</span>
+      <span class="profil-harf" aria-hidden="true">${uye ? oturum.ad.charAt(0).toLocaleUpperCase("tr") : PROFIL_SIMGESI}</span>
       <span class="profil-yazi">
         <b>${uye ? oturum.ad : "Misafir"}</b>
         <small>${uye ? oturum.eposta : "Üye ol, pulların kaybolmasın"}</small>
@@ -1653,8 +1653,8 @@ function menuyuCiz() {
     ${uye ? "" : `<button class="dugme-ana cekmece-uye" data-menu-is="uye-ol">Üye ol / Giriş yap</button>`}
 
     <span class="cekmece-baslik">Gezi</span>
-    <button class="cekmece-satir" data-menu-is="pasaport"><span>🛂 Pasaportum</span><span class="cekmece-deger">${pullar.length} pul</span></button>
-    <button class="cekmece-satir" data-menu-is="sehir"><span>📍 Şehir</span><span class="cekmece-deger">${secilenSehir}</span></button>
+    <button class="cekmece-satir" data-menu-is="pasaport"><span>Pasaportum</span><span class="cekmece-deger">${pullar.length} pul</span></button>
+    <button class="cekmece-satir" data-menu-is="sehir"><span>Şehir</span><span class="cekmece-deger">${secilenSehir}</span></button>
 
     <span class="cekmece-baslik">Ayarlar</span>
     <div class="cekmece-dil" role="group" aria-label="Dil">
@@ -1663,7 +1663,7 @@ function menuyuCiz() {
     </div>
     ${anahtar("buyuk", "Büyük yazı", erisim.buyuk)}
     ${anahtar("kontrast", "Yüksek kontrast", erisim.kontrast)}
-    <span class="sade-not">Eser kartındaki 🔊 Sesli dinle düğmesi bilgileri seçili dilde okur.</span>
+    <span class="sade-not">Eser kartındaki Sesli dinle düğmesi bilgileri seçili dilde okur.</span>
 
     <span class="cekmece-baslik">Hakkında</span>
     <span class="sade-not">Veriler: Vakıf Katılım Vakıf Eserleri Envanteri — Bursa (2025), Konya (2024), Hatay (2022). Fotoğraflar: Vakıf Katılım.</span>
@@ -1738,7 +1738,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, {
     "PROFİL": "PROFILE", "Misafir": "Guest", "Üye ol, pulların kaybolmasın": "Sign up to keep your stamps",
-    "Gezi": "Trip", "🛂 Pasaportum": "🛂 My passport", "📍 Şehir": "📍 City", "Profil ve ayarlar": "Profile and settings",
+    "Gezi": "Trip", "Pasaportum": "My passport", "Şehir": "City", "Profil ve ayarlar": "Profile and settings",
     "Ayarlar": "Settings", "Hakkında": "About", "Kapat": "Close"
   });
   KALIPLAR.push([/^(\d+) pul$/, (m) => `${m[1]} stamps`]);
@@ -1806,11 +1806,11 @@ function sergileriAc() {
       <article class="sergi-kart ${durum}">
         <div class="sergi-ust"><span class="sergi-durum ${durum}">${DURUM_YAZI[durum]}</span><span class="sergi-sehir">${s.sehir}</span></div>
         <b class="sergi-ad">${s.ad}</b>
-        <span class="sergi-satir">📍 ${s.yer}</span>
-        <span class="sergi-satir">🗓️ <span>${s.tarihYazi}</span></span>
+        <span class="sergi-satir">${s.yer}</span>
+        <span class="sergi-satir"><span>${s.tarihYazi}</span></span>
         <p class="sergi-aciklama">${s.aciklama}</p>
         <div class="sergi-eylem">
-          ${durum === "bitti" ? "" : `<a class="kucuk-dugme" href="${yol}" target="_blank" rel="noopener">🧭 Yol tarifi</a>`}
+          ${durum === "bitti" ? "" : `<a class="kucuk-dugme yol" href="${yol}" target="_blank" rel="noopener">Yol tarifi</a>`}
           <a class="kucuk-dugme ikincil" href="${s.kaynak}" target="_blank" rel="noopener">Haberi oku</a>
         </div>
       </article>`;
@@ -1841,7 +1841,7 @@ const menuyuCizSergisiz = menuyuCiz;
 menuyuCiz = function () {
   const acik = SERGILER.filter((s) => sergiDurumu(s) === "acik").length;
   return menuyuCizSergisiz().replace('<span class="cekmece-baslik">Ayarlar</span>',
-    `<button class="cekmece-satir" data-sergiler><span>🖼️ Sergiler</span><span class="cekmece-deger">${acik ? acik + " açık" : ""}</span></button>
+    `<button class="cekmece-satir" data-sergiler><span>Sergiler</span><span class="cekmece-deger">${acik ? acik + " açık" : ""}</span></button>
     <span class="cekmece-baslik">Ayarlar</span>`);
 };
 
@@ -1854,7 +1854,7 @@ function sergiDuyurusu() {
   if (sehirde.length === 0) return;
   document.getElementById("sayac").insertAdjacentHTML("beforebegin", `
     <button class="sergi-duyuru" id="sergi-duyuru" data-sergiler>
-      <span class="sergi-duyuru-simge" aria-hidden="true">🖼️</span>
+      <span class="sergi-duyuru-simge" aria-hidden="true"></span>
       <span><small>ŞİMDİ AÇIK SERGİ</small><b>${sehirde[0].ad}</b></span>
       <span aria-hidden="true">›</span>
     </button>`);
@@ -1868,7 +1868,7 @@ if (document.getElementById("liste").children.length) sergiDuyurusu();
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, {
-    "SERGİLER": "EXHIBITIONS", "Sergiler": "Exhibitions", "🖼️ Sergiler": "🖼️ Exhibitions",
+    "SERGİLER": "EXHIBITIONS", "Sergiler": "Exhibitions", "Sergiler": "Exhibitions",
     "ŞİMDİ AÇIK SERGİ": "OPEN NOW", "Şimdi açık": "Open now", "Yakında": "Coming soon", "Sona erdi": "Ended",
     "Haberi oku": "Read the news", "İstanbul": "Istanbul",
     "Vakıf Eserleri Envanter Projesi'nin fotoğraf sergileri. Tarih ve saatleri gitmeden önce kurumdan teyit edin.":
@@ -1953,7 +1953,7 @@ eserKartiniAc = function (eserId) {
   const eser = ESERLER.find((e) => e.id === eserId);
   if (eser && eser.il === "Hatay") {
     document.querySelector("#eser-karti .rozetler").insertAdjacentHTML("afterend",
-      `<div class="deprem-notu" role="note"><span aria-hidden="true">⚠️</span><span>${DEPREM_NOTU}</span></div>`);
+      `<div class="deprem-notu" role="note"><span class="uyari-isaret" aria-hidden="true">!</span><span>${DEPREM_NOTU}</span></div>`);
   }
 };
 
@@ -1962,7 +1962,7 @@ function depremBandi() {
   if (eski) eski.remove();
   if (typeof secilenSehir === "undefined" || secilenSehir !== "Hatay") return;
   document.getElementById("sayac").insertAdjacentHTML("beforebegin", `
-    <div class="deprem-notu" id="deprem-bandi" role="note"><span aria-hidden="true">⚠️</span>
+    <div class="deprem-notu" id="deprem-bandi" role="note"><span class="uyari-isaret" aria-hidden="true">!</span>
       <span>Hatay envanteri 2023 depremlerinden önce hazırlandı. Eserlerin bugünkü durumu farklı olabilir.</span></div>`);
 }
 const sehirSecDepremsiz = sehirSec;
@@ -2028,14 +2028,14 @@ menuyuCiz = function () {
   const html = menuyuCizYuklemesiz();
   if (uygulamaModunda) return html;
   return html.replace('<span class="cekmece-baslik">Ayarlar</span>',
-    `<button class="cekmece-satir" data-yukle><span>📲 Ana ekrana ekle</span><span class="cekmece-deger">›</span></button>
+    `<button class="cekmece-satir" data-yukle><span>Ana ekrana ekle</span><span class="cekmece-deger">›</span></button>
     <span class="cekmece-baslik">Ayarlar</span>`);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, {
-    "📲 Ana ekrana ekle": "📲 Add to home screen", "ANA EKRANA EKLE": "ADD TO HOME SCREEN",
+    "Ana ekrana ekle": "Add to home screen", "ANA EKRANA EKLE": "ADD TO HOME SCREEN",
     "Ana ekrana ekle": "Add to home screen", "Uygulama gibi, tam ekran açılır": "Opens full screen, like an app",
     "Safari'nin altındaki": "Tap the", "düğmesine bas": "button at the bottom of Safari",
     "Listeden": "Choose", "'yi seç.": ".", "Sağ üstteki Ekle'ye bas.": "Tap Add in the top right.", "Açılan pencerede Yükle'ye bas.": "Tap Install in the dialog that opens.",
@@ -2283,7 +2283,7 @@ sorBolumunuEkle = function (eserId) {
     <div class="kart talep-karti">
       <span class="kart-baslik">BİLGİ ÖNER</span>
       <p class="talep-aciklama">Bu eser hakkında bildiğin ek bir bilgi ya da fotoğrafın mı var? Bize gönder, ekibimiz inceleyip ekleyebilir.</p>
-      <button type="button" class="talep-dugme" id="talep-ac">💡 Bilgi / fotoğraf öner</button>
+      <button type="button" class="talep-dugme" id="talep-ac">Bilgi / fotoğraf öner</button>
     </div>`);
 };
 
@@ -2381,7 +2381,7 @@ async function talepGonder(olay) {
     });
     talepSonGonderim = Date.now();
     document.getElementById("talep-form").innerHTML = `
-      <div class="talep-tesekkur"><b>Teşekkürler! 🙏</b>
+      <div class="talep-tesekkur"><b>Teşekkürler!</b>
       <p>Önerin yönetim ekibine ulaştı. İncelendikten sonra eserin sayfasına eklenebilir.</p>
       <button type="button" class="talep-gonder" id="talep-bitti">Tamam</button></div>`;
   } catch (hata) {
@@ -2420,10 +2420,10 @@ document.addEventListener("DOMContentLoaded", () => {
     "BİLGİ ÖNER": "SUGGEST INFO",
     "Bu eser hakkında bildiğin ek bir bilgi ya da fotoğrafın mı var? Bize gönder, ekibimiz inceleyip ekleyebilir.":
       "Do you have extra information or a photo about this monument? Send it to us and our team may add it after review.",
-    "💡 Bilgi / fotoğraf öner": "💡 Suggest info / photo",
+    "Bilgi / fotoğraf öner": "Suggest info / photo",
     "Bilgi / fotoğraf öner": "Suggest info / photo", "Önerin": "Your suggestion", "Gönder": "Send",
     "Önerin yönetim ekibine iletilir; incelenmeden yayınlanmaz.": "Your suggestion goes to the admin team and is not published before review.",
-    "Teşekkürler! 🙏": "Thank you! 🙏", "Tamam": "OK"
+    "Teşekkürler!": "Thank you!", "Tamam": "OK"
   });
 });
 
@@ -2438,8 +2438,8 @@ function haritaIosMu() {
 function haritaSecenekleriAc(ad, google, apple) {
   haritaSecenekleriKapat();
   const secenekler = [
-    { yazi: "Apple Haritalar", ikon: "🍎", adres: apple },
-    { yazi: "Google Haritalar", ikon: "🗺️", adres: google }
+    { yazi: "Apple Haritalar", ikon: "", adres: apple },
+    { yazi: "Google Haritalar", ikon: "", adres: google }
   ];
   if (haritaIosMu() === false) secenekler.reverse();      // telefonda en sık kullanılan başta
   document.body.insertAdjacentHTML("beforeend", `
@@ -2464,8 +2464,8 @@ eylemDugmeleri = function (eser) {
   const adres = yolTarifiAdresleri(eser);
   return `
     <div class="eylemler">
-      <button class="eylem birincil" data-harita-ac data-ad="${guvenli(eser.ad)}" data-google="${adres.google}" data-apple="${adres.apple}">🧭 Haritalar ile aç</button>
-      <button class="eylem" data-haritada-gor="${eser.id}">🗺️ Haritada gör</button>
+      <button class="eylem birincil" data-harita-ac data-ad="${guvenli(eser.ad)}" data-google="${adres.google}" data-apple="${adres.apple}">Haritalar ile aç</button>
+      <button class="eylem" data-haritada-gor="${eser.id}">Haritada gör</button>
     </div>`;
 };
 
@@ -2488,7 +2488,82 @@ document.addEventListener("keydown", (olay) => { if (olay.key === "Escape") hari
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, {
-    "🧭 Haritalar ile aç": "🧭 Open in Maps", "Haritalar ile aç": "Open in Maps",
+    "Haritalar ile aç": "Open in Maps", "Haritalar ile aç": "Open in Maps",
     "Apple Haritalar": "Apple Maps", "Google Haritalar": "Google Maps", "Vazgeç": "Cancel"
   });
+});
+
+
+/* ================= SADE GÖRÜNÜM: BUGÜNÜN ESERİ ================= */
+// Keşfet'in en üstünde, güne göre değişen büyük bir eser kartı. Arama ya da filtre varken gizlenir.
+const PROFIL_SIMGESI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.500-4 4.500-6 8-6s6.500 2 8 6"/></svg>';
+let bugunSayac = 0;
+
+function bugununEseri() {
+  const sayi = ++bugunSayac;
+  const eski = document.getElementById("bugun-eser");
+  if (eski) eski.remove();
+  const liste = document.getElementById("liste");
+  const cipler = document.getElementById("cipler");
+  if (!liste || !cipler) return;
+  const adaylar = Array.from(liste.querySelectorAll(".satir[data-id]")).map((s) => s.dataset.id);
+  if (adaylar.length === 0) return;
+  const gun = Math.floor(Date.now() / 86400000);
+  let sira = 0;
+  const dene = () => {
+    if (sayi !== bugunSayac || sira >= 8 || sira >= adaylar.length) return;
+    const id = adaylar[(gun + sira) % adaylar.length];
+    const eser = (typeof ESERLER !== "undefined") ? ESERLER.find((e) => e.id === id) : null;
+    const resim = new Image();
+    resim.onload = () => {
+      if (sayi !== bugunSayac || !eser || document.getElementById("bugun-eser")) return;
+      const d = document.createElement("button");
+      d.type = "button"; d.id = "bugun-eser"; d.className = "bugun"; d.dataset.eser = id;
+      d.style.backgroundImage = `url("foto/${id}/01.jpg")`;
+      d.innerHTML = `<small>BUGÜNÜN ESERİ</small><b>${guvenli(eser.ad)}</b><span>${guvenli([eser.tur, eser.il, eser.ilce].filter(Boolean).join(" · "))}</span>`;
+      cipler.before(d);
+      bugunGorunurluk();
+    };
+    resim.onerror = () => { sira++; dene(); };
+    resim.src = `foto/${id}/01.jpg`;
+  };
+  dene();
+}
+
+function bugunGorunurluk() {
+  const d = document.getElementById("bugun-eser");
+  if (!d) return;
+  const arama = document.getElementById("ara");
+  const secili = document.querySelector("#cipler .cip.secili");
+  const filtreli = (arama && arama.value.trim() !== "") || (secili && secili !== document.querySelector("#cipler .cip"));
+  d.hidden = Boolean(filtreli);
+}
+
+document.addEventListener("click", (olay) => {
+  const d = olay.target.closest("#bugun-eser");
+  if (d) {
+    const satir = document.querySelector(`#liste .satir[data-id="${d.dataset.eser}"]`);
+    if (satir) satir.click();
+    return;
+  }
+  if (olay.target.closest("#cipler")) setTimeout(bugunGorunurluk, 0);
+});
+document.addEventListener("input", (olay) => { if (olay.target.id === "ara") setTimeout(bugunGorunurluk, 0); });
+
+const sehirSecBugunsuz = sehirSec;
+sehirSec = function (ad) { sehirSecBugunsuz(ad); bugununEseri(); };
+const anaEkraniKurBugunsuz = anaEkraniKur;
+anaEkraniKur = function () { anaEkraniKurBugunsuz(); bugununEseri(); };
+if (document.getElementById("liste") && document.getElementById("liste").children.length) bugununEseri();
+
+// Telefonun durum çubuğu da lacivert olsun
+(function () {
+  let m = document.querySelector('meta[name="theme-color"]');
+  if (!m) { m = document.createElement("meta"); m.name = "theme-color"; document.head.appendChild(m); }
+  m.content = "#16243F";
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, { "BUGÜNÜN ESERİ": "MONUMENT OF THE DAY" });
 });

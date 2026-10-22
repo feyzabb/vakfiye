@@ -66,7 +66,7 @@ const SOZLUK = {
   "Harita yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.": "The map could not load. Check your internet connection and reload.",
 
   // Tara
-  "📷 Kamerayı aç": "📷 Open camera",
+  "Kamerayı aç": "Open camera",
   "Eserdeki ya da pasaportundaki QR kodu kameraya göster.": "Show the QR code on the monument or in your passport to the camera.",
   "Kamera yoksa okutulacak kodu listeden seç:": "No camera? Pick the code from the list:",
   "Kamera açılamadı. Tarayıcıda kamera iznini ver ya da kodu listeden seç.": "The camera could not open. Allow camera access or pick the code from the list.",
