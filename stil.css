@@ -812,3 +812,27 @@ body.kontrast .etiket.ai-yorumu, body.kontrast .etiket.belirsiz { background: #f
 .talep-tesekkur { text-align: center; display: flex; flex-direction: column; gap: 10px; padding: 12px 0; }
 body.kontrast .talep-kutu { background: #fff; color: #000; border: 2px solid #000; }
 body.kontrast .talep-dugme, body.kontrast .talep-gonder { background: #000; color: #fff; }
+
+/* ===== HARİTALAR İLE AÇ ===== */
+.harita-katman {
+  position: fixed; inset: 0; z-index: 1100; background: rgba(0, 0, 0, .5);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.harita-kutu {
+  width: 100%; max-width: 520px; background: #FBF8F1; border-radius: 20px 20px 0 0;
+  padding: 18px 16px calc(20px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px;
+}
+.harita-kutu > b { font-size: 17px; }
+.harita-eser { font-size: 13px; color: #6B6455; margin-top: -6px; }
+.harita-secenek {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px;
+  background: #fff; border: 1px solid #DDD5C4; color: inherit; text-decoration: none;
+  font-family: var(--govde-yazi); font-size: 16px; font-weight: 700;
+}
+.harita-ikon { font-size: 22px; }
+.harita-vazgec {
+  border: 0; background: transparent; padding: 12px; cursor: pointer;
+  font-family: var(--govde-yazi); font-size: 15px; font-weight: 700; color: #6B6455;
+}
+body.kontrast .harita-kutu { background: #fff; color: #000; border: 2px solid #000; }
+body.kontrast .harita-secenek { border: 2px solid #000; }

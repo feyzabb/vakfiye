@@ -2405,3 +2405,69 @@ document.addEventListener("DOMContentLoaded", () => {
     "Teşekkürler! 🙏": "Thank you! 🙏", "Tamam": "OK"
   });
 });
+
+
+/* ================= HARİTALAR İLE AÇ: APPLE / GOOGLE SEÇİMİ ================= */
+// "Haritalar ile aç" düğmesine basınca alttan Apple Haritalar / Google Haritalar seçeneği çıkar.
+function haritaIosMu() {
+  const ua = navigator.userAgent || "";
+  return /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+}
+
+function haritaSecenekleriAc(ad, google, apple) {
+  haritaSecenekleriKapat();
+  const secenekler = [
+    { yazi: "Apple Haritalar", ikon: "🍎", adres: apple },
+    { yazi: "Google Haritalar", ikon: "🗺️", adres: google }
+  ];
+  if (haritaIosMu() === false) secenekler.reverse();      // telefonda en sık kullanılan başta
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="harita-katman" id="harita-katman" role="dialog" aria-modal="true" aria-labelledby="harita-baslik">
+      <div class="harita-kutu">
+        <b id="harita-baslik">Haritalar ile aç</b>
+        <span class="harita-eser">${guvenli(ad)}</span>
+        ${secenekler.map((s) => `<a class="harita-secenek" href="${s.adres}" target="_blank" rel="noopener" data-harita-kapat>
+          <span class="harita-ikon" aria-hidden="true">${s.ikon}</span>${s.yazi}</a>`).join("")}
+        <button type="button" class="harita-vazgec" data-harita-kapat>Vazgeç</button>
+      </div>
+    </div>`);
+}
+
+function haritaSecenekleriKapat() {
+  const k = document.getElementById("harita-katman");
+  if (k) k.remove();
+}
+
+// Eser kartındaki ve harita altındaki düğmeler: iki ayrı bağlantı yerine tek düğme
+eylemDugmeleri = function (eser) {
+  const adres = yolTarifiAdresleri(eser);
+  return `
+    <div class="eylemler">
+      <button class="eylem birincil" data-harita-ac data-ad="${guvenli(eser.ad)}" data-google="${adres.google}" data-apple="${adres.apple}">🧭 Haritalar ile aç</button>
+      <button class="eylem" data-haritada-gor="${eser.id}">🗺️ Haritada gör</button>
+    </div>`;
+};
+
+document.addEventListener("click", (olay) => {
+  const ac = olay.target.closest("[data-harita-ac]");
+  if (ac) { olay.preventDefault(); return haritaSecenekleriAc(ac.dataset.ad, ac.dataset.google, ac.dataset.apple); }
+  // Sergiler: "Yol tarifi" bağlantısı da aynı seçeneği göstersin
+  const sergi = olay.target.closest("a.kucuk-dugme");
+  if (sergi && /google\.com\/maps\/search/.test(sergi.href)) {
+    olay.preventDefault();
+    const sorgu = new URL(sergi.href).searchParams.get("query") || "";
+    const kart = sergi.closest(".sergi-kart");
+    const ad = kart && kart.querySelector(".sergi-ad") ? kart.querySelector(".sergi-ad").textContent : sorgu;
+    return haritaSecenekleriAc(ad, sergi.href, "https://maps.apple.com/?q=" + encodeURIComponent(sorgu));
+  }
+  if (olay.target.closest("[data-harita-kapat]") || olay.target.id === "harita-katman") haritaSecenekleriKapat();
+}, true);
+document.addEventListener("keydown", (olay) => { if (olay.key === "Escape") haritaSecenekleriKapat(); });
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "🧭 Haritalar ile aç": "🧭 Open in Maps", "Haritalar ile aç": "Open in Maps",
+    "Apple Haritalar": "Apple Maps", "Google Haritalar": "Google Maps", "Vazgeç": "Cancel"
+  });
+});
