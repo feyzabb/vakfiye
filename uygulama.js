@@ -1405,13 +1405,34 @@ function oturumuKaydet(yanit, ad) {
   hesapYaz("vakfiye:oturum", oturum);
 }
 
-// Erişim anahtarı süresi dolduysa yenile
+/* ================= OTURUM SÜRESİ VE ÇIKIŞ DÜZELTMESİ ================= */
+// 1) Yenileme jetonu geçersizse oturum temizlenir ve yeniden giriş istenir (yerel pullar silinmez;
+//    giriş yapınca pullariEsitle() onları hesaba gönderir).
+// 2) Aynı anda gelen birkaç yenileme isteği tek isteğe indirilir (jeton tek kullanımlık).
+let yenilemeSozu = null;
+
+function oturumSuresiDoldu() {
+  if (oturum === null || oturum.id === undefined) return;
+  oturum = null;
+  try { localStorage.removeItem("vakfiye:oturum"); sessionStorage.removeItem("vakfiye:oturum"); } catch (hata) { }
+  if (typeof bildir === "function") bildir("Oturumun sona erdi, tekrar giriş yap");
+  setTimeout(() => girisEkraniniAc("gir"), 0);
+}
+
 async function gecerliToken() {
   if (oturum === null || oturum.yenile === undefined) return null;
   if (Date.now() < oturum.bitis - 60000) return oturum.erisim;
-  const yanit = await bulutIstek("/auth/v1/token?grant_type=refresh_token", { yontem: "POST", govde: { refresh_token: oturum.yenile } });
-  oturumuKaydet(yanit, oturum.ad);
-  return oturum.erisim;
+  if (yenilemeSozu === null) {
+    const ad = oturum.ad;
+    yenilemeSozu = bulutIstek("/auth/v1/token?grant_type=refresh_token", { yontem: "POST", govde: { refresh_token: oturum.yenile } })
+      .then((yanit) => { oturumuKaydet(yanit, ad); return oturum.erisim; })
+      .catch((hata) => {
+        if (hata && (hata.durum === 400 || hata.durum === 401 || hata.durum === 403)) oturumSuresiDoldu();
+        throw hata;
+      })
+      .finally(() => { yenilemeSozu = null; });
+  }
+  return yenilemeSozu;
 }
 
 // Pulları eşitle: telefondakiler ile hesaptakileri birleştir
@@ -1489,7 +1510,7 @@ document.addEventListener("submit", async (olay) => {
     document.getElementById("g-sifre").value = "";
     anaEkranaGec();
     bildir(`Hoş geldin, ${oturum.ad.split(" ")[0]}`);
-    pullariEsitle().catch(() => {});
+    pullariEsitle().catch((h) => console.warn("Pul eşitlenemedi", h));
   } catch (hata) {
     hataAlani.textContent = hataMesaji(hata);
   } finally {
@@ -1502,13 +1523,13 @@ document.addEventListener("submit", async (olay) => {
 const pulAlBulutsuz = pulAl;
 pulAl = function (id) {
   pulAlBulutsuz(id);
-  if (oturum && oturum.id) pullariEsitle().catch(() => {});
+  if (oturum && oturum.id) pullariEsitle().catch((h) => console.warn("Pul eşitlenemedi", h));
 };
 
 // Çıkış yaparken sunucudaki oturumu da kapat
 document.addEventListener("click", (olay) => {
   if (olay.target.closest('[data-ayar="cikis"]') && oturum && oturum.erisim) {
-    bulutIstek("/auth/v1/logout", { yontem: "POST", token: oturum.erisim }).catch(() => {});
+    bulutIstek("/auth/v1/logout?scope=local", { yontem: "POST", token: oturum.erisim }).catch(() => {});
   }
 }, true);
 
@@ -1518,7 +1539,7 @@ if (oturum && oturum.ad && oturum.id === undefined) {
   try { localStorage.removeItem("vakfiye:oturum"); } catch (hata) { }
 }
 // Uygulama açılınca pulları eşitle
-if (oturum && oturum.id) pullariEsitle().catch(() => {});
+if (oturum && oturum.id) pullariEsitle().catch((h) => console.warn("Pul eşitlenemedi", h));
 
 // Giriş ekranındaki not
 const girisNotu = document.querySelector(".giris-not");
@@ -1563,7 +1584,7 @@ hesapYaz = function (anahtar, deger) {
 if (oturum === null) {
   try {
     const kisa = sessionStorage.getItem("vakfiye:oturum");
-    if (kisa) { oturum = JSON.parse(kisa); pullariEsitle().catch(() => {}); }
+    if (kisa) { oturum = JSON.parse(kisa); pullariEsitle().catch((h) => console.warn("Pul eşitlenemedi", h)); }
   } catch (hata) { }
 }
 
@@ -1696,7 +1717,7 @@ document.addEventListener("click", (olay) => {
   if (ne === "sehir") sehirPaneliniAc();
   if (ne === "uye-ol") girisEkraniniAc("uye");
   if (ne === "cikis") {
-    if (oturum && oturum.erisim) bulutIstek("/auth/v1/logout", { yontem: "POST", token: oturum.erisim }).catch(() => {});
+    if (oturum && oturum.erisim) bulutIstek("/auth/v1/logout?scope=local", { yontem: "POST", token: oturum.erisim }).catch(() => {});
     oturumuKapat();
   }
 });
@@ -2088,7 +2109,7 @@ function yeniSifrePenceresi(parca) {
       document.getElementById("tanitim").hidden = true;
       anaEkranaGec();
       bildir("Şifren güncellendi. Hoş geldin, " + oturum.ad.split(" ")[0]);
-      pullariEsitle().catch(() => {});
+      pullariEsitle().catch((h) => console.warn("Pul eşitlenemedi", h));
     } catch (hata) {
       hataAlani.textContent = hataMesaji(hata);
     }
@@ -2334,7 +2355,7 @@ async function talepGonder(olay) {
   dugme.disabled = true;
   talepDurum(dosyalar.length ? "Fotoğraflar yükleniyor…" : "Gönderiliyor…", false);
   try {
-    const token = (typeof gecerliToken === "function" && oturum && oturum.yenile) ? await gecerliToken() : null;
+    const token = (typeof gecerliToken === "function" && oturum && oturum.yenile) ? await gecerliToken().catch(() => null) : null;
     const kimlik = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("t" + Date.now() + Math.random().toString(16).slice(2));
     const yollar = [];
     for (let i = 0; i < dosyalar.length; i++) {
