@@ -2444,7 +2444,7 @@ function haritaSecenekleriAc(ad, google, apple) {
   if (haritaIosMu() === false) secenekler.reverse();      // telefonda en sık kullanılan başta
   document.body.insertAdjacentHTML("beforeend", `
     <div class="harita-katman" id="harita-katman" role="dialog" aria-modal="true" aria-labelledby="harita-baslik">
-      <div class="harita-kutu">
+      <div class="harita-pencere">
         <b id="harita-baslik">Haritalar ile aç</b>
         <span class="harita-eser">${guvenli(ad)}</span>
         ${secenekler.map((s) => `<a class="harita-secenek" href="${s.adres}" target="_blank" rel="noopener" data-harita-kapat>
@@ -2566,4 +2566,307 @@ if (document.getElementById("liste") && document.getElementById("liste").childre
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, { "BUGÜNÜN ESERİ": "MONUMENT OF THE DAY" });
+});
+
+
+/* ================= TASARIM 2: KEŞFET VİTRİNİ VE SAYFALAR ================= */
+// Yalnızca görünüm: veriler, filtreler, pullar ve gezinme mevcut işlevleri kullanır.
+const T2_VITRIN_FOTO = "foto/mevlana-turbesi-muze-konya/01.jpg";
+const T2_SEHIR_FOTO = {
+  Bursa: "foto/molla-fenari-camii/01.jpg",
+  Konya: "foto/mevlana-turbesi-muze-konya/03.jpg",
+  Hatay: "foto/habib-i-neccar-camii-ve-kulliyesi-hatay/03.jpg"
+};
+const T2_C = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const T2_IKON = {
+  cami: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M2.5 20.5h19M5 20.5v-5a5 5 0 0110 0v5M10 10.5V8.5M8.5 20.5v-3a1.5 1.5 0 013 0v3M18 20.5V9M20 20.5V9M17.5 9h3M19 9V5.5"/></svg>`,
+  mescit: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M3 20.5h18M5 20.5v-7h14v7M7.5 13.5a4.5 4.5 0 019 0M12 9V7M10 20.5v-3.5a2 2 0 014 0v3.5"/></svg>`,
+  kulliye: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M2 20.5h20M3 20.5v-4a3 3 0 016 0v4M9 20.5v-6a3 3 0 016 0v6M15 20.5v-4a3 3 0 016 0v4M12 11.5V9"/></svg>`,
+  medrese: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M3 20.5V8l9-4.5L21 8v12.5M3 20.5h18M8.5 20.5v-6a3.5 3.5 0 017 0v6M3 8h18"/></svg>`,
+  pin: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>`,
+  takvim: `<svg viewBox="0 0 24 24" ${T2_C}><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>`,
+  vakif: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M3 20.5h18M4 20.5V10M20 20.5V10M2.5 10L12 4l9.5 6M8 20.5v-7M12 20.5v-7M16 20.5v-7"/></svg>`,
+  damga: `<svg viewBox="0 0 24 24" ${T2_C}><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>`,
+  tara: `<svg viewBox="0 0 24 24" ${T2_C}><path d="M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4M7 12h10"/></svg>`,
+  ara: `<svg viewBox="0 0 24 24" ${T2_C} stroke-width="2"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>`,
+  ok: `<svg viewBox="0 0 24 24" ${T2_C} stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
+  yildiz: `<svg viewBox="0 0 24 24" ${T2_C} stroke-width="1.3"><path d="M6 6h12v12H6z"/><path d="M12 3.5l8.5 8.5-8.5 8.5L3.5 12z"/><circle cx="12" cy="12" r="1.6"/></svg>`
+};
+const T2_KATEGORI = [["Cami", "cami"], ["Mescit", "mescit"], ["Külliye", "kulliye"], ["Medrese", "medrese"]];
+
+function t2VitriniKur() {
+  const ara = document.getElementById("ara");
+  if (!ara || document.getElementById("t2-vitrin")) return;
+  const ana = ara.closest("main");
+  ana.insertAdjacentHTML("afterbegin", `
+    <section id="t2-vitrin">
+      <h1 class="t2-vitrin-baslik"><span>Geçmişin izlerini</span> <em>keşfet.</em></h1>
+      <p class="t2-vitrin-alt">Vakıf eserleriyle kültür yolculuğuna çık.</p>
+      <label class="t2-arama" id="t2-arama">${T2_IKON.ara}</label>
+    </section>
+    <section id="t2-govde">
+      <div class="t2-kategoriler" id="t2-kategoriler" role="group" aria-label="Kategoriler"></div>
+      <div class="t2-bolum" id="t2-one-cikan">
+        <div class="t2-bolum-ust"><h3>Öne Çıkan Eser</h3><button type="button" class="t2-link" data-t2-tumu><span>Tümünü gör</span>${T2_IKON.ok}</button></div>
+        <div id="t2-one-cikan-kart"></div>
+      </div>
+      <div class="t2-bolum" id="t2-sehirler">
+        <div class="t2-bolum-ust"><h3>Şehirleri Keşfet</h3></div>
+        <div class="t2-sehir-serit" id="t2-sehir-serit"></div>
+      </div>
+      <div class="t2-bolum-ust" id="t2-liste-baslik"><h3>Tüm Eserler</h3></div>
+    </section>`);
+  document.getElementById("t2-arama").appendChild(ara);
+  const vitrin = document.getElementById("t2-vitrin");
+  const resim = new Image();
+  resim.onload = () => vitrin.style.setProperty("--vitrin-foto", `url("${T2_VITRIN_FOTO}")`);
+  resim.src = T2_VITRIN_FOTO;
+  const eski = document.getElementById("bugun-eser");
+  if (eski && eski.classList.contains("bugun")) eski.remove();
+}
+
+function t2KategorileriCiz() {
+  const alan = document.getElementById("t2-kategoriler");
+  if (!alan) return;
+  alan.innerHTML = T2_KATEGORI.filter(([tur]) => ESERLER.some((e) => e.tur === tur)).map(([tur, k]) => `
+    <button type="button" class="t2-kat${secilenTur === tur ? " secili" : ""}" data-t2-tur="${tur}" aria-pressed="${secilenTur === tur}">
+      <span class="t2-kat-ikon">${T2_IKON[k]}</span><span>${tur}</span>
+    </button>`).join("");
+}
+
+function t2SehirleriCiz() {
+  const serit = document.getElementById("t2-sehir-serit");
+  if (!serit) return;
+  const sehirler = SEHIRLER.map((s) => s.ad).filter((ad) => ESERLER.some((e) => eserSehri(e) === ad));
+  serit.innerHTML = sehirler.map((ad) => {
+    const sayi = ESERLER.filter((e) => eserSehri(e) === ad).length;
+    const foto = T2_SEHIR_FOTO[ad] ? ` style='--foto:url("${T2_SEHIR_FOTO[ad]}")'` : "";
+    return `<button type="button" class="t2-sehir${secilenSehir === ad ? " secili" : ""}" data-t2-sehir="${ad}"${foto}>
+      <b>${ad}</b><small>${sayi} eser</small><span class="t2-ok">${T2_IKON.ok}</span></button>`;
+  }).join("");
+}
+
+function t2KisaBilgi(eser) {
+  const adaylar = eser.olgular.filter((o) => o.metin.length <= 110);
+  const secilen = adaylar.find((o) => o.kategori === "tarihce") || adaylar.find((o) => o.kategori !== "gunumuz") || null;
+  return secilen ? secilen.metin : [eser.tur, eser.ilce].filter(Boolean).join(" · ");
+}
+
+// 1. aşamadaki "Bugünün eseri" artık "Öne Çıkan Eser" bölümüne çizilir
+bugununEseri = function () {
+  const sayi = ++bugunSayac;
+  const yer = document.getElementById("t2-one-cikan-kart");
+  if (!yer) return;
+  const adaylar = Array.from(document.querySelectorAll("#liste .satir[data-id]")).map((s) => s.dataset.id);
+  if (adaylar.length === 0) { yer.innerHTML = ""; return; }
+  const gun = Math.floor(Date.now() / 86400000);
+  let sira = 0;
+  const dene = () => {
+    if (sayi !== bugunSayac || sira >= 10 || sira >= adaylar.length) return;
+    const id = adaylar[(gun * 7 + sira) % adaylar.length];
+    const eser = ESERLER.find((e) => e.id === id);
+    const resim = new Image();
+    resim.onload = () => {
+      if (sayi !== bugunSayac || !eser) return;
+      yer.innerHTML = `
+        <button type="button" class="t2-one-kart" id="bugun-eser" data-eser="${id}" style='--foto:url("foto/${id}/01.jpg")'>
+          <span class="t2-hap">${guvenli(eserSehri(eser))}</span>
+          <b>${guvenli(eser.ad)}</b>
+          <span class="t2-one-acik">${guvenli(t2KisaBilgi(eser))}</span>
+          <span class="t2-ok-daire">${T2_IKON.ok}</span>
+        </button>`;
+    };
+    resim.onerror = () => { sira++; dene(); };
+    resim.src = `foto/${id}/01.jpg`;
+  };
+  dene();
+};
+
+function t2Gorunurluk() {
+  const ara = document.getElementById("ara");
+  const filtreli = (ara && ara.value.trim() !== "") || (typeof secilenTur !== "undefined" && secilenTur !== "Tümü");
+  ["t2-one-cikan", "t2-sehirler"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = Boolean(filtreli);
+  });
+}
+
+function t2KesfetiYenile() {
+  t2VitriniKur();
+  t2KategorileriCiz();
+  t2SehirleriCiz();
+  t2Gorunurluk();
+}
+
+document.addEventListener("click", (olay) => {
+  const kat = olay.target.closest("[data-t2-tur]");
+  if (kat) {
+    secilenTur = secilenTur === kat.dataset.t2Tur ? "Tümü" : kat.dataset.t2Tur;
+    listeyiCiz(); t2KategorileriCiz(); t2Gorunurluk();
+    return;
+  }
+  const sehir = olay.target.closest("[data-t2-sehir]");
+  if (sehir) {
+    sehirSec(secilenSehir === sehir.dataset.t2Sehir ? TUM_SEHIRLER : sehir.dataset.t2Sehir);
+    return;
+  }
+  if (olay.target.closest("[data-t2-tumu]")) {
+    const hedef = document.getElementById("t2-liste-baslik");
+    if (hedef) hedef.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if (olay.target.closest("#cipler")) setTimeout(() => { t2KategorileriCiz(); t2Gorunurluk(); }, 0);
+});
+document.addEventListener("input", (olay) => { if (olay.target.id === "ara") setTimeout(t2Gorunurluk, 0); });
+
+const t2SehirSecOncesi = sehirSec;
+sehirSec = function (ad) { t2SehirSecOncesi(ad); t2SehirleriCiz(); t2Gorunurluk(); };
+const t2AnaEkranOncesi = anaEkraniKur;
+anaEkraniKur = function () { t2AnaEkranOncesi(); t2KesfetiYenile(); bugununEseri(); };
+if (document.getElementById("liste") && document.getElementById("liste").children.length) { t2KesfetiYenile(); bugununEseri(); }
+
+/* ---------- Eser detay: şehir, meta satırı, sekmeler, vakıf bilgisi, pasaport ---------- */
+function t2KartiDuzenle(eserId) {
+  const kart = document.getElementById("eser-karti");
+  const eser = ESERLER.find((e) => e.id === eserId);
+  if (!kart || !eser) return;
+  kart.classList.add("t2-kart");
+  const baslik = kart.querySelector(".eser-baslik");
+  if (!baslik || kart.querySelector(".t2-meta")) return;
+
+  baslik.insertAdjacentHTML("beforebegin", `<span class="t2-hap t2-hap-acik">${guvenli(eserSehri(eser))}</span>`);
+  const meta = [[T2_IKON.cami, eser.tur], [T2_IKON.pin, eser.ilce], eser.donem ? [T2_IKON.takvim, eser.donem] : null].filter((m) => m && m[1]);
+  baslik.insertAdjacentHTML("afterend", `<div class="t2-meta">${meta.map(([i, t]) => `<span>${i}<span>${guvenli(t)}</span></span>`).join("")}</div>`);
+
+  // Bilgiler kartı: kategori sekmeleri (Hakkında = hepsi)
+  const bilgiKart = Array.from(kart.querySelectorAll(".kart")).find((k) => k.querySelector(".kategori"));
+  if (bilgiKart) {
+    const adlar = [];
+    let mevcut = -1;
+    Array.from(bilgiKart.children).forEach((c) => {
+      if (c.classList.contains("kategori")) { mevcut++; adlar.push(c.textContent.trim()); }
+      if (mevcut >= 0 && (c.classList.contains("kategori") || c.classList.contains("olgu"))) c.dataset.t2Bolum = mevcut;
+    });
+    if (adlar.length > 1) {
+      bilgiKart.querySelector(".kart-baslik").insertAdjacentHTML("afterend", `
+        <div class="t2-sekmeler" role="tablist">
+          <button type="button" role="tab" class="secili" aria-selected="true" data-t2-sekme="-1">Hakkında</button>
+          ${adlar.map((a, i) => `<button type="button" role="tab" aria-selected="false" data-t2-sekme="${i}">${guvenli(a)}</button>`).join("")}
+        </div>`);
+    }
+    // Vakıf bilgisi: kitaptaki ilk vakıf cümlesi, sade bir kartta
+    const vakif = eser.olgular.find((o) => o.kategori === "vakif");
+    if (vakif) {
+      bilgiKart.insertAdjacentHTML("beforebegin", `
+        <div class="kart t2-vakif">
+          <span class="t2-vakif-ikon">${T2_IKON.vakif}</span>
+          <span><b>Vakıf Bilgisi</b><p>${guvenli(vakif.metin)}</p></span>
+        </div>`);
+    }
+  }
+
+  // Pasaport: rotadaki eserde gerçek akış (pul, eserdeki QR okutularak alınır)
+  const rota = rotaBul(eser.id);
+  const eylemler = kart.querySelector(".eylemler");
+  if (rota && eylemler) {
+    eylemler.insertAdjacentHTML("afterend", pullar.includes(eser.id)
+      ? `<div class="t2-pul-alindi">${T2_IKON.damga}<span><b>Pasaportunda</b><small><span>${rota}</span> · <span>Pul alındı</span></small></span></div>`
+      : `<div><button type="button" class="t2-pul-dugme" data-t2-tara>${T2_IKON.tara}<span>Pasaportuma ekle</span></button>
+           <small class="t2-pul-not">Eserdeki QR kodu okutunca pul pasaportuna eklenir.</small></div>`);
+  }
+}
+
+const t2EserKartiOncesi = eserKartiniAc;
+eserKartiniAc = function (eserId) {
+  t2EserKartiOncesi(eserId);
+  try { t2KartiDuzenle(eserId); } catch (hata) { console.warn("Kart düzeni", hata); }
+};
+
+document.addEventListener("click", (olay) => {
+  const sekme = olay.target.closest("[data-t2-sekme]");
+  if (sekme) {
+    const no = sekme.dataset.t2Sekme;
+    const kart = sekme.closest(".kart");
+    kart.querySelectorAll("[data-t2-sekme]").forEach((b) => {
+      b.classList.toggle("secili", b === sekme);
+      b.setAttribute("aria-selected", String(b === sekme));
+    });
+    kart.querySelectorAll("[data-t2-bolum]").forEach((el) => { el.hidden = no !== "-1" && el.dataset.t2Bolum !== no; });
+    return;
+  }
+  if (olay.target.closest("[data-t2-tara]")) {
+    const dugme = document.querySelector('.menu [data-sekme="tara"]');
+    if (dugme) dugme.click();
+  }
+});
+
+/* ---------- Harita işaretleri: lacivert ve altın ---------- */
+TUR_RENGI.cami = "#0B2540";
+TUR_RENGI.mescit = "#B08A3E";
+TUR_RENGI.kulliye = "#071B30";
+const t2IsaretOncesi = isaretYap;
+isaretYap = function (eser) {
+  if (!TUR_RENGI[eser.turId]) TUR_RENGI[eser.turId] = "#3D5574";
+  return t2IsaretOncesi(eser);
+};
+document.querySelectorAll(".lejant i:not(.bos)").forEach((i, n) => {
+  i.style.background = ["#0B2540", "#B08A3E", "#071B30"][n] || i.style.background;
+});
+
+/* ---------- Tara ve Pasaport başlıkları ---------- */
+const t2TaraOncesi = tarayiCiz;
+tarayiCiz = function () {
+  t2TaraOncesi.apply(this, arguments);
+  const alan = document.getElementById("sekme-tara");
+  if (alan && !alan.querySelector(".t2-sayfa-ust")) {
+    alan.insertAdjacentHTML("afterbegin", `<div class="t2-sayfa-ust"><h2>Tara</h2><p>Eserdeki QR kodu çerçevenin içine al.</p></div>`);
+  }
+};
+
+const t2PasaportOncesi = pasaportuCiz;
+pasaportuCiz = function () {
+  t2PasaportOncesi.apply(this, arguments);
+  const alan = document.getElementById("sekme-pasaport");
+  if (!alan || alan.querySelector(".t2-pasaport-kart")) return;
+  const toplam = Object.values(ROTALAR).reduce((t, r) => t + r.length, 0);
+  const alinan = pullar.filter((id) => rotaBul(id)).length;
+  alan.insertAdjacentHTML("afterbegin", `
+    <div class="t2-sayfa-ust"><h2>Pasaportum</h2><p>Ziyaret ettiğin eserlerin pullarını biriktir, rotaları tamamla.</p></div>
+    <div class="t2-pasaport-kart">
+      <div class="t2-pasaport-logo">${T2_IKON.yildiz}<span><b>VAKFİYE</b><small>KÜLTÜR PASAPORTU</small></span></div>
+      <div class="t2-pasaport-sayilar">
+        <span><b>${alinan}</b><small>Toplanan pul</small></span><i></i>
+        <span><b>${toplam}</b><small>Rota durağı</small></span>
+      </div>
+    </div>`);
+};
+
+/* ---------- Şehir paneli: fotoğraflı kartlar ---------- */
+const t2SehirPaneliOncesi = sehirPaneliniAc;
+sehirPaneliniAc = function () {
+  t2SehirPaneliOncesi.apply(this, arguments);
+  document.querySelectorAll("#sehir-perdesi .sehir-satir[data-sehir]").forEach((s) => {
+    const foto = T2_SEHIR_FOTO[s.dataset.sehir];
+    if (foto) { s.classList.add("t2-foto"); s.style.setProperty("--foto", `url("${foto}")`); }
+  });
+};
+
+(function () {
+  const m = document.querySelector('meta[name="theme-color"]');
+  if (m) m.content = "#0B2540";
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Geçmişin izlerini": "Discover the traces", "keşfet.": "of the past.",
+    "Vakıf eserleriyle kültür yolculuğuna çık.": "Set out on a cultural journey through endowed monuments.",
+    "Öne Çıkan Eser": "Featured Monument", "Tümünü gör": "See all", "Şehirleri Keşfet": "Explore Cities",
+    "Tüm Eserler": "All Monuments", "Medrese": "Madrasa", "Hakkında": "About", "Vakıf Bilgisi": "Endowment",
+    "Pasaportuma ekle": "Add to my passport", "Eserdeki QR kodu okutunca pul pasaportuna eklenir.": "Scan the QR code at the monument to add the stamp to your passport.",
+    "Pasaportunda": "In your passport", "Pul alındı": "Stamp collected", "Tara": "Scan",
+    "Eserdeki QR kodu çerçevenin içine al.": "Fit the QR code at the monument inside the frame.",
+    "Pasaportum": "My passport", "Ziyaret ettiğin eserlerin pullarını biriktir, rotaları tamamla.": "Collect stamps from the monuments you visit and complete the routes.",
+    "KÜLTÜR PASAPORTU": "CULTURE PASSPORT", "Toplanan pul": "Stamps collected", "Rota durağı": "Route stops"
+  });
 });
