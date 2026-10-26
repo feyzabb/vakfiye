@@ -1243,3 +1243,9 @@ body.kontrast #t2-vitrin { background: #000; }
 body.kontrast .t2-one-kart, body.kontrast .t2-sehir, body.kontrast .sehir-satir.t2-foto { background: #000; }
 body.kontrast .t2-kat-ikon { background: #fff; color: #000; border: 2px solid #000; }
 body.kontrast #sekme-tara { background: #000; }
+
+/* ===== HARİTA: ZİYARET EDİLEN ESERLER ===== */
+.pin.ziyaret { width: 34px; height: 34px; border: 2.5px solid #fff; box-shadow: 0 0 0 3px rgba(201,164,92,.35), 0 3px 8px rgba(7,27,48,.35); }
+.pin.ziyaret span { color: #071B30; font-weight: 800; font-size: 16px; }
+.kume.ziyaretli { box-shadow: 0 0 0 4px #C9A45C !important; }
+.lejant-ziyaret { font-weight: 700; color: var(--metin, #172B43); }

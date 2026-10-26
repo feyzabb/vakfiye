@@ -2870,3 +2870,67 @@ document.addEventListener("DOMContentLoaded", () => {
     "KÜLTÜR PASAPORTU": "CULTURE PASSPORT", "Toplanan pul": "Stamps collected", "Rota durağı": "Route stops"
   });
 });
+
+
+/* ================= HARİTA: ZİYARET EDİLEN ESERLER ALTIN ================= */
+const ZIYARET_RENGI = "#C9A45C";
+// Altın artık "ziyaret edildi" anlamına geliyor: mescit işaretleri karışmasın diye mavi-gri
+if (typeof TUR_RENGI !== "undefined") TUR_RENGI.mescit = "#4A6286";
+document.querySelectorAll(".lejant span").forEach((s) => {
+  const i = s.querySelector("i");
+  if (i && /Mescit/.test(s.textContent)) i.style.background = "#4A6286";
+});
+
+function ziyaretEdildiMi(eser) {
+  return typeof pullar !== "undefined" && Array.isArray(pullar) && pullar.includes(eser.id);
+}
+
+const ziyaretsizIsaret = isaretYap;
+isaretYap = function (eser) {
+  if (!ziyaretEdildiMi(eser)) return ziyaretsizIsaret(eser);
+  return L.divIcon({
+    className: "",
+    iconSize: [34, 42],
+    iconAnchor: [17, 40],
+    html: `<div class="pin ziyaret" style="--renk:${ZIYARET_RENGI}" title="Ziyaret ettin"><span>✓</span></div>`
+  });
+};
+
+function haritadakiZiyaretleriGuncelle() {
+  if (typeof haritaKatmani === "undefined" || !haritaKatmani || !window.L) return;
+  const eserler = new Map(ESERLER.map((e) => [e.ad + "|" + e.enlem + "|" + e.boylam, e]));
+  haritaKatmani.eachLayer((isaret) => {
+    if (!isaret.getLatLng || !isaret.options) return;
+    const yer = isaret.getLatLng();
+    const eser = eserler.get(isaret.options.title + "|" + yer.lat + "|" + yer.lng);
+    if (!eser) return;
+    isaret.options.ziyaret = ziyaretEdildiMi(eser);
+    isaret.setIcon(isaretYap(eser));
+    isaret.setZIndexOffset(isaret.options.ziyaret ? 1000 : 0);
+  });
+  // İçinde ziyaret edilmiş eser olan sayılı daireler altın halkalı
+  haritaKatmani.options.iconCreateFunction = (grup) => {
+    const ziyaretli = grup.getAllChildMarkers().some((m) => m.options.ziyaret);
+    return L.divIcon({ className: "", iconSize: [38, 38], html: `<div class="kume${ziyaretli ? " ziyaretli" : ""}">${grup.getChildCount()}</div>` });
+  };
+  if (haritaKatmani.refreshClusters) haritaKatmani.refreshClusters();
+}
+
+const ziyaretsizHaritaGoster = haritayiGoster;
+haritayiGoster = function () {
+  ziyaretsizHaritaGoster.apply(this, arguments);
+  setTimeout(haritadakiZiyaretleriGuncelle, 80);
+};
+
+// Lejanta "Ziyaret ettiğin" ekle
+(function () {
+  const lejant = document.querySelector(".lejant");
+  if (lejant && !lejant.querySelector(".lejant-ziyaret")) {
+    lejant.insertAdjacentHTML("afterbegin", `<span class="lejant-ziyaret"><i style="background:${ZIYARET_RENGI}"></i>Ziyaret ettiğin</span>`);
+  }
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, { "Ziyaret ettiğin": "Visited", "Ziyaret ettin": "You visited" });
+});
