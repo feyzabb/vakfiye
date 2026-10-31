@@ -1286,3 +1286,18 @@ body.kontrast .ceviri-etiket { background: #fff; color: #000; border: 1px solid 
 .hikaye-onizleme { width: 62%; align-self: center; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.2); }
 .hikaye-indir { align-self: center; }
 body.kontrast .terim { text-decoration-color: #000; }
+
+/* ================= ESER KARTI: KAYNAKLAR ================= */
+.kaynak-kart { gap: 12px !important; }
+.kaynak-satir { display: flex; align-items: flex-start; gap: 12px; }
+.kaynak-ikon { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #F6F1E6; color: var(--altin-koyu, #8C6D2C); display: flex; align-items: center; justify-content: center; }
+.kaynak-ikon svg { width: 22px; height: 22px; }
+.kaynak-yazi b { display: block; font-family: var(--baslik-yazi, Georgia, serif); font-size: 15px; line-height: 1.35; color: var(--lacivert, #0B2540); }
+.kaynak-yazi small { display: block; margin-top: 3px; font-size: 12.5px; color: var(--soluk, #5F6B7A); }
+.kaynak-ac { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border: 1px solid var(--cizgi, #ECE5D7); border-radius: var(--r-dugme, 12px); color: var(--lacivert, #0B2540); font-size: 14px; font-weight: 600; text-decoration: none; background: #fff; }
+.kaynak-ac svg { width: 16px; height: 16px; color: var(--altin-koyu, #8C6D2C); }
+.kaynak-not { font-size: 12px; color: var(--soluk, #5F6B7A); }
+body.kontrast .kaynak-ikon { background: #fff; color: #000; border: 1px solid #000; }
+body.kontrast .kaynak-yazi b, body.kontrast .kaynak-yazi small, body.kontrast .kaynak-not { color: #000; }
+body.kontrast .kaynak-ac { color: #000; border-color: #000; }
+body.kontrast .kaynak-ac svg { color: #000; }
