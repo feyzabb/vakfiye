@@ -1315,3 +1315,44 @@ body.kontrast .kaynak-ac svg { color: #000; }
   overflow: hidden;
 }
 body.kontrast #sekme-oyun > .vakfiye-oyun { border-color: #000; box-shadow: none; }
+
+/* ================= OYUN: YATAY EKRAN ================= */
+.oyun-yatay-uyari { display: none; }
+/* Telefon dikeyken: oyunun üstünde "yatay çevir" uyarısı */
+@media (orientation: portrait) and (max-width: 600px) {
+  body.oyun-acik:not(.oyun-dikey-tamam) .oyun-yatay-uyari {
+    display: flex; position: fixed; inset: 0; z-index: 1000;
+    align-items: center; justify-content: center; padding: 24px 16px;
+    background: rgba(7, 27, 48, .92);
+  }
+}
+.oyun-yatay-kart {
+  max-width: 320px; width: 100%; background: var(--krem, #FAF7F1); color: var(--metin, #172B43);
+  border: 1px solid var(--altin, #C9A45C); border-radius: var(--r-kart, 16px);
+  padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+}
+.oyun-yatay-kart strong { font-family: "Playfair Display", serif; font-size: 22px; color: var(--lacivert, #0B2540); }
+.oyun-yatay-kart p { margin: 0; font-size: 15px; line-height: 1.45; }
+.oyun-yatay-kart .oyun-yatay-not { font-size: 13px; color: var(--soluk, #5F6B7A); }
+.oyun-yatay-ikon { width: 72px; height: 72px; fill: none; stroke: var(--lacivert, #0B2540); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.oyun-yatay-ikon .oyun-yatay-yeni { stroke: var(--altin, #C9A45C); }
+.oyun-yatay-kart button {
+  width: 100%; font: 600 15px Inter, sans-serif; border-radius: var(--r-dugme, 12px); padding: 12px 14px; cursor: pointer;
+}
+.oyun-yatay-tam { background: var(--lacivert, #0B2540); color: #fff; border: none; margin-top: 6px; }
+.oyun-yatay-gec { background: transparent; color: var(--lacivert, #0B2540); border: 1px solid var(--cizgi, #ECE5D7); }
+.oyun-yatay-tam[hidden] { display: none; }
+body.kontrast .oyun-yatay-kart { background: #fff; color: #000; border-color: #000; }
+body.kontrast .oyun-yatay-kart strong, body.kontrast .oyun-yatay-gec { color: #000; }
+
+/* Telefon yatayken: oyun bütün ekranı kaplar, üst çubuk ve alt menü görünmez */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.oyun-acik #sekme-oyun {
+    position: fixed; inset: 0; z-index: 1000; padding: 0; margin: 0;
+    background: #071B30;
+    padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+  }
+  body.oyun-acik #sekme-oyun > .vakfiye-oyun {
+    height: 100%; min-height: 0; border: none; border-radius: 0; box-shadow: none;
+  }
+}

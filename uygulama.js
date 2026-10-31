@@ -3472,3 +3472,62 @@ if (new URLSearchParams(location.search).has("meydan")) {
   if (document.readyState === "complete") oyunaGec();
   else window.addEventListener("load", oyunaGec);
 }
+
+
+/* ================= OYUN: YATAY EKRAN ================= */
+// Oyun telefonda yatay ekranda oynanır. Oyun sekmesi açıkken body'ye "oyun-acik" sınıfı eklenir:
+// dikeyde "telefonunu yatay çevir" uyarısı çıkar, yatayda oyun bütün ekranı kaplar (stil.css aynı başlık).
+
+const eskiSekmeyeGecYatay = sekmeyeGec;
+sekmeyeGec = function (sekme) {
+  eskiSekmeyeGecYatay(sekme);
+  document.body.classList.toggle("oyun-acik", sekme === "oyun");
+  // Uyarı alt menüyü örtmesin: kullanıcı başka sekmeye geçebilsin
+  const menu = document.querySelector(".menu"), uyari = document.querySelector(".oyun-yatay-uyari");
+  if (menu && uyari) uyari.style.bottom = menu.offsetHeight + "px";
+  if (sekme !== "oyun" && document.fullscreenElement) document.exitFullscreen().catch(() => { });
+};
+
+(function yatayUyarisiKur() {
+  const uyari = document.createElement("div");
+  uyari.className = "oyun-yatay-uyari";
+  uyari.innerHTML = `
+    <div class="oyun-yatay-kart">
+      <svg class="oyun-yatay-ikon" viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="22" y="8" width="20" height="34" rx="3"/>
+        <rect x="14" y="38" width="36" height="18" rx="3" class="oyun-yatay-yeni"/>
+        <path d="M50 18a14 14 0 0 1 4 12"/><path d="M51 31l3 -1 1 3"/>
+      </svg>
+      <strong>Telefonunu yatay çevir</strong>
+      <p>Oyun yatay ekranda tam boyutta açılır.</p>
+      <p class="oyun-yatay-not">Çevirince dönmüyorsa telefonun ekran döndürme kilidini kapat.</p>
+      <button type="button" class="oyun-yatay-tam" hidden>Tam ekran aç</button>
+      <button type="button" class="oyun-yatay-gec">Dikey oynamaya devam et</button>
+    </div>`;
+  document.getElementById("ana").appendChild(uyari);
+
+  // Android'de tam ekrana geçip yönü yataya kilitleyebiliriz (iPhone desteklemez, düğme gizli kalır)
+  const tam = uyari.querySelector(".oyun-yatay-tam");
+  if (document.fullscreenEnabled && screen.orientation && screen.orientation.lock) tam.hidden = false;
+  tam.addEventListener("click", async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+      await screen.orientation.lock("landscape");
+    } catch (hata) { }
+  });
+
+  uyari.querySelector(".oyun-yatay-gec").addEventListener("click", () => {
+    document.body.classList.add("oyun-dikey-tamam");
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "Telefonunu yatay çevir": "Turn your phone sideways",
+    "Oyun yatay ekranda tam boyutta açılır.": "The game opens full size in landscape.",
+    "Çevirince dönmüyorsa telefonun ekran döndürme kilidini kapat.": "If the screen doesn't rotate, turn off your phone's rotation lock.",
+    "Tam ekran aç": "Open full screen",
+    "Dikey oynamaya devam et": "Keep playing in portrait"
+  });
+});
