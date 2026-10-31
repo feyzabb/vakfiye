@@ -1301,3 +1301,17 @@ body.kontrast .kaynak-ikon { background: #fff; color: #000; border: 1px solid #0
 body.kontrast .kaynak-yazi b, body.kontrast .kaynak-yazi small, body.kontrast .kaynak-not { color: #000; }
 body.kontrast .kaynak-ac { color: #000; border-color: #000; }
 body.kontrast .kaynak-ac svg { color: #000; }
+
+/* ================= OYUN: GERÇEK OYUN PAKETİ ================= */
+/* Oyunun içi kendi görünümünde kalır; çevresine uygulamanın lacivert çerçevesi gelir. */
+#sekme-oyun { padding-bottom: 12px; }
+#sekme-oyun > .vakfiye-oyun {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 420px;
+  border: 3px solid var(--lacivert, #0B2540);
+  border-radius: 19px;
+  box-shadow: 0 0 0 1px var(--altin, #C9A45C), 0 6px 18px rgba(11, 37, 64, .18);
+  overflow: hidden;
+}
+body.kontrast #sekme-oyun > .vakfiye-oyun { border-color: #000; box-shadow: none; }

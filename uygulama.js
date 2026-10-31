@@ -3421,3 +3421,54 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.assign(SOZLUK, {"KAYNAKLAR": "SOURCES", "Yayını aç": "Open publication", "Bilgilerin yanındaki sayfa numaraları bu kitaba aittir.": "Page numbers next to the facts refer to this book.", "Bursa Vakıf Eserleri, I. ve II. Cilt (Osmangazi, Yıldırım)": "Bursa Endowed Monuments, Volumes I and II (Osmangazi, Yıldırım)", "Bursa Vakıf Eserleri, III. Cilt (Diğer İlçeler)": "Bursa Endowed Monuments, Volume III (Other Districts)", "Konya Vakıf Eserleri Envanteri, I. Cilt": "Konya Endowed Monuments Inventory, Volume I", "Konya Vakıf Eserleri Envanteri, II. Cilt": "Konya Endowed Monuments Inventory, Volume II", "Hatay İli Vakıf Eserleri": "Endowed Monuments of Hatay Province"});
   if (typeof KALIPLAR !== "undefined") KALIPLAR.push([/^s\. (\d+(?:–\d+)?)$/, (m) => `p. ${m[1]}`]);
 });
+
+
+/* ================= OYUN: GERÇEK OYUN PAKETİ ================= */
+// oyun.js artık Rabia'nın "Vakfını kur" oyununun derlenmiş paketi (rabialtndl/vakfiye, npm run build:gomulu).
+// Oyun kendi stilleriyle Shadow DOM içinde çalışır; görselleri oyun.js'in yanındaki binalar/, insanlar/,
+// harita.webp ve vakfiye-parsomen.webp dosyalarından okur. Burada oyuna sözleşmedeki ek araçları veriyoruz.
+
+// Bina panelindeki "Gerçek örnekler": oyunun istediği türdeki eserler (hamam, han, medrese, çeşme...)
+oyunAraclari.eserler = (turler) => Promise.resolve(
+  ESERLER.filter((e) => turler.includes(e.turId)).map((e) => ({
+    id: e.id, ad: e.ad, il: e.il.toLocaleLowerCase("tr"), tur: e.turId, ilce: e.ilce,
+    gorsel: `foto/${e.id}/01.jpg`,
+    // Oyun binayı en iyi gösteren fotoğrafı seçer; olmayan numaraya düşerse 01'e döner
+    gorseller: ["01", "02", "03", "04", "05"].map((n) => `foto/${e.id}/${n}.jpg`)
+  }))
+);
+
+// Oyunda bir esere dokununca Keşfet'e geçip o eserin kartını aç
+oyunAraclari.eserAc = (id) => {
+  if (window.VakfiyeOyun) VakfiyeOyun.durdur();
+  oyunAcik = false;
+  sekmeyeGec("kesfet");
+  eserKartiniAc(id);
+};
+
+// Oyun, uygulamanın o anki dilinde açılır (oyuncu oyunun içinden yine değiştirebilir)
+Object.defineProperty(oyunAraclari, "dil", {
+  enumerable: true,
+  get: () => (document.documentElement.lang === "en" ? "en" : "tr")
+});
+
+// Pullar sonradan gelirse (girişte hesapla eşitlenince) oyun yeniden okusun
+const eskiPullariEsitleOyun = typeof pullariEsitle === "function" ? pullariEsitle : null;
+if (eskiPullariEsitleOyun) {
+  pullariEsitle = async function (...args) {
+    const sonuc = await eskiPullariEsitleOyun.apply(this, args);
+    window.dispatchEvent(new Event("vakfiye:pullar"));
+    return sonuc;
+  };
+}
+
+// Arkadaştan gelen meydan okuma bağlantısı (?meydan=...): uygulama açılınca doğrudan Oyun sekmesine geç
+if (new URLSearchParams(location.search).has("meydan")) {
+  const oyunaGec = () => {
+    const ana = document.getElementById("ana");
+    if (ana && ana.hidden) return setTimeout(oyunaGec, 400);   // tanıtım bitene kadar bekle
+    document.querySelector('.menu button[data-sekme="oyun"]')?.click();
+  };
+  if (document.readyState === "complete") oyunaGec();
+  else window.addEventListener("load", oyunaGec);
+}
