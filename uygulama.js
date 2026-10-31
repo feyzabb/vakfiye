@@ -2969,3 +2969,407 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof SOZLUK === "undefined") return;
   Object.assign(SOZLUK, { "Fotoğraflar:": "Photos:", "yana kaydır": "swipe" });
 });
+
+
+/* ================= ZİYARET ADABI, MİMARİ SÖZLÜK, PAYLAŞILABİLİR KART ================= */
+
+/* ---------- 1) Ziyaret adabı + namaz vakti ---------- */
+const ADAB = {
+  ibadet: ["Omuzları ve dizleri örten kıyafet giy; kadınlar başını örtmeli, yanında bir şal bulundur.",
+           "Ayakkabılarını girişte çıkar.",
+           "Namaz kılanların önünden geçme, sessiz ol.",
+           "Fotoğraf çekerken flaş kullanma, ibadet edenleri görüntüleme."],
+  turbe:  ["Sessiz ve saygılı ol; sandukalara dokunma, yaslanma.",
+           "İçeride halı varsa ayakkabılarını çıkar.",
+           "Omuzları ve dizleri örten kıyafet giy."],
+  kilise: ["Ayin sırasında sessiz ol ve fotoğraf çekme.",
+           "Omuzları ve dizleri örten kıyafet giy."]
+};
+const ADAB_TURU = { cami: "ibadet", mescit: "ibadet", kulliye: "ibadet", turbe: "turbe", "zaviye-tekke": "turbe", kilise: "kilise" };
+const VAKIT_ADI = { Fajr: ["Sabah", "Dawn"], Dhuhr: ["Öğle", "Noon"], Asr: ["İkindi", "Afternoon"], Maghrib: ["Akşam", "Sunset"], Isha: ["Yatsı", "Night"] };
+let acikAdabEseri = null;
+
+function bugunTarihi() {
+  const s = new Date();
+  return `${String(s.getDate()).padStart(2, "0")}-${String(s.getMonth() + 1).padStart(2, "0")}-${s.getFullYear()}`;
+}
+
+async function namazVakitleri(eser) {
+  const anahtar = `vakfiye:vakit:${bugunTarihi()}:${eser.enlem.toFixed(2)},${eser.boylam.toFixed(2)}`;
+  try { const sakli = localStorage.getItem(anahtar); if (sakli) return JSON.parse(sakli); } catch (hata) { }
+  const adres = `https://api.aladhan.com/v1/timings/${bugunTarihi()}?latitude=${eser.enlem}&longitude=${eser.boylam}&method=13`;
+  const yanit = await fetch(adres);
+  if (!yanit.ok) throw new Error("HTTP " + yanit.status);
+  const veri = await yanit.json();
+  const vakit = {};
+  Object.keys(VAKIT_ADI).forEach((k) => {
+    const m = String(veri.data.timings[k] || "").match(/(\d{1,2}):(\d{2})/);
+    if (m) vakit[k] = m[1].padStart(2, "0") + ":" + m[2];
+  });
+  try { localStorage.setItem(anahtar, JSON.stringify(vakit)); } catch (hata) { }
+  return vakit;
+}
+
+function namazUyarisi(vakit) {
+  const en = typeof dil !== "undefined" && dil === "en";
+  const simdi = new Date();
+  const dakika = simdi.getHours() * 60 + simdi.getMinutes();
+  const cuma = simdi.getDay() === 5;
+  let uyari = null, siradaki = null;
+  Object.keys(VAKIT_ADI).forEach((k) => {
+    if (!vakit[k]) return;
+    const [s, d] = vakit[k].split(":").map(Number);
+    const fark = s * 60 + d - dakika;                          // pozitif: vakte kalan dakika
+    const ad = VAKIT_ADI[k][en ? 1 : 0];
+    const cumaVakti = cuma && k === "Dhuhr";
+    const once = cumaVakti ? 45 : 20, sonra = cumaVakti ? 45 : 25;
+    if (!uyari && fark > 0 && fark <= once) {
+      uyari = cumaVakti
+        ? (en ? `Friday prayer at ${vakit[k]} (in ${fark} min). The mosque will be crowded during the sermon and prayer (about 45 min).`
+              : `Cuma namazı ${vakit[k]}'de (${fark} dk kaldı). Hutbe ve namaz boyunca (yaklaşık 45 dk) cami kalabalık olur.`)
+        : (en ? `${ad} prayer in ${fark} min (${vakit[k]}). Prayer takes about 20 minutes; consider visiting afterwards.`
+              : `${ad} namazına ${fark} dk var (${vakit[k]}). Namaz yaklaşık 20 dakika sürer; ziyaretini sonrasına bırakabilirsin.`);
+    } else if (!uyari && fark <= 0 && -fark <= sonra) {
+      uyari = en ? `${ad} prayer time began at ${vakit[k]}. The congregation may still be praying; wait before going in.`
+                 : `${ad} namazı vakti girdi (${vakit[k]}). Cemaat namazı sürüyor olabilir; içeri girmeden önce bekle.`;
+    }
+    if (siradaki === null && fark > 0) siradaki = `${en ? "Next prayer" : "Sıradaki vakit"}: ${ad} ${vakit[k]}`;
+  });
+  return { uyari, siradaki };
+}
+
+function namazKutusunuCiz() {
+  const kutu = document.getElementById("namaz-kutu");
+  if (!kutu || !acikAdabEseri) return;
+  const en = typeof dil !== "undefined" && dil === "en";
+  const vakit = kutu.vakitler;
+  if (vakit === undefined) { kutu.innerHTML = `<small class="namaz-not">${en ? "Loading prayer times…" : "Namaz vakitleri yükleniyor…"}</small>`; return; }
+  if (vakit === null) { kutu.innerHTML = `<small class="namaz-not">${en ? "Prayer times could not be loaded." : "Namaz vakitleri alınamadı."}</small>`; return; }
+  const { uyari, siradaki } = namazUyarisi(vakit);
+  kutu.innerHTML = `
+    ${uyari ? `<div class="namaz-uyari" role="status"><span class="uyari-isaret" aria-hidden="true">!</span><span>${uyari}</span></div>`
+            : `<div class="namaz-siradaki">${siradaki || (en ? "No more prayers today." : "Bugün başka vakit yok.")}</div>`}
+    <div class="namaz-vakitler">${Object.keys(VAKIT_ADI).filter((k) => vakit[k]).map((k) =>
+      `<span><small>${VAKIT_ADI[k][en ? 1 : 0]}</small><b>${vakit[k]}</b></span>`).join("")}</div>
+    <small class="namaz-not">${en ? "Times: Diyanet method, via aladhan.com" : "Vakitler: Diyanet hesabı, aladhan.com"}</small>`;
+}
+
+function adabKartiEkle(eser) {
+  const kart = document.getElementById("eser-karti");
+  const tur = ADAB_TURU[eser.turId];
+  if (!kart || !tur || kart.querySelector(".adab-karti")) return;
+  acikAdabEseri = eser;
+  const html = `
+    <div class="kart adab-karti">
+      <span class="kart-baslik">ZİYARET ADABI</span>
+      ${tur === "ibadet" ? `<div id="namaz-kutu" class="namaz-kutu"></div>` : ""}
+      <ul class="adab-liste">${ADAB[tur].map((m) => `<li>${m}</li>`).join("")}</ul>
+    </div>`;
+  const hedef = Array.from(kart.querySelectorAll(".kart")).find((k) => !k.closest(".eylemler"));
+  if (hedef) hedef.insertAdjacentHTML("beforebegin", html); else kart.insertAdjacentHTML("beforeend", html);
+  if (tur !== "ibadet") return;
+  const kutu = document.getElementById("namaz-kutu");
+  namazKutusunuCiz();
+  namazVakitleri(eser)
+    .then((v) => { if (acikAdabEseri === eser && kutu.isConnected) { kutu.vakitler = v; namazKutusunuCiz(); } })
+    .catch(() => { if (kutu.isConnected) { kutu.vakitler = null; namazKutusunuCiz(); } });
+}
+
+/* ---------- 2) Mimari sözlük ---------- */
+// [terim, Türkçe kalıp, İngilizce kalıp, Türkçe açıklama, İngilizce açıklama]
+const SOZLUK_TERIMLERI = [
+  ["Mihrap", "mihra[pb]", "mihrab", "Caminin kıble duvarında, namazın yönünü gösteren niş. İmam namazı burada kıldırır.", "The niche in the qibla wall showing the direction of prayer; the imam leads prayer here."],
+  ["Kitabe", "kit[âa]be", "inscription", "Yapının kim tarafından, ne zaman yapıldığını ya da onarıldığını anlatan taş veya mermer yazıt.", "A stone or marble panel recording who built or repaired the building, and when."],
+  ["Harim", "harim", "prayer hall", "Caminin namaz kılınan asıl iç mekânı.", "The main interior of a mosque where prayer is performed."],
+  ["Minber", "minber", "minbar", "Mihrabın sağında, cuma ve bayram hutbesinin okunduğu merdivenli kürsü.", "The stepped pulpit to the right of the mihrab, used for the Friday and festival sermon."],
+  ["Kırma çatı", "kırma çatı", "hipped roof", "Dört yöne eğimli, saçakları her taraftan inen çatı.", "A roof sloping down on all four sides."],
+  ["Sahın", "sah(?:ın|n[ıi])", "nave", "Sütun ya da paye dizileriyle ayrılmış, boyuna uzanan iç mekân bölümü.", "A lengthwise section of the interior separated by rows of columns or piers."],
+  ["Son cemaat yeri", "son cemaat yer", "narthex|last congregation", "Caminin girişinin önündeki revaklı bölüm; geç kalanlar namazı burada kılardı.", "The porch in front of a mosque's entrance, where latecomers used to pray."],
+  ["Mahfil", "mahfil", "gallery", "Cami içinde, genellikle girişin üstünde, ahşap ya da taş yükseltilmiş balkon (kadınlar, müezzin için).", "A raised wooden or stone gallery inside the mosque, often above the entrance (for women or the muezzin)."],
+  ["Çini", "çini", "tile", "Sırlı, desenli seramik kaplama. Selçuklu ve Osmanlı yapılarında duvar ve mihrap süslemesinde kullanılır.", "Glazed, patterned ceramic tile used to decorate walls and mihrabs in Seljuk and Ottoman buildings."],
+  ["Şerefe", "şerefe", "balcony", "Minarenin etrafını dolanan, ezanın okunduğu balkon.", "The balcony around a minaret from which the call to prayer was made."],
+  ["Kesme taş", "kesme taş", "ashlar|cut stone", "Düzgün yüzeyli, köşeli biçimde yontulmuş taş.", "Stone dressed into regular blocks with flat faces."],
+  ["Sivri kemer", "sivri kemer", "pointed arch", "Tepesi sivri birleşen kemer; Selçuklu ve Osmanlı mimarisinde yaygındır.", "An arch whose two sides meet at a point; common in Seljuk and Ottoman architecture."],
+  ["Basık kemer", "basık kemer", "depressed arch", "Yüksekliği açıklığına göre az olan, yayvan kemer.", "A flattened arch that is low relative to its span."],
+  ["Moloz taş", "moloz", "rubble", "Düzgün yontulmamış, kaba taş. Genellikle harçla örülür.", "Rough, undressed stone, usually laid in mortar."],
+  ["Sanduka", "sanduka", "cenotaph", "Türbede mezarın üstüne konan, sandık biçimli sembolik mezar.", "A chest-shaped symbolic tomb placed over the grave in a mausoleum."],
+  ["Taç kapı", "taç kapı", "portal", "Yapının süslü, anıtsal giriş kapısı.", "The decorated monumental entrance of a building."],
+  ["Külah", "külah", "conical (roof|cap)", "Minare ya da kümbetin tepesindeki konik örtü.", "The conical cap on top of a minaret or tomb tower."],
+  ["Eyvan", "eyvan", "iwan", "Üç yanı kapalı, bir yanı tamamen açık, tonozlu mekân. Medreselerde yaygındır.", "A vaulted hall walled on three sides and fully open on the fourth; common in madrasas."],
+  ["Vakfiye", "vakfiye", "endowment deed|vakfiye", "Vakfı kuran kişinin, vakfettiği malları ve şartlarını yazdığı belge.", "The deed in which a founder lists the endowed property and its conditions."],
+  ["Tonoz", "tonoz", "vault", "Kemerin uzayarak oluşturduğu kavisli örtü. Beşik tonoz yarım silindir biçimindedir.", "A curved roof formed by extending an arch; a barrel vault is half a cylinder."],
+  ["Sülüs", "s[üu]l[üu]s", "thuluth", "Kitabelerde sık kullanılan, büyük ve gösterişli Arap yazı stili.", "A large, ornate Arabic script often used for inscriptions."],
+  ["Lento", "lento", "lintel", "Kapı ya da pencerenin üstündeki yatay taşıyıcı.", "The horizontal beam over a door or window."],
+  ["Kavsara", "kavsara", "hood", "Mihrap ya da taç kapı nişinin üstünü örten yarım kubbe veya mukarnaslı başlık.", "The half-dome or muqarnas cap over a mihrab or portal niche."],
+  ["Şadırvan", "şadırvan", "ablution fountain|şadırvan", "Abdest almak için cami avlusunda bulunan, musluklu çeşme.", "The fountain with taps in a mosque courtyard used for ritual washing."],
+  ["Zaviye", "zaviye", "dervish lodge|zaviye", "Dervişlerin ve yolcuların barındığı küçük tekke.", "A small lodge sheltering dervishes and travellers."],
+  ["Mukarnas", "mukarnas", "muqarnas", "Küçük niş dizilerinin kademeli olarak üst üste bindiği, petek görünümlü süsleme.", "Honeycomb-like decoration of small niches stacked in tiers."],
+  ["Devşirme malzeme", "devşirme", "spolia|reused", "Eski bir yapıdan alınıp yeni yapıda yeniden kullanılan taş, sütun gibi malzeme.", "Stone, columns and other material taken from an older building and reused."],
+  ["Silme", "silme", "moulding", "Cephede ya da kapı çevresinde dolanan, çıkıntılı süs şeridi.", "A projecting decorative band around a façade or doorway."],
+  ["Rumi", "r[ûu]mi", "rumi", "Selçuklu'dan gelen, kıvrık yaprak biçimli stilize bitki motifi.", "A stylised, curling leaf motif originating in Seljuk art."],
+  ["Alınlık", "alınlı[kğ]", "pediment", "Pencere ya da kapının üstündeki, çoğu zaman kemerli veya üçgen bölüm.", "The often arched or triangular panel above a window or door."],
+  ["Sütunce", "sütunce", "colonnette", "Mihrap ya da kapı kenarlarındaki ince, süs amaçlı küçük sütun.", "A slender decorative column at the sides of a mihrab or door."],
+  ["Hazire", "hazire", "graveyard|hazire", "Cami ya da türbenin yanındaki, çevresi duvarla çevrili küçük mezarlık.", "A small walled graveyard beside a mosque or tomb."],
+  ["Kalem işi", "kalem iş", "hand-painted|kalem işi", "Sıva ya da ahşap üzerine fırçayla yapılan boyalı süsleme.", "Painted decoration applied by brush on plaster or wood."],
+  ["Saçak", "saçak", "eaves", "Çatının duvardan dışarı taşan kenarı.", "The edge of a roof projecting beyond the wall."],
+  ["Tromp", "tromp", "squinch", "Kare mekândan yuvarlak kubbeye geçişi sağlayan, köşelerdeki yarım koni biçimli öğe.", "A half-cone in the corner that turns a square room into a base for a round dome."],
+  ["Kasnak", "kasnak", "drum", "Kubbenin oturduğu silindir ya da çokgen gövde.", "The cylindrical or polygonal base on which a dome rests."],
+  ["İmaret", "imaret", "soup kitchen|imaret", "Yoksullara, öğrencilere ve yolculara ücretsiz yemek veren vakıf aşhanesi.", "An endowed kitchen serving free meals to the poor, students and travellers."],
+  ["Hatıl", "hatıl", "timber band", "Duvarı sağlamlaştırmak için yatay olarak yerleştirilen ahşap kiriş.", "A horizontal timber beam set in a wall to strengthen it."],
+  ["Bedesten", "bedesten", "bedesten", "Değerli malların satıldığı, kapıları kilitlenen kapalı çarşı.", "A lockable covered market for valuable goods."],
+  ["Pandantif", "pandantif", "pendentive", "Kare mekândan kubbeye geçişi sağlayan, küresel üçgen biçimli öğe.", "A curved triangle that carries a round dome over a square room."],
+  ["Kündekâri", "kündek[âa]ri", "kündekari", "Çivi ve tutkal kullanmadan, geçmeli küçük ahşap parçalarla yapılan geometrik işçilik.", "Geometric woodwork of small interlocking pieces, made without nails or glue."],
+  ["Darülhuffaz", "d[âa]r[üu]['’]?l[ -]?huffaz", "darülhuffaz|qur'an school", "Kur'an-ı Kerim'in ezberlendiği okul.", "A school where the Qur'an is memorised."],
+  ["Sebil", "sebil", "sebil", "Gelip geçenlere ücretsiz su dağıtılan, pencereli küçük yapı.", "A small windowed kiosk where water was handed out free to passers-by."]
+];
+const SOZLUK_TR = SOZLUK_TERIMLERI.map((t) => new RegExp(`(?<![\\p{L}])${t[1]}[\\p{L}]*`, "iu"));
+const SOZLUK_EN = SOZLUK_TERIMLERI.map((t) => new RegExp(`(?<![\\p{L}])(?:${t[2]})[\\p{L}]*`, "iu"));
+
+function terimleriBagla(kok) {
+  const en = typeof dil !== "undefined" && dil === "en";
+  const kaliplar = en ? SOZLUK_EN : SOZLUK_TR;
+  kok.querySelectorAll(".olgu").forEach((olgu) => {
+    if (olgu.dataset.terimli) return;
+    const ilk = olgu.firstChild;
+    if (!ilk || ilk.nodeType !== 3 || !ilk.nodeValue.trim()) return;
+    if (olgu.dataset.tr === undefined) olgu.dataset.tr = (ilk.turkcesi || ilk.nodeValue).trim();
+    const kullanilan = new Set();
+    let dugum = ilk;
+    while (dugum && dugum.nodeType === 3) {
+      let enIyi = null;
+      kaliplar.forEach((k, i) => {
+        if (kullanilan.has(i)) return;
+        const m = dugum.nodeValue.match(k);
+        if (m && (enIyi === null || m.index < enIyi.m.index)) enIyi = { m, i };
+      });
+      if (!enIyi) break;
+      kullanilan.add(enIyi.i);
+      const kalan = dugum.splitText(enIyi.m.index);
+      const sonrasi = kalan.splitText(enIyi.m[0].length);
+      const dugme = document.createElement("button");
+      dugme.type = "button"; dugme.className = "terim"; dugme.dataset.terim = enIyi.i;
+      dugme.textContent = kalan.nodeValue;
+      kalan.replaceWith(dugme);
+      dugum = sonrasi;
+    }
+    olgu.dataset.terimli = "1";
+  });
+}
+
+// Dil değişmeden önce bölünmüş yazıları birleştir: çeviri tek parça metin üzerinden yapılır
+function terimleriCoz() {
+  document.querySelectorAll(".olgu[data-terimli]").forEach((olgu) => {
+    const satir = olgu.querySelector(".kaynak-satiri");
+    Array.from(olgu.childNodes).forEach((n) => { if (n !== satir) n.remove(); });
+    const yazi = document.createTextNode(olgu.dataset.tr);
+    yazi.turkcesi = olgu.dataset.tr;
+    olgu.insertBefore(yazi, satir);
+    delete olgu.dataset.terimli;
+  });
+}
+
+function terimPenceresi(no) {
+  const t = SOZLUK_TERIMLERI[no];
+  if (!t) return;
+  const en = typeof dil !== "undefined" && dil === "en";
+  const eski = document.getElementById("terim-katman");
+  if (eski) eski.remove();
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="talep-katman" id="terim-katman" role="dialog" aria-modal="true" aria-labelledby="terim-baslik">
+      <div class="talep-kutu terim-kutu">
+        <div class="talep-ust"><b id="terim-baslik">${t[0]}</b>
+          <button type="button" class="talep-kapat" data-terim-kapat aria-label="Kapat">✕</button></div>
+        <span class="terim-etiket">${en ? "ARCHITECTURE GLOSSARY" : "MİMARİ SÖZLÜK"}</span>
+        <p class="terim-aciklama">${en ? t[4] : t[3]}</p>
+      </div>
+    </div>`);
+}
+
+document.addEventListener("click", (olay) => {
+  const terim = olay.target.closest(".terim");
+  if (terim) { terimPenceresi(Number(terim.dataset.terim)); return; }
+  if (olay.target.closest("[data-terim-kapat]") || olay.target.id === "terim-katman") {
+    const k = document.getElementById("terim-katman");
+    if (k) k.remove();
+  }
+});
+
+/* Eser kartına ikisini de ekle */
+const ozelliksizEserKarti = eserKartiniAc;
+eserKartiniAc = function (eserId) {
+  ozelliksizEserKarti(eserId);
+  const eser = ESERLER.find((e) => e.id === eserId);
+  const kart = document.getElementById("eser-karti");
+  if (!eser || !kart) return;
+  try { adabKartiEkle(eser); } catch (hata) { console.warn("Ziyaret adabı", hata); }
+  // Türkçe yazıyı şimdi sakla, terimleri çeviri bittikten sonra bağla
+  kart.querySelectorAll(".olgu").forEach((o) => {
+    const ilk = o.firstChild;
+    if (ilk && ilk.nodeType === 3 && o.dataset.tr === undefined) o.dataset.tr = ilk.nodeValue.trim();
+  });
+  setTimeout(() => { try { terimleriBagla(kart); } catch (hata) { console.warn("Sözlük", hata); } }, 0);
+};
+
+// dil.js bu dosyadan sonra yüklenir: dil seçimini sayfa hazır olunca sarmala
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof dilSec !== "function") return;
+  const ozelliksizDilSec = dilSec;
+  dilSec = function (yeniDil) {
+    terimleriCoz();
+    ozelliksizDilSec(yeniDil);
+    const kart = document.getElementById("eser-karti");
+    setTimeout(() => {
+      if (kart && !kart.hidden) terimleriBagla(kart);
+      namazKutusunuCiz();
+    }, 0);
+  };
+});
+
+/* ---------- 3) Paylaşılabilir pasaport kartı ---------- */
+async function hikayeKartiCiz() {
+  const en = typeof dil !== "undefined" && dil === "en";
+  const W = 1080, H = 1920;
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  const BASLIK = '"Playfair Display", Georgia, serif', GOVDE = '"Inter", system-ui, sans-serif';
+  try { await Promise.all([document.fonts.load(`600 80px ${BASLIK}`), document.fonts.load(`600 30px ${GOVDE}`)]); } catch (hata) { }
+  const LACIVERT = "#0B2540", ALTIN = "#C9A45C", ACIK = "#E6D2A6";
+
+  const aralikli = (yazi, cx, y, aralik) => {          // harf aralıklı, ortalı yazı (her tarayıcıda çalışır)
+    const genislik = Array.from(yazi).reduce((t, h) => t + x.measureText(h).width + aralik, -aralik);
+    let px = cx - genislik / 2;
+    Array.from(yazi).forEach((h) => { x.fillText(h, px, y); px += x.measureText(h).width + aralik; });
+  };
+
+  x.fillStyle = LACIVERT; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W / 2, 520, 50, W / 2, 520, 900);
+  g.addColorStop(0, "rgba(201,164,92,.16)"); g.addColorStop(1, "rgba(201,164,92,0)");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.strokeStyle = "rgba(201,164,92,.55)"; x.lineWidth = 2;
+  x.strokeRect(54, 54, W - 108, H - 108);
+  x.strokeStyle = "rgba(201,164,92,.25)"; x.strokeRect(68, 68, W - 136, H - 136);
+
+  // Amblem: sekiz köşeli yıldız
+  x.save(); x.translate(W / 2, 250); x.strokeStyle = ALTIN; x.lineWidth = 4;
+  x.strokeRect(-46, -46, 92, 92); x.rotate(Math.PI / 4); x.strokeRect(-46, -46, 92, 92);
+  x.restore(); x.beginPath(); x.arc(W / 2, 250, 10, 0, Math.PI * 2); x.fillStyle = ALTIN; x.fill();
+
+  x.textBaseline = "alphabetic"; x.fillStyle = ALTIN; x.font = `600 76px ${BASLIK}`;
+  aralikli("VAKFİYE", W / 2, 420, 16);
+  x.fillStyle = ACIK; x.font = `500 26px ${GOVDE}`;
+  aralikli(en ? "CULTURE PASSPORT" : "KÜLTÜR PASAPORTU", W / 2, 470, 10);
+
+  x.textAlign = "center"; x.fillStyle = "#fff"; x.font = `600 104px ${BASLIK}`;
+  x.fillText(rotaSehri, W / 2, 630);
+  x.fillStyle = ALTIN; x.font = `italic 500 58px ${BASLIK}`;
+  x.fillText(en ? "route completed" : "rotasını tamamladım", W / 2, 710);
+
+  // Damgalar: 2 sütun × 3 satır
+  const R = 135, sutun = [W / 2 - 190, W / 2 + 190];
+  ROTA.forEach((durak, i) => {
+    const cx = sutun[i % 2], cy = 920 + Math.floor(i / 2) * 300;
+    x.save(); x.translate(cx, cy); x.rotate((i % 2 ? 6 : -8) * Math.PI / 180);
+    x.strokeStyle = ALTIN; x.fillStyle = ALTIN;
+    x.lineWidth = 6; x.beginPath(); x.arc(0, 0, R, 0, Math.PI * 2); x.stroke();
+    x.lineWidth = 2; x.beginPath(); x.arc(0, 0, R - 16, 0, Math.PI * 2); x.stroke();
+    x.beginPath();
+    for (let k = 0; k < 10; k++) {                                          // küçük yıldız
+      const r = k % 2 ? 9 : 22, a = -Math.PI / 2 + k * Math.PI / 5;
+      x.lineTo(Math.cos(a) * r, -48 + Math.sin(a) * r);
+    }
+    x.closePath(); x.fill();
+    x.textAlign = "center";
+    let boyut = 30;
+    x.font = `700 ${boyut}px ${GOVDE}`;
+    while (x.measureText(durak.ust).width > R * 1.6 && boyut > 18) { boyut -= 2; x.font = `700 ${boyut}px ${GOVDE}`; }
+    x.fillText(durak.ust, 0, 12);
+    x.font = `600 20px ${GOVDE}`; x.fillStyle = ACIK;
+    x.fillText(durak.alt, 0, 52);
+    x.restore();
+  });
+
+  const tarih = new Date().toLocaleDateString(en ? "en-GB" : "tr-TR", { day: "numeric", month: "long", year: "numeric" });
+  const ad = (typeof oturum !== "undefined" && oturum && oturum.ad) ? oturum.ad : "";
+  x.textAlign = "center"; x.fillStyle = "#fff"; x.font = `600 40px ${BASLIK}`;
+  if (ad) x.fillText(ad, W / 2, 1720);
+  x.fillStyle = ACIK; x.font = `500 28px ${GOVDE}`;
+  x.fillText(`${ROTA.length} ${en ? "stamps" : "pul"} · ${tarih}`, W / 2, ad ? 1770 : 1730);
+  x.fillStyle = ALTIN; x.font = `600 26px ${GOVDE}`;
+  x.fillText("feyzabb.github.io/vakfiye", W / 2, 1830);
+
+  return new Promise((coz) => c.toBlob(coz, "image/png"));
+}
+
+async function hikayeKartiniGoster() {
+  const en = typeof dil !== "undefined" && dil === "en";
+  const blob = await hikayeKartiCiz();
+  if (!blob) return;
+  const dosya = new File([blob], `vakfiye-${rotaSehri.toLocaleLowerCase("tr")}-rotasi.png`, { type: "image/png" });
+  const url = URL.createObjectURL(blob);
+  const paylasilir = navigator.canShare && navigator.canShare({ files: [dosya] });
+  const eski = document.getElementById("hikaye-katman");
+  if (eski) eski.remove();
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="talep-katman" id="hikaye-katman" role="dialog" aria-modal="true" aria-label="${en ? "Story card" : "Hikâye kartı"}">
+      <div class="talep-kutu hikaye-kutu">
+        <div class="talep-ust"><b>${en ? "Your story card" : "Hikâye kartın"}</b>
+          <button type="button" class="talep-kapat" data-hikaye-kapat aria-label="Kapat">✕</button></div>
+        <img class="hikaye-onizleme" src="${url}" alt="${en ? "Route completion card" : "Rota tamamlama kartı"}">
+        ${paylasilir ? `<button type="button" class="talep-gonder" data-hikaye-paylas>${en ? "Share" : "Paylaş"}</button>` : ""}
+        <a class="kaynak-link hikaye-indir" href="${url}" download="${dosya.name}">${en ? "Download" : "İndir"}</a>
+      </div>
+    </div>`);
+  document.getElementById("hikaye-katman").hikayeDosyasi = dosya;
+}
+
+document.addEventListener("click", async (olay) => {
+  if (olay.target.closest("[data-hikaye-olustur]")) { hikayeKartiniGoster(); return; }
+  if (olay.target.closest("[data-hikaye-paylas]")) {
+    const k = document.getElementById("hikaye-katman");
+    try { await navigator.share({ files: [k.hikayeDosyasi], title: "Vakfiye", text: `${rotaSehri} · Vakfiye` }); } catch (hata) { }
+    return;
+  }
+  if (olay.target.closest("[data-hikaye-kapat]") || olay.target.id === "hikaye-katman") {
+    const k = document.getElementById("hikaye-katman");
+    if (k) k.remove();
+  }
+});
+
+const paylasimsizPasaport = pasaportuCiz;
+pasaportuCiz = function () {
+  paylasimsizPasaport.apply(this, arguments);
+  const alan = document.getElementById("sekme-pasaport");
+  if (!alan || alan.querySelector(".paylas-karti") || ROTA.length === 0 || rotadakiPulSayisi() < ROTA.length) return;
+  const izgara = alan.querySelector(".pullar-izgara");
+  const hedef = izgara ? izgara.closest(".kart") : null;
+  const html = `
+    <div class="kart paylas-karti">
+      <span class="kart-baslik">ROTA TAMAMLANDI</span>
+      <b class="paylas-baslik">Tebrikler! ${rotaSehri} rotasının ${ROTA.length} durağını da gezdin.</b>
+      <button type="button" class="t2-pul-dugme" data-hikaye-olustur>Hikâye kartı oluştur</button>
+      <small class="t2-pul-not">Instagram hikâyesi boyutunda bir görsel hazırlanır.</small>
+    </div>`;
+  if (hedef) hedef.insertAdjacentHTML("afterend", html); else alan.insertAdjacentHTML("beforeend", html);
+};
+
+/* ---------- İngilizce karşılıklar ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof SOZLUK === "undefined") return;
+  Object.assign(SOZLUK, {
+    "ZİYARET ADABI": "VISITING ETIQUETTE",
+    "Omuzları ve dizleri örten kıyafet giy; kadınlar başını örtmeli, yanında bir şal bulundur.": "Wear clothes covering shoulders and knees; women should cover their hair, so bring a scarf.",
+    "Ayakkabılarını girişte çıkar.": "Take off your shoes at the entrance.",
+    "Namaz kılanların önünden geçme, sessiz ol.": "Do not walk in front of people praying; keep quiet.",
+    "Fotoğraf çekerken flaş kullanma, ibadet edenleri görüntüleme.": "Do not use flash, and do not photograph people at prayer.",
+    "Sessiz ve saygılı ol; sandukalara dokunma, yaslanma.": "Be quiet and respectful; do not touch or lean on the cenotaphs.",
+    "İçeride halı varsa ayakkabılarını çıkar.": "If there is carpet inside, take off your shoes.",
+    "Omuzları ve dizleri örten kıyafet giy.": "Wear clothes covering shoulders and knees.",
+    "Ayin sırasında sessiz ol ve fotoğraf çekme.": "Keep quiet and do not take photos during services.",
+    "ROTA TAMAMLANDI": "ROUTE COMPLETED", "Hikâye kartı oluştur": "Create story card",
+    "Instagram hikâyesi boyutunda bir görsel hazırlanır.": "An image sized for Instagram stories is created."
+  });
+  if (typeof KALIPLAR !== "undefined") {
+    KALIPLAR.push([/^Tebrikler! (.+) rotasının (\d+) durağını da gezdin\.$/, (m) => `Congratulations! You visited all ${m[2]} stops of the ${m[1]} route.`]);
+  }
+});
